@@ -1,0 +1,38 @@
+# Xcode
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+
+# Tuist
+*.xcodeproj
+*.xcworkspace
+Derived/
+graph.dot
+.tuist/
+
+# SwiftPM
+.build/
+.swiftpm/
+
+# macOS
+.DS_Store
+
+# Misc
+*.log
+
+# Local Xcode derived data for CLI builds
+.derivedData/
+
+# macOS junk
+.DS_Store
+**/.DS_Store
+
+# Local config values (track Example only)
+Config/*.xcconfig
+!Config/Example.xcconfig
+
+# Agent / SDD working docs
+docs/superpowers/
+.superpowers/

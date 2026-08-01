@@ -1,0 +1,4 @@
+# Mozi tool versions (mise)
+[tools]
+tuist = "4.109.2"
+swiftlint = "0.59.1"
