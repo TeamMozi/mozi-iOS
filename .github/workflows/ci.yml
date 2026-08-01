@@ -9,7 +9,26 @@ permissions:
   contents: read
 
 jobs:
-  quality:
+  lint:
+    runs-on: macos-15
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install mise
+        uses: jdx/mise-action@v2
+        with:
+          install: true
+          cache: true
+
+      - name: SwiftLint
+        run: mise exec -- swiftlint lint --strict
+
+  build:
     runs-on: macos-15
     timeout-minutes: 60
 
@@ -33,9 +52,6 @@ jobs:
       - name: Generate project
         run: mise exec -- tuist generate --no-open
 
-      - name: SwiftLint
-        run: mise exec -- swiftlint lint --strict
-
       - name: Build
         run: |
           xcodebuild \
@@ -44,6 +60,30 @@ jobs:
             -destination 'generic/platform=iOS Simulator' \
             -skipMacroValidation \
             build
+
+  test:
+    runs-on: macos-15
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install mise
+        uses: jdx/mise-action@v2
+        with:
+          install: true
+          cache: true
+
+      - name: Prepare local config
+        run: |
+          cp Config/Example.xcconfig Config/Debug.xcconfig
+          cp Config/Example.xcconfig Config/Release.xcconfig
+
+      - name: Generate project
+        run: mise exec -- tuist generate --no-open
 
       - name: Test Feature Reducers
         run: |
