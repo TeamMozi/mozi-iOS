@@ -21,10 +21,10 @@ TCA + Domain Client + App live 조립
 
 ```text
 Projects/
-  Shared/{Util,DesignSystem}
+  Shared/{Util,DesignSystem,Logger}
   ThirdParty/{ThirdParty,ThirdPartyUI,ThirdPartyCore}
   Domain/
-  Core/{Network,Storage,Logger}
+  Core/{Network,Storage}
   Data/
   Feature/
   App/

@@ -15,10 +15,10 @@ live 조립 = App only
 
 ```text
 Projects/
-  Shared/{Util,DesignSystem}
+  Shared/{Util,DesignSystem,Logger}
   ThirdParty/{ThirdParty,ThirdPartyUI,ThirdPartyCore}
   Domain/
-  Core/{Network,Storage,Logger}
+  Core/{Network,Storage}
   Data/
   Feature/
   App/
@@ -28,9 +28,10 @@ Projects/
 |---|---|
 | SharedUtils | AppInfo, pure Foundation 헬퍼 |
 | SharedDesignSystem | UI 토큰/컴포넌트 |
+| SharedLogger | 전역 `Logger.shared` OSLog facade |
 | ThirdParty* | 외부 패키지 진입점 |
 | Domain | Entity, `*Client`, Error |
-| Core/* | Network/Storage/Logger |
+| Core/* | Network/Storage |
 | Data | DTO, Datasource, `*RepositoryImpl`, `*ClientFactory` |
 | Feature | Root, AppCoordinator, Scene |
 | App | bootstrap, live 주입, root store |
@@ -38,10 +39,11 @@ Projects/
 ### 의존
 
 ```text
-Feature → Domain, SharedUtils, SharedDesignSystem, ThirdParty, ThirdPartyUI
-Data    → Domain, Core/*, SharedUtils
+Feature → Domain, SharedUtils, SharedDesignSystem, SharedLogger, ThirdParty, ThirdPartyUI
+Data    → Domain, Core/*, SharedLogger, SharedUtils
 Domain  → SharedUtils, ThirdParty
 Core/*  → SharedUtils, ThirdPartyCore
+SharedLogger → Foundation/OSLog only
 App     → 조립
 ```
 
@@ -165,4 +167,3 @@ storage namespace 는 Bundle ID 재사용.
 
 - iPhone only
 - iPad / Mac Catalyst / Apple Vision 미지원
-
