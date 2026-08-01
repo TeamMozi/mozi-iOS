@@ -85,6 +85,6 @@ PR 본문:
 
 - Feature 모듈 쪼개기
 - AppShell / AppRuntime / AppEnvironment / AppConstants
-- Feature → Data/Core
+- Feature → Data / Core* / ThirdPartyCore
 - Scene 간 직접 통신
 - UseCase 층

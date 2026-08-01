@@ -13,6 +13,7 @@ struct MoziApp: App {
     var body: some Scene {
         WindowGroup {
             CompositionRoot.rootView(store: store)
+                .preferredColorScheme(.dark)
         }
     }
 }

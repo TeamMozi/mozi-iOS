@@ -9,6 +9,7 @@ public enum DefaultInfoPlist {
         "API_BASE_URL": "$(API_BASE_URL)",
 
         "UILaunchStoryboardName": "LaunchScreen",
+        "UIUserInterfaceStyle": "Dark",
         "LSRequiresIPhoneOS": true,
         "UIRequiresFullScreen": true,
         "UISupportedInterfaceOrientations": [
