@@ -84,13 +84,23 @@ xcodebuild -workspace Mozi.xcworkspace -scheme Mozi-Debug -destination 'generic/
 
 스크립트가 하는 일:
 
-1. 다른 worktree/main 에서 `Config/Debug.xcconfig`, `Config/Release.xcconfig` 복사
-2. `mise trust` + `mise install`
-3. `tuist generate`
-4. `Mozi-Debug` 빌드 검증 (로컬 `.derivedData`)
+1. detached HEAD 이면 로컬 브랜치 생성
+   - `MOZI_WORKTREE_BRANCH` 가 있으면 그 이름 사용
+   - 없으면 Codex worktree id 기준 `codex/<id>` (예: `codex/f8d0`)
+   - 이미 브랜치에 있으면 유지
+2. 다른 worktree/main 에서 `Config/Debug.xcconfig`, `Config/Release.xcconfig` 복사
+3. `mise trust` + `mise install`
+4. `tuist generate`
+5. `Mozi-Debug` 빌드 검증 (로컬 `.derivedData`)
 
 옵션:
 
 - `--skip-build`: 빌드 검증 생략
 - `--force-generate`: workspace 가 있어도 generate 재실행
 - `MOZI_CONFIG_SOURCE=/path/to/main`: config 복사 소스 강제 지정
+- `MOZI_WORKTREE_BRANCH=feat/foo`: detached HEAD 일 때 생성/전환할 브랜치 지정
+
+참고:
+
+- Codex worktree 세션은 기본적으로 detached HEAD 로 열린다.
+- 이 스크립트가 임시 브랜치(`codex/<id>`)를 만든 뒤, 작업 주제가 정해지면 `Type/짧은-설명` 으로 rename 하거나 새로 판다.

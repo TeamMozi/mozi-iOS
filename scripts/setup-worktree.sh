@@ -13,15 +13,21 @@ usage() {
 사용법: scripts/setup-worktree.sh [--skip-build] [--force-generate]
 
 Mozi git worktree 로컬 개발 세팅:
-  1) 없으면 main/다른 worktree 에서 Config/*.xcconfig 복사
-  2) mise trust + mise install
-  3) tuist generate
-  4) 선택적으로 Mozi-Debug 빌드 검증
+  1) detached HEAD 이면 로컬 브랜치 생성
+  2) 없으면 main/다른 worktree 에서 Config/*.xcconfig 복사
+  3) mise trust + mise install
+  4) tuist generate
+  5) 선택적으로 Mozi-Debug 빌드 검증
 
 옵션:
   --skip-build       xcodebuild 검증 생략 (기본: 빌드 실행)
   --force-generate   workspace 가 있어도 tuist generate 강제 실행
   -h, --help         도움말 출력
+
+환경변수:
+  MOZI_WORKTREE_BRANCH   detached HEAD 일 때 생성/전환할 브랜치 이름
+                         미지정 시 codex/<worktree-id> 사용
+  MOZI_CONFIG_SOURCE     Config/*.xcconfig 복사 소스 경로
 USAGE
 }
 
@@ -57,6 +63,103 @@ if [[ ! -f "$ROOT/.mise.toml" || ! -f "$ROOT/Workspace.swift" ]]; then
   echo "error: Mozi 저장소 루트에서 실행하세요 (.mise.toml 또는 Workspace.swift 없음)" >&2
   exit 1
 fi
+
+is_branch_checked_out_elsewhere() {
+  local branch="$1"
+  local target="refs/heads/${branch}"
+  local worktree=""
+  local head=""
+
+  while IFS= read -r line; do
+    case "$line" in
+      worktree\ *)
+        worktree="${line#worktree }"
+        head=""
+        ;;
+      HEAD\ *)
+        head="${line#HEAD }"
+        ;;
+      "")
+        if [[ -n "$worktree" && -n "$head" && "$worktree" != "$ROOT" && "$head" == "$target" ]]; then
+          return 0
+        fi
+        worktree=""
+        head=""
+        ;;
+    esac
+  done < <(git worktree list --porcelain; printf '\n')
+
+  return 1
+}
+
+default_worktree_branch() {
+  local parent leaf candidate
+
+  parent="$(basename "$(dirname "$ROOT")")"
+  leaf="$(basename "$ROOT")"
+
+  # Codex worktree 경로: ~/.codex/worktrees/<id>/<repo>
+  if [[ "$parent" =~ ^[0-9a-f]{4,}$ ]]; then
+    printf 'codex/%s\n' "$parent"
+    return 0
+  fi
+
+  # 그 외 worktree 는 폴더명 기반 fallback
+  candidate="$(printf '%s\n' "$leaf" | tr -c 'A-Za-z0-9._-' '-')"
+  candidate="${candidate##-}"
+  candidate="${candidate%%-}"
+  if [[ -z "$candidate" ]]; then
+    candidate="$(git rev-parse --short HEAD)"
+  fi
+  printf 'codex/%s\n' "$candidate"
+}
+
+unique_branch_name() {
+  local base="$1"
+  local candidate="$base"
+  local n=2
+
+  while true; do
+    if is_branch_checked_out_elsewhere "$candidate"; then
+      candidate="${base}-${n}"
+      n=$((n + 1))
+      continue
+    fi
+
+    # 다른 worktree 가 안 잡고 있으면 기존 로컬 브랜치도 재사용
+    printf '%s\n' "$candidate"
+    return 0
+  done
+}
+
+ensure_branch() {
+  local current branch
+  current="$(git rev-parse --abbrev-ref HEAD)"
+
+  if [[ "$current" != "HEAD" ]]; then
+    log "이미 브랜치에 있음: $current"
+    return 0
+  fi
+
+  if [[ -n "${MOZI_WORKTREE_BRANCH:-}" ]]; then
+    branch="$MOZI_WORKTREE_BRANCH"
+    if is_branch_checked_out_elsewhere "$branch"; then
+      echo "error: 브랜치 '${branch}' 가 다른 worktree 에서 사용 중입니다." >&2
+      echo "       MOZI_WORKTREE_BRANCH 를 다른 이름으로 지정하세요." >&2
+      exit 1
+    fi
+  else
+    branch="$(unique_branch_name "$(default_worktree_branch)")"
+  fi
+
+  if git show-ref --verify --quiet "refs/heads/${branch}"; then
+    log "기존 브랜치로 전환: $branch"
+    git switch "$branch"
+  else
+    log "detached HEAD → 브랜치 생성: $branch"
+    git switch -c "$branch"
+  fi
+}
 
 find_config_source() {
   if [[ -n "${MOZI_CONFIG_SOURCE:-}" ]]; then
@@ -152,6 +255,7 @@ verify_build() {
 }
 
 log "Mozi worktree 세팅 시작: $ROOT"
+ensure_branch
 ensure_configs
 ensure_tools
 ensure_project
