@@ -1,9 +1,10 @@
 import Foundation
 import OSLog
+import SharedUtils
 
 public final class Logger: @unchecked Sendable {
     public static let shared = Logger(
-        subsystem: Bundle.main.bundleIdentifier ?? "unknown.bundle"
+        subsystem: AppInfo.bundleID
     )
 
     private let subsystem: String
