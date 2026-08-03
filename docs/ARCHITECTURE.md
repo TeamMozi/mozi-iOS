@@ -26,7 +26,7 @@ Projects/
 
 | 모듈 | 책임 |
 |---|---|
-| SharedUtils | `AppInfo` 등 순수 공통 코드 |
+| SharedUtils | AppInfo, pure Foundation 헬퍼 |
 | SharedDesignSystem | UI 토큰/컴포넌트 |
 | ThirdParty* | 외부 패키지 진입점 |
 | Domain | Entity, `*Client`, Error |
@@ -44,6 +44,11 @@ Domain  → SharedUtils, ThirdParty
 Core/*  → SharedUtils, ThirdPartyCore
 App     → 조립
 ```
+
+### SharedUtils
+
+- 포함: `AppInfo`, pure Foundation 헬퍼
+- 제외: UI, Network, Storage, Logger, Domain, TCA helper
 
 ### 금지
 
