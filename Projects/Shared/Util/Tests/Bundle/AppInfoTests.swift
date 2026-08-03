@@ -15,8 +15,11 @@ final class AppInfoTests: XCTestCase {
         XCTAssertFalse(build.isEmpty)
     }
 
-    func test_isDebugBuild_is_accessible() {
-        _ = AppInfo.isDebugBuild
-        XCTAssertTrue(true)
+    func test_isDebugBuild_matches_compilation_flag() {
+#if DEBUG
+        XCTAssertTrue(AppInfo.isDebugBuild)
+#else
+        XCTAssertFalse(AppInfo.isDebugBuild)
+#endif
     }
 }
