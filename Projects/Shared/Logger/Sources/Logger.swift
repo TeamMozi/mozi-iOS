@@ -8,8 +8,7 @@ public final class Logger: @unchecked Sendable {
     )
 
     private let subsystem: String
-    private let lock = NSLock()
-    private var loggers: [LogCategory: os.Logger] = [:]
+    private let loggers = Locked<[LogCategory: os.Logger]>([:])
 
     init(subsystem: String) {
         self.subsystem = subsystem
@@ -100,15 +99,14 @@ public final class Logger: @unchecked Sendable {
     }
 
     private func osLogger(for category: LogCategory) -> os.Logger {
-        lock.lock()
-        defer { lock.unlock() }
+        loggers.withLock { cache in
+            if let existing = cache[category] {
+                return existing
+            }
 
-        if let existing = loggers[category] {
-            return existing
+            let created = os.Logger(subsystem: subsystem, category: category.rawValue)
+            cache[category] = created
+            return created
         }
-
-        let created = os.Logger(subsystem: subsystem, category: category.rawValue)
-        loggers[category] = created
-        return created
     }
 }
