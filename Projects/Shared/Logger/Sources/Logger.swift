@@ -25,9 +25,7 @@ public final class Logger: @unchecked Sendable {
             message(),
             level: .debug,
             category: category,
-            file: file,
-            function: function,
-            line: line
+            site: CallSite(file: file, function: function, line: line)
         )
     }
 
@@ -42,9 +40,7 @@ public final class Logger: @unchecked Sendable {
             message(),
             level: .info,
             category: category,
-            file: file,
-            function: function,
-            line: line
+            site: CallSite(file: file, function: function, line: line)
         )
     }
 
@@ -59,9 +55,7 @@ public final class Logger: @unchecked Sendable {
             message(),
             level: .warning,
             category: category,
-            file: file,
-            function: function,
-            line: line
+            site: CallSite(file: file, function: function, line: line)
         )
     }
 
@@ -76,9 +70,7 @@ public final class Logger: @unchecked Sendable {
             message(),
             level: .error,
             category: category,
-            file: file,
-            function: function,
-            line: line
+            site: CallSite(file: file, function: function, line: line)
         )
     }
 
@@ -86,13 +78,12 @@ public final class Logger: @unchecked Sendable {
         _ message: String,
         level: LogLevel,
         category: LogCategory,
-        file: String,
-        function: String,
-        line: Int
+        site: CallSite
     ) {
         #if DEBUG
-        let fileName = file.split(separator: "/").last.map(String.init) ?? file
-        let composed = "[\(category.rawValue)] [\(fileName):\(line)] \(function) - \(message)"
+        let fileName = site.file.split(separator: "/").last.map(String.init) ?? site.file
+        let composed =
+            "[\(category.rawValue)] [\(fileName):\(site.line)] \(site.function) - \(message)"
         let logger = osLogger(for: category)
         logger.log(level: level.osLogType, "\(composed, privacy: .public)")
         #endif
@@ -108,5 +99,11 @@ public final class Logger: @unchecked Sendable {
             cache[category] = created
             return created
         }
+    }
+
+    private struct CallSite {
+        let file: String
+        let function: String
+        let line: Int
     }
 }
