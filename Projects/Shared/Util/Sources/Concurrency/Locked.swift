@@ -1,6 +1,6 @@
 import Foundation
 
-public final class Locked<Value>: @unchecked Sendable {
+public final class Locked<Value: Sendable>: @unchecked Sendable {
     private var value: Value
     private let lock = NSLock()
 

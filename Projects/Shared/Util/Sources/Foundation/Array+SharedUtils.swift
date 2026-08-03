@@ -7,7 +7,8 @@ public extension Array {
         }
 
         var result: [[Element]] = []
-        result.reserveCapacity((count + size - 1) / size)
+        let capacity = count / size + (count % size == 0 ? 0 : 1)
+        result.reserveCapacity(capacity)
 
         var index = startIndex
         while index < endIndex {
