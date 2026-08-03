@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mozi Commit"
+  short_description: "Mozi intent-scoped title-only commits"
+  default_prompt: "Use $mozi-commit to inspect current changes and propose a commit plan."
