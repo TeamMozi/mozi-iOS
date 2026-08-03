@@ -13,7 +13,7 @@ usage() {
 사용법: scripts/setup-worktree.sh [--skip-build] [--force-generate]
 
 Mozi git worktree 로컬 개발 세팅:
-  1) detached HEAD 이면 로컬 브랜치 생성
+  1) detached HEAD 이면 로컬 브랜치 생성 또는 전환
   2) 없으면 main/다른 worktree 에서 Config/*.xcconfig 복사
   3) mise trust + mise install
   4) tuist generate
@@ -68,23 +68,23 @@ is_branch_checked_out_elsewhere() {
   local branch="$1"
   local target="refs/heads/${branch}"
   local worktree=""
-  local head=""
+  local checked_out_branch=""
 
   while IFS= read -r line; do
     case "$line" in
       worktree\ *)
         worktree="${line#worktree }"
-        head=""
+        checked_out_branch=""
         ;;
-      HEAD\ *)
-        head="${line#HEAD }"
+      branch\ *)
+        checked_out_branch="${line#branch }"
         ;;
       "")
-        if [[ -n "$worktree" && -n "$head" && "$worktree" != "$ROOT" && "$head" == "$target" ]]; then
+        if [[ -n "$worktree" && -n "$checked_out_branch" && "$worktree" != "$ROOT" && "$checked_out_branch" == "$target" ]]; then
           return 0
         fi
         worktree=""
-        head=""
+        checked_out_branch=""
         ;;
     esac
   done < <(git worktree list --porcelain; printf '\n')

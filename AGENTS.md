@@ -84,7 +84,7 @@ xcodebuild -workspace Mozi.xcworkspace -scheme Mozi-Debug -destination 'generic/
 
 스크립트가 하는 일:
 
-1. detached HEAD 이면 로컬 브랜치 생성
+1. detached HEAD 이면 로컬 브랜치 생성 또는 전환
    - `MOZI_WORKTREE_BRANCH` 가 있으면 그 이름 사용
    - 없으면 Codex worktree id 기준 `codex/<id>` (예: `codex/f8d0`)
    - 이미 브랜치에 있으면 유지
