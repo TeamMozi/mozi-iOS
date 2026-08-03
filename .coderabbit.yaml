@@ -93,8 +93,14 @@ reviews:
       instructions: 테스트만
 
   finishing_touches:
+    docstrings:
+      enabled: false
     unit_tests:
       enabled: false
+
+  pre_merge_checks:
+    docstrings:
+      mode: "off"
 
   tools:
     swiftlint:
