@@ -21,6 +21,26 @@ public enum AppInfo {
         nonEmptyString(fromInfoDictionaryKey: "CFBundleName") ?? displayName
     }
 
+    public static var version: String {
+        string(.appVersion) ?? "0.0.0"
+    }
+
+    public static var buildNumber: String {
+        string(.buildNumber) ?? "0"
+    }
+
+    public static var versionBuild: String {
+        "\(version) (\(buildNumber))"
+    }
+
+    public static var isDebugBuild: Bool {
+        #if DEBUG
+        true
+        #else
+        false
+        #endif
+    }
+
     public static var apiBaseURL: URL {
         let raw = requiredString(.apiBaseURL)
         guard let url = URL(string: raw) else {
