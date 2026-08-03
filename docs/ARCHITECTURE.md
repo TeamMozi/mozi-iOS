@@ -43,7 +43,7 @@ Feature → Domain, SharedUtils, SharedDesignSystem, SharedLogger, ThirdParty, T
 Data    → Domain, Core/*, SharedLogger, SharedUtils
 Domain  → SharedUtils, ThirdParty
 Core/*  → SharedUtils, ThirdPartyCore
-SharedLogger → Foundation/OSLog only
+SharedLogger → SharedUtils, OSLog
 App     → 조립
 ```
 
@@ -51,6 +51,12 @@ App     → 조립
 
 - 포함: `AppInfo`, pure Foundation 헬퍼
 - 제외: UI, Network, Storage, Logger, Domain, TCA helper
+
+### SharedLogger
+
+- 전역 `Logger.shared` OSLog facade
+- `AppInfo.bundleID`를 subsystem으로 사용
+- category별 logger 캐시는 `Locked`로 보호
 
 ### 금지
 
