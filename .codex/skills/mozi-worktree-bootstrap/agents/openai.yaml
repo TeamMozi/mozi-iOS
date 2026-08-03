@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mozi Worktree Bootstrap"
+  short_description: "Force first-entry worktree setup"
+  default_prompt: "Use $mozi-worktree-bootstrap to check Mozi worktree readiness and run setup if needed."

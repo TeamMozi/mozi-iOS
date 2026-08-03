@@ -2,6 +2,31 @@
 
 Mozi 작업 시 에이전트 진입점.
 
+## 0. Worktree Hard Gate
+
+Mozi worktree 세션에서는 **어떤 응답/작업보다 먼저** ready 여부를 확인한다.
+
+ready 가 아니면 즉시 실행:
+
+```bash
+./scripts/setup-worktree.sh
+```
+
+ready 판정(모두 만족해야 ready):
+
+1. detached HEAD 가 아님
+2. `Config/Debug.xcconfig` 존재
+3. `Config/Release.xcconfig` 존재
+4. `Mozi.xcworkspace` 존재
+
+규칙:
+
+- ready 가 아니면 setup 없이 본 요청을 시작하지 않는다
+- setup 후 한 줄로 결과(브랜치/workspace/config)를 보고한 뒤 본 요청을 처리한다
+- 이미 ready 면 setup 을 다시 돌리지 않는다
+- 사용자가 명시적으로 다른 옵션을 주면 그때만 `--skip-build` 등을 사용한다
+- 스킬: `$mozi-worktree-bootstrap` (`.codex/skills/mozi-worktree-bootstrap`)
+
 ## 1. 프로젝트 한 줄
 
 ```text
@@ -14,8 +39,10 @@ TCA + Domain Client + App live 조립
 
 1. docs/ARCHITECTURE.md
 2. docs/CONVENTIONS.md
-3. AGENTS.md
-4. CLAUDE.md -> AGENTS.md
+3. docs/AGENT_WORKFLOW.md
+4. docs/skills.md
+5. AGENTS.md
+6. CLAUDE.md -> AGENTS.md
 
 ## 3. 구조
 
@@ -63,6 +90,22 @@ Domain/Data 는 초기 placeholder 만 둔다.
 - PR 제목: 변경 내용만
 - PR 본문: `변경 요약` + 영역별 `변경 내용`
   - 템플릿: `.github/pull_request_template.md`
+- 워크플로 상세: [docs/AGENT_WORKFLOW.md](docs/AGENT_WORKFLOW.md)
+
+Hard gates:
+
+1. `커밋해` 전 staging/commit/push 금지
+2. 커밋은 계획(제목+의도+파일) 1회 승인 후 진행
+3. `PR 초안` / `작성만` = 본문만, 생성 금지
+4. `PR 생성해` / `PR 올려` / `올려` 전 PR 생성 금지
+5. PR용 push 전 `origin/dev` rebase, 충돌 시 중단
+
+스킬:
+
+- worktree: `$mozi-worktree-bootstrap`
+- 커밋: `$mozi-commit`
+- PR: `$mozi-pr`
+- 스킬 목록: [docs/skills.md](docs/skills.md)
 
 ## 7. 명령
 
@@ -75,6 +118,7 @@ xcodebuild -workspace Mozi.xcworkspace -scheme Mozi-Debug -destination 'generic/
 
 ## 8. Worktree
 
+상세 절차. 강제 규칙은 위 `0. Worktree Hard Gate` 를 따른다.
 새 git worktree 로 작업할 때는 첫 진입 시 아래 스크립트를 실행한다.
 일회성 수동 세팅이 아니라 이 경로를 기본으로 쓴다.
 
