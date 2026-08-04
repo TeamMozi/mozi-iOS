@@ -39,11 +39,10 @@ implicitly_unwrapped_optional: error
 force_cast: warning
 force_try: warning
 
-# 가이드 정합: 한 줄은 짧게 유지
-# StyleShare/일반 가이드의 99에 가깝게 초안 설정
+# 한 줄 길이: 초안 단계 노이즈 완화를 위해 상향
 line_length:
-  warning: 100
-  error: 120
+  warning: 120
+  error: 140
   ignores_comments: true
   ignores_urls: true
 
@@ -59,15 +58,19 @@ file_length:
   warning: 400
   error: 600
 
+# 테스트 코드의 짧은 타입명(OK 등) 허용을 위해 최소 길이 완화
 type_name:
-  min_length: 3
+  min_length:
+    warning: 2
+    error: 1
   max_length:
     warning: 50
     error: 60
 
+# 테스트 코드의 짧은 식별자(a/b/c 등) 허용을 위해 최소 길이 완화
 identifier_name:
   min_length:
-    warning: 2
+    warning: 1
     error: 1
   max_length:
     warning: 50
@@ -99,6 +102,7 @@ excluded:
   - .build
   - Derived
   - DerivedData
+  - .derivedData
   - .git
   - Mozi.xcworkspace
   - "**/*.xcodeproj"
