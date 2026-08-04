@@ -30,4 +30,24 @@ final class DesignButtonMetricsTests: XCTestCase {
         XCTAssertEqual(style.background.hexRGB, PrimitiveColor.Primary._900.hexRGB)
         XCTAssertEqual(style.border?.hexRGB, PrimitiveColor.Primary._300.hexRGB)
     }
+
+    func test_disabled_state_resolution() {
+        // Covers parent .disabled / DesignButton(isEnabled: false) → disabled tokens.
+        XCTAssertEqual(
+            DesignButtonInteractionStateResolver.resolve(isEnabled: false, isPressed: false),
+            .disabled
+        )
+        XCTAssertEqual(
+            DesignButtonInteractionStateResolver.resolve(isEnabled: false, isPressed: true),
+            .disabled
+        )
+        XCTAssertEqual(
+            DesignButtonInteractionStateResolver.resolve(isEnabled: true, isPressed: true),
+            .pressed
+        )
+        XCTAssertEqual(
+            DesignButtonInteractionStateResolver.resolve(isEnabled: true, isPressed: false),
+            .default
+        )
+    }
 }
