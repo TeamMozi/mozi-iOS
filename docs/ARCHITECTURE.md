@@ -52,6 +52,18 @@ App     → 조립
 - 포함: `AppInfo`, pure Foundation 헬퍼
 - 제외: UI, Network, Storage, Logger, Domain, TCA helper
 
+### SharedDesignSystem
+
+- 포함: semantic UI tokens, typography, `DesignText` / `DesignButton` / `SocialLoginButton`
+- Feature public surface: `Color.ds`, `Font.ds`, `CGFloat.ds`, `TextStyle.ds` + 공통 컴포넌트
+- Primitive / Semantic 토큰 타입은 모듈 내부 전용. Feature는 `*.ds`와 컴포넌트만 사용
+- 컴포넌트는 Semantic 토큰을 통해 값을 해석한다
+- Pretendard 폰트 등록은 App bootstrap에서 1회 수행
+- `DesignText` lineHeight는 SwiftUI `.lineSpacing` 기반 근사 적용(고정 line box 미보장)
+- 상세 설계/계획:
+  - [superpowers/specs/2026-08-04-shared-design-system-design.md](superpowers/specs/2026-08-04-shared-design-system-design.md)
+  - [superpowers/plans/2026-08-04-shared-design-system.md](superpowers/plans/2026-08-04-shared-design-system.md)
+
 ### SharedLogger
 
 - 전역 `Logger.shared` OSLog facade
