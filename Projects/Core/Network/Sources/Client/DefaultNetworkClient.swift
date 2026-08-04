@@ -6,6 +6,7 @@ public actor DefaultNetworkClient: NetworkClient {
     private let tokenProvider: (any TokenProviding)?
     private let tokenRefresher: (any TokenRefreshing)?
     private var refreshTask: Task<Void, Error>?
+    private var accessTokenGeneration = 0
 
     private init(
         configuration: NetworkConfiguration,
@@ -68,39 +69,46 @@ public actor DefaultNetworkClient: NetworkClient {
         _ endpoint: some APIEndpoint,
         allowRefresh: Bool
     ) async throws -> (HTTPURLResponse, Data) {
-        let request = try await makeURLRequest(for: endpoint)
-        NetworkLog.request(request)
+        let prepared = try await makeURLRequest(for: endpoint)
+        NetworkLog.request(prepared.request)
 
         let started = Date()
         let data: Data
         let response: URLResponse
         do {
-            (data, response) = try await session.data(for: request)
+            (data, response) = try await session.data(for: prepared.request)
         } catch {
-            NetworkLog.error(error, url: request.url)
+            NetworkLog.error(error, url: prepared.request.url)
             throw NetworkError.transport(message: error.localizedDescription)
         }
 
         let durationMs = Int(Date().timeIntervalSince(started) * 1000)
         guard let httpResponse = response as? HTTPURLResponse else {
             let error = NetworkError.invalidResponse
-            NetworkLog.error(error, url: request.url)
+            NetworkLog.error(error, url: prepared.request.url)
             throw error
         }
 
         NetworkLog.response(
             statusCode: httpResponse.statusCode,
-            url: request.url,
+            url: prepared.request.url,
             data: data,
             durationMs: durationMs
         )
 
         if httpResponse.statusCode == 401 {
-            if tokenRefresher != nil, allowRefresh {
-                try await refreshSingleFlight()
+            guard tokenRefresher != nil, allowRefresh else {
+                throw NetworkError.unauthorized
+            }
+
+            // 이미 다른 요청이 refresh를 끝낸 뒤라면 중복 refresh 없이 재시도한다.
+            if let usedGeneration = prepared.accessTokenGeneration,
+               usedGeneration < accessTokenGeneration {
                 return try await send(endpoint, allowRefresh: false)
             }
-            throw NetworkError.unauthorized
+
+            try await refreshSingleFlight()
+            return try await send(endpoint, allowRefresh: false)
         }
 
         guard (200...299).contains(httpResponse.statusCode) else {
@@ -130,6 +138,7 @@ public actor DefaultNetworkClient: NetworkClient {
 
         do {
             try await task.value
+            accessTokenGeneration += 1
             refreshTask = nil
         } catch {
             refreshTask = nil
@@ -137,7 +146,7 @@ public actor DefaultNetworkClient: NetworkClient {
         }
     }
 
-    private func makeURLRequest(for endpoint: some APIEndpoint) async throws -> URLRequest {
+    private func makeURLRequest(for endpoint: some APIEndpoint) async throws -> PreparedRequest {
         guard var components = URLComponents(
             url: configuration.baseURL.appendingPathComponent(normalizedPath(endpoint.path)),
             resolvingAgainstBaseURL: false
@@ -166,13 +175,18 @@ public actor DefaultNetworkClient: NetworkClient {
             request.setValue(value, forHTTPHeaderField: key)
         }
 
+        var usedGeneration: Int?
         if let tokenProvider {
             if let token = try await tokenProvider.accessToken() {
+                guard url.scheme?.lowercased() == "https" else {
+                    throw NetworkError.invalidURL
+                }
                 request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+                usedGeneration = accessTokenGeneration
             }
         }
 
-        return request
+        return PreparedRequest(request: request, accessTokenGeneration: usedGeneration)
     }
 
     private func normalizedPath(_ path: String) -> String {
@@ -197,8 +211,17 @@ public actor DefaultNetworkClient: NetworkClient {
             return .notFound(message: message)
         case 409:
             return .conflict(message: message)
+        case 400...499:
+            return .clientError(statusCode: statusCode, message: message)
+        case 500...599:
+            return .serverError(statusCode: statusCode, message: message)
         default:
             return .serverError(statusCode: statusCode, message: message)
         }
     }
+}
+
+private struct PreparedRequest: Sendable {
+    let request: URLRequest
+    let accessTokenGeneration: Int?
 }

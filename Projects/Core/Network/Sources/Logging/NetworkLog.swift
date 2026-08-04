@@ -4,7 +4,7 @@ import SharedLogger
 enum NetworkLog {
     static func request(_ request: URLRequest) {
         let method = request.httpMethod ?? "NIL"
-        let url = request.url?.absoluteString ?? "nil"
+        let url = sanitizedURLString(request.url)
         var message = "→ \(method) \(url)"
 
         #if DEBUG
@@ -22,7 +22,7 @@ enum NetworkLog {
         data: Data,
         durationMs: Int
     ) {
-        let target = url?.absoluteString ?? "nil"
+        let target = sanitizedURLString(url)
         var message = "← \(statusCode) \(target) (\(durationMs)ms, \(data.count)B)"
 
         #if DEBUG
@@ -39,8 +39,18 @@ enum NetworkLog {
     }
 
     static func error(_ error: Error, url: URL?) {
-        let target = url?.absoluteString ?? "nil"
+        let target = sanitizedURLString(url)
         Logger.shared.error("✕ \(target) \(error.localizedDescription)", category: .network)
+    }
+
+    static func sanitizedURLString(_ url: URL?) -> String {
+        guard let url else { return "nil" }
+        guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return url.absoluteString
+        }
+        components.query = nil
+        components.fragment = nil
+        return components.string ?? url.absoluteString
     }
 
     static func redact(_ text: String) -> String {
