@@ -8,12 +8,12 @@ private struct Item: Equatable {
 
 final class ArraySharedUtilsTests: XCTestCase {
 
-    func test_chunked_into_intMax_doesNotTrap() {
+    func test_청크_크기가_intMax여도_트랩하지_않음() {
         let values = [1, 2, 3]
         XCTAssertEqual(values.chunked(into: Int.max), [[1, 2, 3]])
     }
 
-    func test_unique_by() {
+    func test_키_기준_중복_제거() {
         let items = [
             Item(id: 1, name: "a"),
             Item(id: 1, name: "b"),
@@ -25,7 +25,7 @@ final class ArraySharedUtilsTests: XCTestCase {
         ])
     }
 
-    func test_removingDuplicates() {
+    func test_동일_요소_중복_제거() {
         XCTAssertEqual([1, 1, 2, 3, 2].removingDuplicates(), [1, 2, 3])
     }
 }

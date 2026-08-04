@@ -1,7 +1,7 @@
 #if DEBUG
 import SwiftUI
 
-/// DEBUG-only visual catalog for SharedDesignSystem tokens/components.
+/// SharedDesignSystem 토큰/컴포넌트용 DEBUG 전용 시각 카탈로그.
 struct DesignSystemGallery: View {
     @State private var selectedSection: GallerySection? = .colors
 
@@ -286,7 +286,7 @@ private struct GallerySectionScaffold<Content: View>: View {
     DesignSystemGalleryPreviewHost()
 }
 
-/// Preview-only host that registers fonts without making Gallery itself do bootstrap work.
+/// Preview 전용 호스트. Gallery 자체가 bootstrap 하지 않도록 폰트 등록만 담당한다.
 private struct DesignSystemGalleryPreviewHost: View {
     var body: some View {
         DesignSystemGallery()

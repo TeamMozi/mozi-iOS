@@ -3,7 +3,7 @@ import SwiftUI
 import XCTest
 
 final class SharedDesignSystemSmokeTests: XCTestCase {
-    func test_모듈_임포트() {
+    func test_SharedDesignSystem_모듈_임포트_성공() {
         XCTAssertNotNil(Color.red)
     }
 }

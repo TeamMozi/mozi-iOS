@@ -7,7 +7,7 @@ final class NetworkErrorMappingTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_statusCodeMapping() async {
+    func test_상태코드가_네트워크_에러로_매핑() async {
         let cases: [(Int, NetworkError)] = [
             (400, .badRequest(message: "bad")),
             (401, .unauthorized),

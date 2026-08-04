@@ -2,7 +2,7 @@ import XCTest
 @testable import SharedDesignSystem
 
 final class FontRegistrationTests: XCTestCase {
-    func test_font_resources_exist() {
+    func test_폰트_리소스가_존재() {
         let names = [
             "Pretendard-Regular",
             "Pretendard-Medium",
@@ -20,7 +20,7 @@ final class FontRegistrationTests: XCTestCase {
         }
     }
 
-    func test_registerIfNeeded_is_idempotent() {
+    func test_registerIfNeeded가_멱등() {
         let first = DesignSystemFontRegistration.registerIfNeeded()
         let second = DesignSystemFontRegistration.registerIfNeeded()
         XCTAssertTrue(first)

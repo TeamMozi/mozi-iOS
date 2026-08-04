@@ -1,101 +1,75 @@
 # Agent Workflow
 
-Mozi 작업 시 에이전트 Git/PR 하드 게이트.
+Mozi 작업 시 에이전트 hard gate, 행동 원칙, runtime flow의 single source of truth.
 
-기준 문서:
+## 기준 문서
 
-- [skills.md](skills.md)
-- [CONVENTIONS.md](CONVENTIONS.md)
+- [CONVENTIONS.md](CONVENTIONS.md) — 형식/작성규칙 SSOT
+- [ARCHITECTURE.md](ARCHITECTURE.md) — 구조/의존/흐름 SSOT
+- [skills.md](skills.md) — skill 인덱스
 - project skills: `.codex/skills/mozi-worktree-bootstrap`, `.codex/skills/mozi-commit`, `.codex/skills/mozi-pr`, `.codex/skills/mozi-worktree-cleanup`
-
-개인 취향 원본(설계실):
-
-- `~/MySpace/Projects/dev-journal/superpowers-friction/preferences/`
+- [../AGENTS.md](../AGENTS.md)
 
 ## 1. Hard Gates
 
 ### worktree
 
-1. Mozi worktree 세션에서는 ready 확인이 최우선
-2. ready 가 아니면 `./scripts/setup-worktree.sh` 먼저 실행
-3. ready 기준: 브랜치 checkout + `Config/Debug.xcconfig` + `Config/Release.xcconfig` + `Mozi.xcworkspace`
-4. 이미 ready 면 setup 재실행 금지
+1. Mozi worktree 세션에서는 **어떤 응답/작업보다 먼저** ready 여부를 확인한다.
+2. ready가 아니면 `./scripts/setup-worktree.sh`를 즉시 실행한다.
+3. ready 기준 (모두 만족): detached HEAD 아님 + `Config/Debug.xcconfig` + `Config/Release.xcconfig` + `Mozi.xcworkspace`
+4. ready면 setup을 재실행하지 않는다.
 
-worktree 진입/미준비 시 `$mozi-worktree-bootstrap` 를 사용한다.
+worktree 진입/미준비 시 `$mozi-worktree-bootstrap` 스킬을 사용한다.
 
 ### 커밋
 
-1. `커밋해` 전에는 staging/commit/push 시작 금지
-2. 계획 단계에서는 `git status` / `git diff` 읽기만
-3. 커밋 계획 제안 전 로컬 린트 1회 실행: `mise exec -- swiftlint lint --strict`
-4. 린트 실패 시 계획 제안 중단, 위반 사항 보고 후 수정 방향 확인
-5. 커밋 계획(제목 + 의도 + 파일) 1회 승인 후 연속 진행
-6. 커밋 메시지: `Type: 요약`, 한국어, 제목만, body 금지
-7. 한 의도 = 한 커밋 (구현/테스트/문서/설정 분리)
+1. `커밋해` 전에는 staging/commit/push 시작 금지.
+2. 계획 단계에서는 `git status` / `git diff` 읽기만 허용.
+3. 커밋 계획 제안 전 로컬 린트 1회: `mise exec -- swiftlint lint --strict`
+4. 린트 실패 시 계획 제안 중단, 위반 사항 보고.
+5. 커밋 계획(제목 + 의도 + 파일) 1회 승인 후 진행.
+6. 커밋 메시지: `Type: 요약` (한국어, 제목만, body 금지).
+7. 한 의도 = 한 커밋 (구현/테스트/문서/설정 분리).
 
-커밋 요청 시 `$mozi-commit` 를 사용한다.
+커밋 요청 시 `$mozi-commit` 스킬을 사용한다.
 
 ### PR
 
-1. `PR 초안` / `초안 작성` / `작성만` = 본문 초안만
-2. 위 단계에서는 commit/push/PR 생성 금지
-3. 실제 생성 트리거: `PR 생성해` / `PR 올려` / `올려`
-4. 생성 형태: open PR 만 (draft 해석 금지)
-5. 커밋/푸시 전이면 중단하고 아래 문구 사용:
+1. `PR 초안` / `작성만` = 본문 초안만 제시.
+2. 위 단계에서는 commit/push/PR 생성 금지.
+3. 실제 생성 트리거: `PR 생성해` / `PR 올려` / `올려`.
+4. push 직전: `origin/dev` rebase. 충돌 시 즉시 중단.
+5. PR는 open PR만 (draft 해석 금지), label 1개, self assignee.
 
-```text
-아직 커밋/푸시 전입니다. 커밋해 라고 하면 커밋 계획부터 시작할게요.
-```
-
-6. PR 용 push 직전: `origin/dev` fetch 후 rebase
-7. rebase 충돌 시 자동 처리 금지, 즉시 중단
-
-PR 초안/생성 요청 시 `$mozi-pr` 를 사용한다.
+PR 요청 시 `$mozi-pr` 스킬을 사용한다.
 
 ### worktree cleanup
 
-1. `워크트리 정리해` / `머지됐으니 정리해` / `로컬 정리해` 전에는 삭제 금지
-2. 관련 PR 이 **merged** 인지 먼저 확인
-3. dirty worktree 또는 unpushed commit 이 있으면 중단
-4. 기본은 안전 삭제 (`worktree remove`, `branch -d`, `fetch --prune`)
-5. force 삭제는 명시 요청 시에만
-6. 메인 체크아웃 worktree 는 삭제하지 않음
+1. `워크트리 정리해` / `머지됐으니 정리해` / `로컬 정리해` 전에는 삭제 금지.
+2. 관련 PR이 **merged**인지 먼저 확인.
+3. dirty worktree 또는 unpushed commit 있으면 중단.
+4. 안전 삭제(`worktree remove`, `branch -d`).
 
-머지 후 로컬 정리 요청 시 `$mozi-worktree-cleanup` 를 사용한다.
+머지 후 정리 요청 시 `$mozi-worktree-cleanup` 스킬을 사용한다.
 
-## 2. Document Rules
+## 2. Agent Behavior
 
-### 커밋
-
-- 형식: `Type: 요약`
-- Type: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
-- 커밋 그래프만 봐도 변경 흐름이 읽혀야 함
-
-### PR 본문
-
-- 제목 / 변경 요약 / 변경 내용: 명사형
-- 변경 요약: 3줄 전후
-- 변경 내용: 모듈/영역 단위
-- 기타 참고 사항: 선택 섹션, 없으면 삭제
-- base/head/브랜치/커밋 해시 등 운영 메타 금지
-
-### PR 메타
-
-- Labels: 레포 라벨 목록 기준 **1개만**
-- 애매하면 후보를 보여준 뒤 선택
-- Assignees: 현재 사용자
-- Reviewers/Milestone/Projects 는 명시 요청 시에만
-
-### 언어
-
-- 로컬 문서, 스크립트 주석/usage, 코드 주석, 에이전트 문서: 한국어 기본
-- API 이름, 옵션명, 식별자는 영어 유지
+1. 작업 시작 시 문서 우선순위와 관련 source of truth를 확인한다.
+2. 규칙이 충돌하면 해당 주제의 source of truth 파일을 우선한다.
+   - 구조: ARCHITECTURE.md
+   - 작성 규칙: CONVENTIONS.md
+   - 실행/hard gate: AGENT_WORKFLOW.md
+   - 모듈 디테일: Projects/**/README.md
+3. 전역 지도와 모듈 디테일을 구분해서 읽는다.
+4. 요구가 모호하면 추측 구현하지 않고 질문한다.
+5. 코드와 문서가 다르면 현재 코드 기준으로 보고하고, 문서 수정 필요 여부를 제안한다.
+6. 문서 변경 시 중복 본문을 늘리지 않고 링크를 유지한다.
 
 ## 3. Runtime Flow
 
 ### 커밋
 
-```text
+```
 커밋해
   → 변경 확인
   → 로컬 린트 (`mise exec -- swiftlint lint --strict`)
@@ -107,7 +81,7 @@ PR 초안/생성 요청 시 `$mozi-pr` 를 사용한다.
 
 ### PR 초안
 
-```text
+```
 PR 초안 / 작성만
   → 본문 초안 제시
   → 종료
@@ -115,7 +89,7 @@ PR 초안 / 작성만
 
 ### PR 생성
 
-```text
+```
 PR 생성해 / PR 올려 / 올려
   → 커밋/푸시 상태 확인
   → push 필요 시 origin/dev rebase
@@ -126,7 +100,7 @@ PR 생성해 / PR 올려 / 올려
 
 ### worktree cleanup
 
-```text
+```
 워크트리 정리해 / 머지됐으니 정리해
   → PR merged 확인
   → dirty/unpushed 검사
@@ -140,4 +114,4 @@ PR 생성해 / PR 올려 / 올려
 
 - 전역 Superpowers plugin 수정 없음
 - 도구 경로 고정 규칙은 아직 적용하지 않음
-- document rule 전부를 hard gate 로 격상하지 않음
+- document rule 전부를 hard gate로 격상하지 않음

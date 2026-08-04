@@ -62,7 +62,7 @@ private struct SocialLoginButtonChromeStyle: ButtonStyle {
     let border: TokenColor?
 
     func makeBody(configuration: Configuration) -> some View {
-        // Full-width social CTAs expand first, then paint chrome.
+        // full-width 소셜 CTA 는 먼저 확장한 뒤 chrome 을 칠한다.
         configuration.label
             .foregroundStyle(content.color)
             .frame(

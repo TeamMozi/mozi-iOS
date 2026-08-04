@@ -7,7 +7,7 @@ final class DefaultNetworkClientTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_request_buildsMethodPathQueryHeadersAndBody() async throws {
+    func test_요청이_메서드_경로_쿼리_헤더_바디를_구성() async throws {
         URLProtocolStub.requestHandler = { request in
             XCTAssertEqual(request.httpMethod, "POST")
             XCTAssertEqual(request.url?.path, "/api/auth/login/kakao")
@@ -38,7 +38,7 @@ final class DefaultNetworkClientTests: XCTestCase {
         XCTAssertEqual(response, OkPayload(ok: true))
     }
 
-    func test_voidRequest_succeedsOn2xxAndIgnoresBody() async throws {
+    func test_void_요청은_2xx면_성공하고_바디를_무시() async throws {
         URLProtocolStub.requestHandler = { _ in
             .init(statusCode: 204, headers: [:], data: Data(#"{"ignored":true}"#.utf8))
         }
@@ -50,7 +50,7 @@ final class DefaultNetworkClientTests: XCTestCase {
         try await client.request(TestEndpoint(path: "/api/auth/logout", method: .post))
     }
 
-    func test_requestDecodable_emptyBody_throwsDecodingFailed() async {
+    func test_디코딩_요청_빈_바디면_decodingFailed() async {
         URLProtocolStub.requestHandler = { _ in
             .init(statusCode: 204, headers: [:], data: Data())
         }
@@ -73,7 +73,7 @@ final class DefaultNetworkClientTests: XCTestCase {
         }
     }
 
-    func test_authedRequest_attachesBearerToken() async throws {
+    func test_인증_요청에_Bearer_토큰_첨부() async throws {
         URLProtocolStub.requestHandler = { request in
             XCTAssertEqual(
                 request.value(forHTTPHeaderField: "Authorization"),
@@ -96,7 +96,7 @@ final class DefaultNetworkClientTests: XCTestCase {
         let _: OkPayload = try await client.request(TestEndpoint())
     }
 
-    func test_authed401_refreshesOnceAndRetries() async throws {
+    func test_인증_401이면_한_번만_refresh_후_재시도() async throws {
         final class CodeQueue: @unchecked Sendable {
             private let lock = NSLock()
             private var codes = [401, 200]
@@ -135,7 +135,7 @@ final class DefaultNetworkClientTests: XCTestCase {
         XCTAssertEqual(URLProtocolStub.requests.count, 2)
     }
 
-    func test_concurrent401_singleFlightRefresh() async throws {
+    func test_동시_401이면_refresh_single_flight() async throws {
         final class RequestCounter: @unchecked Sendable {
             private let lock = NSLock()
             private var requestIndex = 0
@@ -151,7 +151,7 @@ final class DefaultNetworkClientTests: XCTestCase {
         let counter = RequestCounter()
         URLProtocolStub.requestHandler = { _ in
             let requestIndex = counter.next()
-            // first 3 are original 401s, next 3 are retries 200
+            // 앞 3개는 원래 401, 다음 3개는 재시도 200
             if requestIndex <= 3 {
                 return .init(
                     statusCode: 401,
@@ -166,7 +166,7 @@ final class DefaultNetworkClientTests: XCTestCase {
         let baseURL = try XCTUnwrap(URL(string: "https://api.example.invalid"))
         let provider = StubTokenProvider(token: "access-token")
         let refresher = StubTokenRefresher()
-        // Keep refresh in-flight long enough for concurrent 401s to join single-flight.
+        // 동시 401이 single-flight refresh 에 합류할 만큼 refresh 를 지연한다.
         await refresher.setDelayNanoseconds(200_000_000)
         let client = DefaultNetworkClient.authed(
             configuration: NetworkConfiguration(baseURL: baseURL),
@@ -185,7 +185,7 @@ final class DefaultNetworkClientTests: XCTestCase {
         XCTAssertEqual(URLProtocolStub.requests.count, 6)
     }
 
-    func test_refreshFailure_mapsToUnauthorized() async {
+    func test_refresh_실패면_unauthorized_매핑() async {
         URLProtocolStub.requestHandler = { _ in
             .init(statusCode: 401, headers: [:], data: Data(#"{"message":"expired"}"#.utf8))
         }
@@ -216,7 +216,7 @@ final class DefaultNetworkClientTests: XCTestCase {
         }
     }
 
-    func test_retryStill401_mapsToUnauthorized() async {
+    func test_재시도해도_401이면_unauthorized_매핑() async {
         URLProtocolStub.requestHandler = { _ in
             .init(statusCode: 401, headers: [:], data: Data(#"{"message":"expired"}"#.utf8))
         }

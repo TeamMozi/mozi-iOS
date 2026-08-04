@@ -47,8 +47,8 @@ public struct DesignButton: View {
     private var labelContent: some View {
         let textStyle = size.textStyle
 
-        // Width/height ownership is intentionally in DesignButtonChromeStyle
-        // so padding/frame order stays consistent for full-width layout.
+        // 너비/높이 ownership 은 DesignButtonChromeStyle 에 둔다.
+        // full-width 레이아웃에서 padding/frame 순서를 일관되게 유지하기 위함.
         return HStack(spacing: size.contentGap) {
             if let leadingIcon {
                 leadingIcon
