@@ -6,7 +6,7 @@ Mozi 작업 시 에이전트 Git/PR 하드 게이트.
 
 - [skills.md](skills.md)
 - [CONVENTIONS.md](CONVENTIONS.md)
-- project skills: `.codex/skills/mozi-worktree-bootstrap`, `.codex/skills/mozi-commit`, `.codex/skills/mozi-pr`
+- project skills: `.codex/skills/mozi-worktree-bootstrap`, `.codex/skills/mozi-commit`, `.codex/skills/mozi-pr`, `.codex/skills/mozi-worktree-cleanup`
 
 개인 취향 원본(설계실):
 
@@ -49,6 +49,17 @@ worktree 진입/미준비 시 `$mozi-worktree-bootstrap` 를 사용한다.
 7. rebase 충돌 시 자동 처리 금지, 즉시 중단
 
 PR 초안/생성 요청 시 `$mozi-pr` 를 사용한다.
+
+### worktree cleanup
+
+1. `워크트리 정리해` / `머지됐으니 정리해` / `로컬 정리해` 전에는 삭제 금지
+2. 관련 PR 이 **merged** 인지 먼저 확인
+3. dirty worktree 또는 unpushed commit 이 있으면 중단
+4. 기본은 안전 삭제 (`worktree remove`, `branch -d`, `fetch --prune`)
+5. force 삭제는 명시 요청 시에만
+6. 메인 체크아웃 worktree 는 삭제하지 않음
+
+머지 후 로컬 정리 요청 시 `$mozi-worktree-cleanup` 를 사용한다.
 
 ## 2. Document Rules
 
@@ -107,6 +118,18 @@ PR 생성해 / PR 올려 / 올려
   → push 필요 시 origin/dev rebase
   → 충돌 시 중단
   → open PR 생성 (label 1 + self assignee)
+  → 결과 보고
+```
+
+### worktree cleanup
+
+```text
+워크트리 정리해 / 머지됐으니 정리해
+  → PR merged 확인
+  → dirty/unpushed 검사
+  → 정리 계획 제시
+  → 1회 승인
+  → worktree/local branch 안전 삭제
   → 결과 보고
 ```
 
