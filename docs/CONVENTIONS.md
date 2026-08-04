@@ -13,6 +13,7 @@
 - live 조립은 App only
 - Scene 통신은 delegate bubble-up
 - SharedUtils는 pure Foundation / App metadata 만. UI·I/O·Domain 금지
+- CoreNetwork uses SharedLogger (`.network`) and never contains service-specific domain flows
 
 ## Schemes
 
