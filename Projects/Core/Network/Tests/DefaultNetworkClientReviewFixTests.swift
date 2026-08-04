@@ -7,7 +7,7 @@ final class DefaultNetworkClientReviewFixTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_authedHTTPURL_rejectsAuthorization() async {
+    func test_인증_HTTP_URL이면_authorization_거부() async {
         URLProtocolStub.requestHandler = { _ in
             XCTFail("request should not be sent")
             return .init(statusCode: 200, headers: [:], data: Data())
@@ -36,7 +36,7 @@ final class DefaultNetworkClientReviewFixTests: XCTestCase {
         }
     }
 
-    func test_delayed401_afterRefresh_doesNotRefreshTwice() async throws {
+    func test_refresh_이후_늦은_401은_재refresh하지_않음() async throws {
         final class RequestCounter: @unchecked Sendable {
             private let lock = NSLock()
             private var count = 0
@@ -60,7 +60,7 @@ final class DefaultNetworkClientReviewFixTests: XCTestCase {
                 )
             }
             if index == 2 {
-                // late 401 for a request that started with the old token generation
+                // 이전 토큰 generation 으로 시작한 요청의 늦은 401
                 Thread.sleep(forTimeInterval: 0.25)
                 return .init(
                     statusCode: 401,

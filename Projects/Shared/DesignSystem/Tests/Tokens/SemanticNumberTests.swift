@@ -2,14 +2,14 @@ import XCTest
 @testable import SharedDesignSystem
 
 final class SemanticNumberTests: XCTestCase {
-    func test_spacing_and_radius() {
+    func test_spacing과_radius_시맨틱_값() {
         XCTAssertEqual(SemanticNumber.Spacing.md, 12)
         XCTAssertEqual(SemanticNumber.Radius.xsm, 4)
         XCTAssertEqual(SemanticNumber.ControlHeight.lg, 48)
         XCTAssertEqual(SemanticNumber.Dim.default, 0.4, accuracy: 0.0001)
     }
 
-    func test_full_semantic_number_table() {
+    func test_시맨틱_넘버_전체_표가_기대값() {
         XCTAssertEqual(SemanticNumber.Radius.none, 0)
         XCTAssertEqual(SemanticNumber.Radius.sm, 8)
         XCTAssertEqual(SemanticNumber.Radius.md, 12)
@@ -33,7 +33,7 @@ final class SemanticNumberTests: XCTestCase {
         XCTAssertEqual(SemanticNumber.Dim.heavy, 0.6, accuracy: 0.0001)
     }
 
-    func test_public_cgfloat_ds_paths_resolve() {
+    func test_공개_CGFloat_ds_경로가_해석됨() {
         XCTAssertEqual(CGFloat.ds.spacing.md, 12)
         XCTAssertEqual(CGFloat.ds.radius.xsm, 4)
         XCTAssertEqual(CGFloat.ds.controlHeight.lg, 48)

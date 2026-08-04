@@ -2,7 +2,7 @@
 import XCTest
 
 final class NetworkLogTests: XCTestCase {
-    func test_sanitizedURLString_removesQueryAndFragment() throws {
+    func test_로그용_URL에서_query와_fragment_제거() throws {
         let url = try XCTUnwrap(
             URL(string: "https://api.example.invalid/auth/callback?accessToken=secret&page=1#top")
         )

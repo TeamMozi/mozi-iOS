@@ -3,7 +3,7 @@ import XCTest
 @testable import SharedDesignSystem
 
 final class TypographyTests: XCTestCase {
-    func test_body_small14_regular_metrics() {
+    func test_body_small14_regular_메트릭스() {
         let style = TextStyle.ds.body.small14Regular
         XCTAssertEqual(style.size, 14)
         XCTAssertEqual(style.lineHeight, 24)
@@ -11,7 +11,7 @@ final class TypographyTests: XCTestCase {
         XCTAssertEqual(style.fontName, "Pretendard-Regular")
     }
 
-    func test_heading_large32_bold_metrics() {
+    func test_heading_large32_bold_메트릭스() {
         let style = TextStyle.ds.heading.large32Bold
         XCTAssertEqual(style.size, 32)
         XCTAssertEqual(style.lineHeight, 40)
@@ -19,18 +19,18 @@ final class TypographyTests: XCTestCase {
         XCTAssertEqual(style.fontName, "Pretendard-Bold")
     }
 
-    func test_button_sm14_is_semibold() {
+    func test_button_sm14가_semibold() {
         let style = TextStyle.ds.button.sm14Semibold
         XCTAssertEqual(style.size, 14)
         XCTAssertEqual(style.lineHeight, 14)
         XCTAssertEqual(style.fontName, "Pretendard-SemiBold")
     }
 
-    func test_label_letter_spacing() {
+    func test_label_자간_값() {
         XCTAssertEqual(TextStyle.ds.label.small12Medium.letterSpacingEm, 0.02, accuracy: 0.0001)
     }
 
-    func test_heading_and_title_full_table() {
+    func test_heading_title_전체_표() {
         assertStyle(
             TextStyle.ds.heading.large32Bold,
             fontName: "Pretendard-Bold",
@@ -118,7 +118,7 @@ final class TypographyTests: XCTestCase {
         )
     }
 
-    func test_body_label_button_full_table() {
+    func test_body_label_button_전체_표() {
         assertStyle(
             TextStyle.ds.body.large18Semibold,
             fontName: "Pretendard-SemiBold",
@@ -207,7 +207,7 @@ final class TypographyTests: XCTestCase {
         )
     }
 
-    func test_derived_spacing_helpers() {
+    func test_파생_spacing_헬퍼_값() {
         let heading = TextStyle.ds.heading.large32Bold
         XCTAssertEqual(heading.letterSpacing, 32 * -0.01, accuracy: 0.0001)
         XCTAssertEqual(heading.additionalLineSpacing, 8)
@@ -221,7 +221,7 @@ final class TypographyTests: XCTestCase {
         XCTAssertEqual(label.additionalLineSpacing, 4)
     }
 
-    func test_public_font_ds_paths_resolve() {
+    func test_공개_Font_ds_경로가_해석됨() {
         XCTAssertNotNil(Font.ds.heading.large32Bold)
         XCTAssertNotNil(Font.ds.title.xsmall18Semibold)
         XCTAssertNotNil(Font.ds.body.small14Regular)

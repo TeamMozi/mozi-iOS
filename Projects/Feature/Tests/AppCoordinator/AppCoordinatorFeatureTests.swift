@@ -4,7 +4,7 @@ import XCTest
 
 @MainActor
 final class AppCoordinatorFeatureTests: XCTestCase {
-    func test_부트스트랩_후_메인플레이스홀더_진입() async {
+    func test_부트스트랩이_끝나면_메인_플레이스홀더로_진입() async {
         let store = TestStore(
             initialState: AppCoordinatorFeature.State(phase: .bootstrapping)
         ) {
