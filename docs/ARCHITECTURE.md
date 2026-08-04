@@ -60,9 +60,6 @@ App     → 조립
 - 컴포넌트는 Semantic 토큰을 통해 값을 해석한다
 - Pretendard 폰트 등록은 App bootstrap에서 1회 수행
 - `DesignText` lineHeight는 SwiftUI `.lineSpacing` 기반 근사 적용(고정 line box 미보장)
-- 상세 설계/계획:
-  - [superpowers/specs/2026-08-04-shared-design-system-design.md](superpowers/specs/2026-08-04-shared-design-system-design.md)
-  - [superpowers/plans/2026-08-04-shared-design-system.md](superpowers/plans/2026-08-04-shared-design-system.md)
 
 ### SharedLogger
 
