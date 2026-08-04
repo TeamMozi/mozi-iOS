@@ -1,37 +1,35 @@
-# Mozi SwiftLint draft
-# 기준: StyleShare 계열 가이드 + 현재 레포(SwiftUI/TCA)
-# 상태: 초안. 세부 룰은 추후 조정 가능
+# Mozi SwiftLint
+# 기준: 안전성 우선 + SwiftUI/TCA/DesignSystem 실무 균형
+# strict CI를 유지하되, 스타일 노이즈는 완화
 
 disabled_rules:
-  # 초안 단계 노이즈 완화
+  # 포맷/스타일 노이즈
   - trailing_whitespace
   - todo
   - multiple_closures_with_trailing_closure
   - trailing_comma
   - file_length
-  # 포맷터 없이 과도한 스타일 강제 완화
   - opening_brace
   - statement_position
+  - sorted_imports
+  - nesting
 
 opt_in_rules:
+  # 안전성
   - force_unwrapping
   - implicitly_unwrapped_optional
-  - closure_spacing
   - unowned_variable_capture
+  - weak_delegate
+  # 실용 품질
   - private_over_fileprivate
   - empty_enum_arguments
-  - weak_delegate
   - first_where
   - contains_over_filter_count
   - contains_over_filter_is_empty
   - overridden_super_call
   - toggle_bool
-  - closure_body_length
-  - sorted_imports
-  - vertical_whitespace_closing_braces
   - modifier_order
   - redundant_nil_coalescing
-  - unused_import
 
 # 안전성
 force_unwrapping: error
@@ -39,7 +37,7 @@ implicitly_unwrapped_optional: error
 force_cast: warning
 force_try: warning
 
-# 한 줄 길이: 초안 단계 노이즈 완화를 위해 상향
+# 가독성: 너무 타이트하지 않게 완화
 line_length:
   warning: 120
   error: 140
@@ -47,16 +45,13 @@ line_length:
   ignores_urls: true
 
 function_body_length:
-  warning: 60
-  error: 100
+  # --strict promotes warnings to errors, so warning is the practical gate
+  warning: 90
+  error: 120
 
 type_body_length:
   warning: 250
   error: 350
-
-file_length:
-  warning: 400
-  error: 600
 
 # 테스트 코드의 짧은 타입명(OK 등) 허용을 위해 최소 길이 완화
 type_name:
@@ -67,7 +62,7 @@ type_name:
     warning: 50
     error: 60
 
-# 테스트 코드의 짧은 식별자(a/b/c 등) 허용을 위해 최소 길이 완화
+# 디자인 토큰 shade 이름(_50, _300)과 짧은 식별자 허용
 identifier_name:
   min_length:
     warning: 1
@@ -75,6 +70,7 @@ identifier_name:
   max_length:
     warning: 50
     error: 60
+  allowed_symbols: "_"
   excluded:
     - id
     - x
@@ -86,11 +82,18 @@ identifier_name:
     - to
     - at
     - vc
-
-nesting:
-  type_level:
-    warning: 2
-    error: 3
+    - _0
+    - _50
+    - _100
+    - _200
+    - _300
+    - _400
+    - _500
+    - _600
+    - _700
+    - _800
+    - _900
+    - _1000
 
 cyclomatic_complexity:
   warning: 12
