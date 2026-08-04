@@ -14,6 +14,7 @@
 - Scene 통신은 delegate bubble-up
 - SharedUtils는 pure Foundation / App metadata 만. UI·I/O·Domain 금지
 - CoreNetwork uses SharedLogger (`.network`) and never contains service-specific domain flows
+- SharedDesignSystem은 Feature에서 `Color.ds` / `Font.ds` / `CGFloat.ds` / `TextStyle.ds` 와 공통 컴포넌트만 사용. Primitive 직접 참조 금지
 
 ## Schemes
 
