@@ -42,7 +42,7 @@ Projects/
 Feature → Domain, SharedUtils, SharedDesignSystem, SharedLogger, ThirdParty, ThirdPartyUI
 Data    → Domain, Core/*, SharedLogger, SharedUtils
 Domain  → SharedUtils, ThirdParty
-Core/*  → SharedUtils, ThirdPartyCore
+Core/*  → SharedUtils, SharedLogger, ThirdPartyCore
 SharedLogger → SharedUtils, OSLog
 App     → 조립
 ```
