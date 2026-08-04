@@ -2,7 +2,8 @@ import CoreNetwork
 import Foundation
 
 actor StubTokenProvider: TokenProviding {
-    var token: String?
+    private(set) var token: String?
+    private(set) var generation = 0
 
     init(token: String? = "access-token") {
         self.token = token
@@ -11,12 +12,27 @@ actor StubTokenProvider: TokenProviding {
     func accessToken() async throws -> String? {
         token
     }
+
+    func setToken(_ token: String?) {
+        self.token = token
+        generation += 1
+    }
 }
 
 actor StubTokenRefresher: TokenRefreshing {
     private(set) var refreshCount = 0
     private var error: Error?
     private var delayNanoseconds: UInt64 = 0
+    private let provider: StubTokenProvider?
+    private let nextToken: String?
+
+    init(
+        provider: StubTokenProvider? = nil,
+        nextToken: String? = "access-token-refreshed"
+    ) {
+        self.provider = provider
+        self.nextToken = nextToken
+    }
 
     func setError(_ error: Error?) {
         self.error = error
@@ -33,6 +49,9 @@ actor StubTokenRefresher: TokenRefreshing {
         }
         if let error {
             throw error
+        }
+        if let provider, let nextToken {
+            await provider.setToken(nextToken)
         }
     }
 }

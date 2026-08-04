@@ -14,6 +14,8 @@ final class NetworkErrorMappingTests: XCTestCase {
             (403, .forbidden(message: "no")),
             (404, .notFound(message: "missing")),
             (409, .conflict(message: "dup")),
+            (422, .clientError(statusCode: 422, message: "invalid")),
+            (429, .clientError(statusCode: 429, message: "slow")),
             (500, .serverError(statusCode: 500, message: "boom")),
         ]
 
@@ -51,6 +53,7 @@ final class NetworkErrorMappingTests: XCTestCase {
              let .forbidden(message),
              let .notFound(message),
              let .conflict(message),
+             let .clientError(_, message),
              let .serverError(_, message):
             return message ?? ""
         case .unauthorized:
