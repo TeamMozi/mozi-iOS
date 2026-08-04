@@ -144,16 +144,47 @@ enum DesignButtonStyleResolver {
     }
 }
 
+enum DesignButtonInteractionStateResolver {
+    static func resolve(isEnabled: Bool, isPressed: Bool) -> DesignButtonInteractionState {
+        if !isEnabled {
+            return .disabled
+        }
+        return isPressed ? .pressed : .default
+    }
+}
+
 struct DesignButtonChromeStyle: ButtonStyle {
     let variant: DesignButtonVariant
     let size: DesignButtonSize
-    let isEnabled: Bool
     let isFullWidth: Bool
 
     func makeBody(configuration: Configuration) -> some View {
+        // Nested content reads @Environment(\.isEnabled) so parent .disabled
+        // and DesignButton(isEnabled:) both select disabled tokens.
+        ChromeContent(
+            configuration: configuration,
+            variant: variant,
+            size: size,
+            isFullWidth: isFullWidth
+        )
+    }
+}
+
+private struct ChromeContent: View {
+    let configuration: ButtonStyle.Configuration
+    let variant: DesignButtonVariant
+    let size: DesignButtonSize
+    let isFullWidth: Bool
+
+    @Environment(\.isEnabled) private var isEnabled
+
+    var body: some View {
         let style = DesignButtonStyleResolver.resolve(
             variant: variant,
-            state: resolvedState(isPressed: configuration.isPressed)
+            state: DesignButtonInteractionStateResolver.resolve(
+                isEnabled: isEnabled,
+                isPressed: configuration.isPressed
+            )
         )
 
         // Layout ownership lives here:
@@ -177,12 +208,5 @@ struct DesignButtonChromeStyle: ButtonStyle {
                 }
             }
             .contentShape(RoundedRectangle(cornerRadius: size.cornerRadius, style: .continuous))
-    }
-
-    private func resolvedState(isPressed: Bool) -> DesignButtonInteractionState {
-        if !isEnabled {
-            return .disabled
-        }
-        return isPressed ? .pressed : .default
     }
 }

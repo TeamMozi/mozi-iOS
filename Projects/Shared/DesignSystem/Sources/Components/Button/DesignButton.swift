@@ -38,7 +38,6 @@ public struct DesignButton: View {
             DesignButtonChromeStyle(
                 variant: variant,
                 size: size,
-                isEnabled: isEnabled,
                 isFullWidth: isFullWidth
             )
         )
