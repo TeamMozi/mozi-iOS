@@ -95,10 +95,11 @@ Domain/Data 는 초기 placeholder 만 둔다.
 Hard gates:
 
 1. `커밋해` 전 staging/commit/push 금지
-2. 커밋은 계획(제목+의도+파일) 1회 승인 후 진행
-3. `PR 초안` / `작성만` = 본문만, 생성 금지
-4. `PR 생성해` / `PR 올려` / `올려` 전 PR 생성 금지
-5. PR용 push 전 `origin/dev` rebase, 충돌 시 중단
+2. 커밋 계획 전 로컬 린트 1회: `mise exec -- swiftlint lint --strict`
+3. 커밋은 계획(제목+의도+파일) 1회 승인 후 진행
+4. `PR 초안` / `작성만` = 본문만, 생성 금지
+5. `PR 생성해` / `PR 올려` / `올려` 전 PR 생성 금지
+6. PR용 push 전 `origin/dev` rebase, 충돌 시 중단
 
 스킬:
 

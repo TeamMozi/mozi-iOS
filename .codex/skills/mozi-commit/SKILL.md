@@ -17,17 +17,22 @@ Mozi project commit hard gates and style.
 
 1. Do not start commit work until the user says `커밋해` (or an explicit equivalent like `커밋 진행해`).
 2. Before approval, only read git state (`status`, `diff`, log as needed).
-3. Never stage, commit, amend, or push before the commit plan is approved once.
-4. After one plan approval, execute the approved commits continuously.
-5. If the plan drifts slightly, make the smallest reasonable adjustment and continue; re-ask only when meaning materially changes.
+3. Before proposing a commit plan, run local SwiftLint once with the same command as CI:
+   `mise exec -- swiftlint lint --strict`
+4. If lint fails, stop. Report the violations and do not propose a commit plan until lint is fixed or the user explicitly changes direction.
+5. Never stage, commit, amend, or push before the commit plan is approved once.
+6. After one plan approval, execute the approved commits continuously.
+7. If the plan drifts slightly, make the smallest reasonable adjustment and continue; re-ask only when meaning materially changes.
 
 ## Flow
 
 1. Inspect changes read-only.
-2. Propose a commit plan.
-3. Wait for one approval.
-4. Stage and commit per approved plan.
-5. Report the resulting commits.
+2. Run `mise exec -- swiftlint lint --strict`.
+3. If lint fails, stop and report; do not propose a plan yet.
+4. Propose a commit plan.
+5. Wait for one approval.
+6. Stage and commit per approved plan.
+7. Report the resulting commits.
 
 ## Plan Format
 
@@ -73,6 +78,7 @@ If user wants body text:
 
 ## Output
 
+- lint result summary (`pass` / failing violations)
 - commit plan
 - approved plan execution result
 - final commit list
