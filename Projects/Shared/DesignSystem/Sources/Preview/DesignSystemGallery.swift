@@ -32,9 +32,6 @@ struct DesignSystemGallery: View {
             .background(Color.ds.background.black)
         }
         .preferredColorScheme(.dark)
-        .onAppear {
-            _ = DesignSystemFontRegistration.registerIfNeeded()
-        }
     }
 
     @ViewBuilder
@@ -286,6 +283,16 @@ private struct GallerySectionScaffold<Content: View>: View {
 }
 
 #Preview("Design System Gallery") {
-    DesignSystemGallery()
+    DesignSystemGalleryPreviewHost()
+}
+
+/// Preview-only host that registers fonts without making Gallery itself do bootstrap work.
+private struct DesignSystemGalleryPreviewHost: View {
+    var body: some View {
+        DesignSystemGallery()
+            .onAppear {
+                _ = DesignSystemFontRegistration.registerIfNeeded()
+            }
+    }
 }
 #endif
