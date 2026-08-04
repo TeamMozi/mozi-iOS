@@ -47,26 +47,6 @@ SharedLogger → SharedUtils, OSLog
 App     → 조립
 ```
 
-### SharedUtils
-
-- 포함: `AppInfo`, pure Foundation 헬퍼
-- 제외: UI, Network, Storage, Logger, Domain, TCA helper
-
-### SharedDesignSystem
-
-- 포함: semantic UI tokens, typography, `DesignText` / `DesignButton` / `SocialLoginButton`
-- Feature public surface: `Color.ds`, `Font.ds`, `CGFloat.ds`, `TextStyle.ds` + 공통 컴포넌트
-- Primitive / Semantic 토큰 타입은 모듈 내부 전용. Feature는 `*.ds`와 컴포넌트만 사용
-- 컴포넌트는 Semantic 토큰을 통해 값을 해석한다
-- Pretendard 폰트 등록은 App bootstrap에서 1회 수행
-- `DesignText` lineHeight는 SwiftUI `.lineSpacing` 기반 근사 적용(고정 line box 미보장)
-
-### SharedLogger
-
-- 전역 `Logger.shared` OSLog facade
-- `AppInfo.bundleID`를 subsystem으로 사용
-- category별 logger 캐시는 `Locked`로 보호
-
 ### 금지
 
 ```text
@@ -100,55 +80,7 @@ Auth / MainTab 샘플은 포함하지 않는다.
 
 ---
 
-## 3. Feature
-
-```text
-Feature/Sources/
-  Root/
-  AppCoordinator/
-    DeepLink/
-    Overlay/
-  Scene/
-    Placeholder/
-```
-
-규칙:
-
-1. Scene 안은 flat (`*Feature`, `*View`)
-2. Scene 간 직접 참조 금지
-3. 외부 요청은 `delegate` 로 상위 상승
-4. Feature 는 Domain `*Client` 만 사용
-5. 전역 전환/딥링크/overlay 는 AppCoordinator
-
-딥링크:
-
-```text
-mozi://home
-```
-
----
-
-## 4. Domain / Data
-
-초기 상태:
-
-```text
-Domain/Sources/Placeholder.swift
-Data/Sources/Placeholder.swift
-```
-
-이후 패턴:
-
-```text
-Domain/<Name>/{Model,Client,Error}
-Data/<Name>/{DTO,Datasource,Repository}
-  *RepositoryImpl
-  *ClientFactory
-```
-
----
-
-## 5. App / Config
+## 3. App / Config
 
 | Scheme | Config | Bundle ID |
 |---|---|---|
@@ -159,7 +91,7 @@ storage namespace 는 Bundle ID 재사용.
 
 ---
 
-## 6. 새 기능
+## 4. 새 기능
 
 1. Domain `{Model,Error,Client}`
 2. Data `{DTO,Datasource,RepositoryImpl,ClientFactory}`
@@ -170,11 +102,20 @@ storage namespace 는 Bundle ID 재사용.
 
 ---
 
-## 7. 관련
+## 5. 관련
 
 - [CONVENTIONS.md](CONVENTIONS.md)
 - [../AGENTS.md](../AGENTS.md)
 - [../CLAUDE.md](../CLAUDE.md)
+
+## 모듈 디테일
+
+전역 지도만 이 문서에 둔다. 모듈 내부 규칙/진입점/테스트 포인트는 각 README 를 본다.
+
+- [Feature](../Projects/Feature/README.md)
+- [Domain](../Projects/Domain/README.md)
+- [Data](../Projects/Data/README.md)
+- [CoreNetwork](../Projects/Core/Network/README.md)
 
 ---
 

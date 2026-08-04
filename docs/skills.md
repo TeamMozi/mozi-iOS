@@ -23,16 +23,10 @@ Mozi workflow를 반복 실행하기 위한 Codex project skills.
 
 ## 기준 문서
 
-- [AGENT_WORKFLOW.md](AGENT_WORKFLOW.md)
-- [CONVENTIONS.md](CONVENTIONS.md)
+- [AGENT_WORKFLOW.md](AGENT_WORKFLOW.md) — hard gate, Agent Behavior, runtime flow
+- [CONVENTIONS.md](CONVENTIONS.md) — 형식/작성규칙 SSOT
+- [ARCHITECTURE.md](ARCHITECTURE.md) — 구조/의존/흐름
 - [../AGENTS.md](../AGENTS.md)
 - [../.github/pull_request_template.md](../.github/pull_request_template.md)
 
-## 기준
-
-- worktree: ready 아니면 `./scripts/setup-worktree.sh` 먼저
-- 커밋: 계획 전 로컬 린트 1회, `Type: 요약`, 한국어, 제목만, 한 의도 = 한 커밋
-- PR 초안: 본문만
-- PR 생성: open PR, label 1개, assignee = 본인
-- PR push 전: `origin/dev` rebase, 충돌 시 중단
-- 머지 후 정리: merged 확인 후 worktree/local branch 안전 삭제
+자세한 hard gate와 Agent Behavior는 [AGENT_WORKFLOW.md](AGENT_WORKFLOW.md)를 참조.

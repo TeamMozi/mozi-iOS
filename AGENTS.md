@@ -37,14 +37,15 @@ TCA + Domain Client + App live 조립
 
 ## 2. 문서 우선순위
 
-1. docs/ARCHITECTURE.md
-2. docs/CONVENTIONS.md
-3. docs/AGENT_WORKFLOW.md
-4. docs/skills.md
-5. AGENTS.md
-6. CLAUDE.md -> AGENTS.md
+1. `docs/ARCHITECTURE.md` — 전역 구조
+2. `docs/CONVENTIONS.md` — 작성 규칙(주석/테스트/형식)
+3. `docs/AGENT_WORKFLOW.md` — 실행/hard gate
+4. `docs/skills.md` — 스킬 인덱스
+5. `AGENTS.md` — 진입 요약
+6. `CLAUDE.md` → `AGENTS.md`
+7. `Projects/**/README.md` — 모듈 디테일
 
-## 3. 구조
+## 3. 구조 요약 + 금지 의존
 
 ```text
 Projects/
@@ -72,41 +73,31 @@ MoziApp → CompositionRoot → RootFeature → AppCoordinator
   bootstrapping → main(Placeholder)
 ```
 
-Domain/Data 는 초기 placeholder 만 둔다.
-
-## 5. 규칙
+## 5. 핵심 규칙 요약
 
 1. Feature 모듈 분리 금지
 2. Scene 직접 참조 금지
 3. live 조립 App only
 4. Feature 는 Domain `*Client` 만
-5. scheme: Mozi-Debug / Mozi
-6. bundle: com.teamMozi.debug / com.teamMozi.app
+5. scheme: `Mozi-Debug` / `Mozi`, bundle: `com.teamMozi.debug` / `com.teamMozi.app`
 
-## 6. Git / PR
+## 6. Git / PR Hard Gate 요약
 
-- 브랜치: `Type/짧은-설명`
-- 커밋: `Type: 요약`
-- PR 제목: 변경 내용만
-- PR 본문: `변경 요약` + 영역별 `변경 내용`
-  - 템플릿: `.github/pull_request_template.md`
-- 워크플로 상세: [docs/AGENT_WORKFLOW.md](docs/AGENT_WORKFLOW.md)
+- `커밋해` 전 staging/commit/push 금지
+- 커밋 계획 전 로컬 린트 1회
+- 커밋은 계획(제목+의도+파일) 1회 승인 후 진행
+- `PR 초안` / `작성만` = 본문만
+- `PR 생성해` / `PR 올려` / `올려` 전 PR 생성 금지
+- PR용 push 전 `origin/dev` rebase, 충돌 시 중단
 
-Hard gates:
-
-1. `커밋해` 전 staging/commit/push 금지
-2. 커밋 계획 전 로컬 린트 1회: `mise exec -- swiftlint lint --strict`
-3. 커밋은 계획(제목+의도+파일) 1회 승인 후 진행
-4. `PR 초안` / `작성만` = 본문만, 생성 금지
-5. `PR 생성해` / `PR 올려` / `올려` 전 PR 생성 금지
-6. PR용 push 전 `origin/dev` rebase, 충돌 시 중단
-
-스킬:
+상세 절차: [docs/AGENT_WORKFLOW.md](docs/AGENT_WORKFLOW.md)  
+형식 규칙: [docs/CONVENTIONS.md](docs/CONVENTIONS.md)  
+스킬: [docs/skills.md](docs/skills.md)
 
 - worktree: `$mozi-worktree-bootstrap`
 - 커밋: `$mozi-commit`
 - PR: `$mozi-pr`
-- 스킬 목록: [docs/skills.md](docs/skills.md)
+- cleanup: `$mozi-worktree-cleanup`
 
 ## 7. 명령
 
@@ -116,36 +107,3 @@ mise exec -- tuist generate --no-open
 open Mozi.xcworkspace
 xcodebuild -workspace Mozi.xcworkspace -scheme Mozi-Debug -destination 'generic/platform=iOS Simulator' build
 ```
-
-## 8. Worktree
-
-상세 절차. 강제 규칙은 위 `0. Worktree Hard Gate` 를 따른다.
-새 git worktree 로 작업할 때는 첫 진입 시 아래 스크립트를 실행한다.
-일회성 수동 세팅이 아니라 이 경로를 기본으로 쓴다.
-
-```bash
-./scripts/setup-worktree.sh
-```
-
-스크립트가 하는 일:
-
-1. detached HEAD 이면 로컬 브랜치 생성 또는 전환
-   - `MOZI_WORKTREE_BRANCH` 가 있으면 그 이름 사용
-   - 없으면 Codex worktree id 기준 `codex/<id>` (예: `codex/f8d0`)
-   - 이미 브랜치에 있으면 유지
-2. 다른 worktree/main 에서 `Config/Debug.xcconfig`, `Config/Release.xcconfig` 복사
-3. `mise trust` + `mise install`
-4. `tuist generate`
-5. `Mozi-Debug` 빌드 검증 (로컬 `.derivedData`)
-
-옵션:
-
-- `--skip-build`: 빌드 검증 생략
-- `--force-generate`: workspace 가 있어도 generate 재실행
-- `MOZI_CONFIG_SOURCE=/path/to/main`: config 복사 소스 강제 지정
-- `MOZI_WORKTREE_BRANCH=feat/foo`: detached HEAD 일 때 생성/전환할 브랜치 지정
-
-참고:
-
-- Codex worktree 세션은 기본적으로 detached HEAD 로 열린다.
-- 이 스크립트가 임시 브랜치(`codex/<id>`)를 만든 뒤, 작업 주제가 정해지면 `Type/짧은-설명` 으로 rename 하거나 새로 판다.
