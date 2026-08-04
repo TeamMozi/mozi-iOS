@@ -1,3 +1,5 @@
+import Data
+import Domain
 import ThirdParty
 
 enum Dependencies {
@@ -5,8 +7,10 @@ enum Dependencies {
         _ values: inout DependencyValues,
         infra: InfraContainer
     ) {
-        // TODO: Domain Client factory 등록
-        _ = infra
-        _ = values
+        values.authClient = .live(
+            baseURL: infra.configuration.baseURL,
+            keychain: infra.keychain,
+            oauthServices: OAuthServiceFactory.makeStub()
+        )
     }
 }
