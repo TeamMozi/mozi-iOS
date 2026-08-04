@@ -1,7 +1,6 @@
 import Foundation
 
-/// Clear backgrounds for outlined/text default states are represented as
-/// `TokenColor(hexRGB: 0x000000, alpha: 0)` so they stay testable as TokenColor.
+/// outlined/text 기본 clear 배경은 alpha 0 TokenColor 로 표현해 테스트 가능하게 한다.
 enum SemanticColor {
     enum Button {
         enum Primary {

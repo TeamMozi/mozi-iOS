@@ -159,8 +159,8 @@ struct DesignButtonChromeStyle: ButtonStyle {
     let isFullWidth: Bool
 
     func makeBody(configuration: Configuration) -> some View {
-        // Nested content reads @Environment(\.isEnabled) so parent .disabled
-        // and DesignButton(isEnabled:) both select disabled tokens.
+        // 중첩 content 가 `@Environment(\.isEnabled)` 를 읽어
+        // 부모 `.disabled` 와 `DesignButton(isEnabled:)` 모두 disabled 토큰을 선택한다.
         ChromeContent(
             configuration: configuration,
             variant: variant,
@@ -187,10 +187,9 @@ private struct ChromeContent: View {
             )
         )
 
-        // Layout ownership lives here:
+        // 레이아웃 ownership:
         // label → horizontal padding → expand/height → chrome.
-        // Padding must come before maxWidth expansion so full-width
-        // buttons do not request parent-width + padding.
+        // padding 이 maxWidth 확장보다 앞서야 full-width 버튼이 parent-width + padding 을 요청하지 않는다.
         configuration.label
             .foregroundStyle(style.content.color)
             .padding(.horizontal, size.horizontalPadding)

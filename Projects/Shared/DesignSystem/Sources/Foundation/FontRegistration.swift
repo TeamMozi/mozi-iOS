@@ -3,7 +3,7 @@ import Foundation
 
 public enum DesignSystemFontRegistration {
     private static let lock = NSLock()
-    // Protected by `lock`; Swift 6 requires an explicit escape hatch for mutable static state.
+    // `lock` 으로 보호한다. Swift 6 가변 static 상태용 명시적 escape hatch.
     nonisolated(unsafe) private static var didRegister = false
 
     private static let fileNames = [
@@ -53,7 +53,7 @@ public enum DesignSystemFontRegistration {
         }
 
         let nsError = cfError as Error as NSError
-        // Already present in the process is fine for retries / multi-entry bootstrap.
+        // 프로세스에 이미 등록된 폰트면 재시도/다중 진입 bootstrap 을 허용한다.
         return nsError.domain == (kCTFontManagerErrorDomain as String)
             && (
                 nsError.code == CTFontManagerError.alreadyRegistered.rawValue

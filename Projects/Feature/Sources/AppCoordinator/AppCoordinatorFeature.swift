@@ -79,7 +79,7 @@ public struct AppCoordinatorFeature {
                 state.pendingDeepLink = route
                 return .none
             case .main:
-                // Placeholder scaffold: home deep link keeps current main scene.
+                // placeholder 골격: home 딥링크는 현재 main scene 유지
                 _ = route
                 return .none
             }
