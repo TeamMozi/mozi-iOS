@@ -8,7 +8,8 @@ final class URLProtocolStub: URLProtocol, @unchecked Sendable {
     }
 
     private static let lock = NSLock()
-    nonisolated(unsafe) private static var _requestHandler: (@Sendable (URLRequest) throws -> StubResponse)?
+    nonisolated(unsafe) private static var _requestHandler:
+        (@Sendable (URLRequest) throws -> StubResponse)?
     nonisolated(unsafe) private static var _requests: [URLRequest] = []
 
     static var requestHandler: (@Sendable (URLRequest) throws -> StubResponse)? {
@@ -27,8 +28,8 @@ final class URLProtocolStub: URLProtocol, @unchecked Sendable {
         }
     }
 
-    override class func canInit(with request: URLRequest) -> Bool { true }
-    override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+    override static func canInit(with request: URLRequest) -> Bool { true }
+    override static func canonicalRequest(for request: URLRequest) -> URLRequest { request }
 
     override func startLoading() {
         let observedRequest = Self.materializedRequest(from: request)

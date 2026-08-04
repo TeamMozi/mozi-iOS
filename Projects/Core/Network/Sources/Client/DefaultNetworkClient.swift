@@ -183,7 +183,9 @@ public actor DefaultNetworkClient: NetworkClient {
     }
 
     private func mapStatusCode(_ statusCode: Int, data: Data) -> NetworkError {
-        let message = try? configuration.jsonDecoder.decode(ErrorMessageDTO.self, from: data).message
+        let message = try? configuration.jsonDecoder
+            .decode(ErrorMessageDTO.self, from: data)
+            .message
         switch statusCode {
         case 400:
             return .badRequest(message: message)

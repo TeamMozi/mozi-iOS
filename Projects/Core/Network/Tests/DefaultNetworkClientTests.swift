@@ -19,7 +19,7 @@ final class DefaultNetworkClientTests: XCTestCase {
             return .init(statusCode: 200, headers: [:], data: Data(#"{"ok":true}"#.utf8))
         }
 
-        struct OK: Decodable, Equatable { let ok: Bool }
+        struct OkPayload: Decodable, Equatable { let ok: Bool }
         let baseURL = try XCTUnwrap(URL(string: "https://api.example.invalid"))
         let client = DefaultNetworkClient.plain(
             configuration: NetworkConfiguration(baseURL: baseURL),
@@ -34,8 +34,8 @@ final class DefaultNetworkClientTests: XCTestCase {
             body: Data(#"{"accessToken":"k"}"#.utf8)
         )
 
-        let response: OK = try await client.request(endpoint)
-        XCTAssertEqual(response, OK(ok: true))
+        let response: OkPayload = try await client.request(endpoint)
+        XCTAssertEqual(response, OkPayload(ok: true))
     }
 
     func test_voidRequest_succeedsOn2xxAndIgnoresBody() async throws {
@@ -75,11 +75,14 @@ final class DefaultNetworkClientTests: XCTestCase {
 
     func test_authedRequest_attachesBearerToken() async throws {
         URLProtocolStub.requestHandler = { request in
-            XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), "Bearer access-token")
+            XCTAssertEqual(
+                request.value(forHTTPHeaderField: "Authorization"),
+                "Bearer access-token"
+            )
             return .init(statusCode: 200, headers: [:], data: Data(#"{"ok":true}"#.utf8))
         }
 
-        struct OK: Decodable { let ok: Bool }
+        struct OkPayload: Decodable { let ok: Bool }
         let baseURL = try XCTUnwrap(URL(string: "https://api.example.invalid"))
         let provider = StubTokenProvider(token: "access-token")
         let refresher = StubTokenRefresher()
@@ -90,7 +93,7 @@ final class DefaultNetworkClientTests: XCTestCase {
             session: TestSessionFactory.make()
         )
 
-        let _: OK = try await client.request(TestEndpoint())
+        let _: OkPayload = try await client.request(TestEndpoint())
     }
 
     func test_authed401_refreshesOnceAndRetries() async throws {
@@ -114,7 +117,7 @@ final class DefaultNetworkClientTests: XCTestCase {
             return .init(statusCode: 401, headers: [:], data: Data(#"{"message":"expired"}"#.utf8))
         }
 
-        struct OK: Decodable, Equatable { let ok: Bool }
+        struct OkPayload: Decodable, Equatable { let ok: Bool }
         let baseURL = try XCTUnwrap(URL(string: "https://api.example.invalid"))
         let provider = StubTokenProvider(token: "access-token")
         let refresher = StubTokenRefresher()
@@ -125,7 +128,7 @@ final class DefaultNetworkClientTests: XCTestCase {
             session: TestSessionFactory.make()
         )
 
-        let value: OK = try await client.request(TestEndpoint())
+        let value: OkPayload = try await client.request(TestEndpoint())
         XCTAssertEqual(value.ok, true)
         let refreshCount = await refresher.refreshCount
         XCTAssertEqual(refreshCount, 1)
@@ -150,15 +153,21 @@ final class DefaultNetworkClientTests: XCTestCase {
             let requestIndex = counter.next()
             // first 3 are original 401s, next 3 are retries 200
             if requestIndex <= 3 {
-                return .init(statusCode: 401, headers: [:], data: Data(#"{"message":"expired"}"#.utf8))
+                return .init(
+                    statusCode: 401,
+                    headers: [:],
+                    data: Data(#"{"message":"expired"}"#.utf8)
+                )
             }
             return .init(statusCode: 200, headers: [:], data: Data(#"{"ok":true}"#.utf8))
         }
 
-        struct OK: Decodable { let ok: Bool }
+        struct OkPayload: Decodable { let ok: Bool }
         let baseURL = try XCTUnwrap(URL(string: "https://api.example.invalid"))
         let provider = StubTokenProvider(token: "access-token")
         let refresher = StubTokenRefresher()
+        // Keep refresh in-flight long enough for concurrent 401s to join single-flight.
+        await refresher.setDelayNanoseconds(200_000_000)
         let client = DefaultNetworkClient.authed(
             configuration: NetworkConfiguration(baseURL: baseURL),
             tokenProvider: provider,
@@ -166,10 +175,10 @@ final class DefaultNetworkClientTests: XCTestCase {
             session: TestSessionFactory.make()
         )
 
-        async let a: OK = client.request(TestEndpoint(path: "/a"))
-        async let b: OK = client.request(TestEndpoint(path: "/b"))
-        async let c: OK = client.request(TestEndpoint(path: "/c"))
-        _ = try await (a, b, c)
+        async let first: OkPayload = client.request(TestEndpoint(path: "/a"))
+        async let second: OkPayload = client.request(TestEndpoint(path: "/b"))
+        async let third: OkPayload = client.request(TestEndpoint(path: "/c"))
+        _ = try await (first, second, third)
 
         let refreshCount = await refresher.refreshCount
         XCTAssertEqual(refreshCount, 1)
@@ -187,7 +196,9 @@ final class DefaultNetworkClientTests: XCTestCase {
         }
         let provider = StubTokenProvider(token: "access-token")
         let refresher = StubTokenRefresher()
-        await refresher.setError(NetworkError.serverError(statusCode: 500, message: "refresh failed"))
+        await refresher.setError(
+            NetworkError.serverError(statusCode: 500, message: "refresh failed")
+        )
         let client = DefaultNetworkClient.authed(
             configuration: NetworkConfiguration(baseURL: baseURL),
             tokenProvider: provider,
