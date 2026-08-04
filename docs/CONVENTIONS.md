@@ -10,8 +10,8 @@
 - Feature 단일 모듈, 기능 분리는 폴더
 - Scene 내부 flat (`*Feature`, `*View`)
 - Domain 포트는 `*Client`
-- Data 구현은 `*RepositoryImpl` + `*ClientFactory`
-- live 조립은 App only
+- Data 구현은 `*RepositoryImpl` + `*ClientFactory` + `*Client.live`
+- live 구현 제공은 Data, live 등록/주입은 App only
 - Feature 는 Domain `*Client` 만 사용
 - Scene 통신은 delegate bubble-up
 - SharedUtils 는 pure Foundation / App metadata 만. UI·I/O·Domain 금지

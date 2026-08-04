@@ -6,7 +6,7 @@
 세로 계층 = 모듈
 가로 Feature = 폴더
 외부 의존성 = ThirdParty*
-live 조립 = App only
+live 구현 = Data / live 등록 = App only
 ```
 
 ---
@@ -32,7 +32,7 @@ Projects/
 | ThirdParty* | 외부 패키지 진입점 |
 | Domain | Entity, `*Client`, Error |
 | Core/* | Network/Storage |
-| Data | DTO, Datasource, `*RepositoryImpl`, `*ClientFactory` |
+| Data | DTO, Datasource, `*RepositoryImpl`, `*ClientFactory`, `*Client.live` |
 | Feature | Root, AppCoordinator, Scene |
 | App | bootstrap, live 주입, root store |
 
@@ -63,7 +63,7 @@ Data    → Feature
 MoziApp
   → CompositionRoot.makeRootStore()
       → AppBootstrap
-          → InfraContainer.live()
+          → InfraContainer.live() → AuthClient.live(...) register
           → Dependencies.register
       → Store(RootFeature)
   → RootView → AppCoordinatorView
@@ -76,7 +76,7 @@ bootstrapping
   → main(Placeholder)
 ```
 
-Auth / MainTab 샘플은 포함하지 않는다.
+Auth 인프라는 Domain/Data/App live 등록까지 존재하고, 게이트 UI / MainTab 샘플은 후속이다.
 
 ---
 
@@ -94,7 +94,7 @@ storage namespace 는 Bundle ID 재사용.
 ## 4. 새 기능
 
 1. Domain `{Model,Error,Client}`
-2. Data `{DTO,Datasource,RepositoryImpl,ClientFactory}`
+2. Data `{DTO,Datasource,RepositoryImpl,ClientFactory,Client.live}`
 3. App `Dependencies.register`
 4. Feature `Scene/<Name>`
 5. 필요 시 AppCoordinator/DeepLink
