@@ -14,6 +14,14 @@ public struct AppCoordinatorView: View {
             case .bootstrapping:
                 ProgressView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+            case .login:
+                if let loginStore = store.scope(state: \.login, action: \.login) {
+                    LoginView(store: loginStore)
+                }
+            case .onboarding:
+                if let onboardingStore = store.scope(state: \.onboarding, action: \.onboarding) {
+                    OnboardingPlaceholderView(store: onboardingStore)
+                }
             case .main:
                 if let mainStore = store.scope(state: \.mainPlaceholder, action: \.main) {
                     PlaceholderView(store: mainStore)

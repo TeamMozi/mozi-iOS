@@ -70,14 +70,17 @@ MoziApp
   → RootView → AppCoordinatorView
 ```
 
-앱 상태(스캐폴딩):
+앱 상태:
 
 ```text
 bootstrapping
-  → main(Placeholder)
+  → restoreSession()
+      nil → login(LoginFeature)
+      profileCompleted == false → onboarding(OnboardingPlaceholderFeature)
+      profileCompleted == true → main(Placeholder)
 ```
 
-Auth 인프라는 Domain/Data/App live 등록까지 존재하고, 게이트 UI / MainTab 샘플은 후속이다.
+Auth 인프라와 로그인 게이트 UI 는 존재한다. 소셜 SDK 실연동과 MainTab 은 후속이다.
 
 ---
 
