@@ -168,7 +168,8 @@ public enum ProjectFactory {
         dependencies: [TargetDependency],
         infoPlist: InfoPlist = DefaultInfoPlist.app,
         sources: SourceFilesList = ["Sources/**"],
-        resources: ResourceFileElements = ["Resources/**"]
+        resources: ResourceFileElements = ["Resources/**"],
+        entitlements: Entitlements? = nil
     ) -> Project {
         let target = Target.target(
             name: name,
@@ -179,6 +180,7 @@ public enum ProjectFactory {
             infoPlist: infoPlist,
             sources: sources,
             resources: resources,
+            entitlements: entitlements,
             dependencies: dependencies,
             settings: ProjectSettings.app()
         )
