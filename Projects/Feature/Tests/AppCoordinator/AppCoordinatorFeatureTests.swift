@@ -14,8 +14,11 @@ final class AppCoordinatorFeatureTests: XCTestCase {
             $0.authClient.restoreSession = { nil }
         }
 
-        await store.send(.onAppear)
+        await store.send(.onAppear) {
+            $0.isRestoringSession = true
+        }
         await store.receive(.bootstrapResponse(.success(nil))) {
+            $0.isRestoringSession = false
             $0.phase = .login(LoginFeature.State())
         }
         await store.receive(.flushPendingDeepLink)
@@ -36,8 +39,11 @@ final class AppCoordinatorFeatureTests: XCTestCase {
             $0.authClient.restoreSession = { session }
         }
 
-        await store.send(.onAppear)
+        await store.send(.onAppear) {
+            $0.isRestoringSession = true
+        }
         await store.receive(.bootstrapResponse(.success(session))) {
+            $0.isRestoringSession = false
             $0.phase = .onboarding(OnboardingPlaceholderFeature.State())
         }
         await store.receive(.flushPendingDeepLink)
@@ -58,8 +64,11 @@ final class AppCoordinatorFeatureTests: XCTestCase {
             $0.authClient.restoreSession = { session }
         }
 
-        await store.send(.onAppear)
+        await store.send(.onAppear) {
+            $0.isRestoringSession = true
+        }
         await store.receive(.bootstrapResponse(.success(session))) {
+            $0.isRestoringSession = false
             $0.phase = .main(PlaceholderFeature.State())
         }
         await store.receive(.flushPendingDeepLink)
@@ -132,8 +141,11 @@ final class AppCoordinatorFeatureTests: XCTestCase {
             }
         }
 
-        await store.send(.onAppear)
+        await store.send(.onAppear) {
+            $0.isRestoringSession = true
+        }
         await store.receive(.bootstrapResponse(.failure(.storage(message: "keychain")))) {
+            $0.isRestoringSession = false
             $0.phase = .login(LoginFeature.State())
         }
         await store.receive(.flushPendingDeepLink)
@@ -180,5 +192,74 @@ final class AppCoordinatorFeatureTests: XCTestCase {
             $0.pendingDeepLink = nil
         }
         await store.receive(.routeDeepLink(.home))
+    }
+
+    func test_부트스트랩_중복_onAppear는_restore를_한_번만_호출() async {
+        let gate = RestoreGate()
+        let store = TestStore(
+            initialState: AppCoordinatorFeature.State(phase: .bootstrapping)
+        ) {
+            AppCoordinatorFeature()
+        } withDependencies: {
+            $0.authClient.restoreSession = {
+                await gate.markStartedAndWait()
+                return nil
+            }
+        }
+
+        await store.send(.onAppear) {
+            $0.isRestoringSession = true
+        }
+        // restore 응답을 붙잡아 둔 상태에서 중복 onAppear 를 보낸다.
+        await gate.waitUntilStarted()
+        await store.send(.onAppear)
+        await gate.release()
+
+        await store.receive(.bootstrapResponse(.success(nil))) {
+            $0.isRestoringSession = false
+            $0.phase = .login(LoginFeature.State())
+        }
+        await store.receive(.flushPendingDeepLink)
+
+        let count = await gate.startCount
+        XCTAssertEqual(count, 1)
+    }
+}
+
+private actor RestoreGate {
+    private(set) var startCount = 0
+    private var startedContinuation: CheckedContinuation<Void, Never>?
+    private var releaseContinuation: CheckedContinuation<Void, Never>?
+    private var isStarted = false
+    private var isReleased = false
+
+    func markStartedAndWait() async {
+        startCount += 1
+        if isStarted == false {
+            isStarted = true
+            startedContinuation?.resume()
+            startedContinuation = nil
+        }
+        if isReleased {
+            return
+        }
+        await withCheckedContinuation { continuation in
+            releaseContinuation = continuation
+        }
+    }
+
+    func waitUntilStarted() async {
+        if isStarted {
+            return
+        }
+        await withCheckedContinuation { continuation in
+            startedContinuation = continuation
+        }
+    }
+
+    func release() {
+        isReleased = true
+        releaseContinuation?.resume()
+        releaseContinuation = nil
     }
 }
