@@ -63,8 +63,9 @@ Data    → Feature
 MoziApp
   → CompositionRoot.makeRootStore()
       → AppBootstrap
-          → InfraContainer.live() → AuthClient.live(...) register
+          → InfraContainer.live()
           → Dependencies.register
+              → AuthClient.live(...)
       → Store(RootFeature)
   → RootView → AppCoordinatorView
 ```
