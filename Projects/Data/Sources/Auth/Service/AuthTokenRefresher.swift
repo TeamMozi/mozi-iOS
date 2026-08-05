@@ -1,4 +1,5 @@
 import CoreNetwork
+import CoreStorage
 import Domain
 import Foundation
 
@@ -12,39 +13,50 @@ public actor AuthTokenRefresher: TokenRefreshing {
     }
 
     public func refresh() async throws {
-        guard let session = try await local.load() else {
-            throw AuthError.unauthorized
+        let session: AuthSession
+        do {
+            guard let loaded = try await local.load() else {
+                throw AuthError.unauthorized
+            }
+            session = loaded
+        } catch let error as AuthError {
+            throw error
+        } catch {
+            throw AuthError.storage(message: String(describing: error))
         }
 
         do {
             let tokens = try await remote.refresh(refreshToken: session.refreshToken)
-            try await local.save(tokens.applying(to: session))
+            do {
+                try await local.save(tokens.applying(to: session))
+            } catch {
+                throw AuthError.storage(message: String(describing: error))
+            }
+        } catch let error as AuthError {
+            throw error
         } catch {
             throw await mapRefreshFailure(error)
         }
     }
 
     private func mapRefreshFailure(_ error: Error) async -> AuthError {
-        if let authError = error as? AuthError {
-            if case .unauthorized = authError {
-                try? await local.clear()
-            }
-            return authError
-        }
-
         guard let networkError = error as? NetworkError else {
             // 알 수 없는 오류는 세션을 유지한다.
             return .unknown(message: String(describing: error))
         }
 
         switch networkError {
-        case .unauthorized, .badRequest:
+        case .unauthorized:
             // invalid/expired refresh 로 보고 세션 종료
+            // clear 실패는 삼키고 unauthorized UX를 유지한다.
             try? await local.clear()
             return .unauthorized
         case .transport:
             // 일시 네트워크 오류는 세션 유지
             return .network
+        case .badRequest:
+            // 형식/검증 오류는 세션 유지
+            return .unknown(message: String(describing: networkError))
         default:
             // 서버/기타 오류는 세션 유지
             return .unknown(message: String(describing: networkError))

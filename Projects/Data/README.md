@@ -27,7 +27,7 @@
 - App 은 pure infra 준비 + `prepareDependencies` 등록만 담당
 - Feature 가 Data 를 직접 import 하지 않음
 - refresh 는 plain client + `AuthTokenRefresher` 경로
-- refresh 실패 시 unauthorized/invalid 만 로컬 세션 삭제, 일시 네트워크 오류는 세션 유지
+- refresh 실패 시 unauthorized 만 로컬 세션 삭제, badRequest/일시 네트워크 오류는 세션 유지
 - request body encode 는 Data remote 에서 수행하고 실패 시 throw
 - OAuth credential 은 `OAuthService` 가 담당 (Souzip 스타일)
 

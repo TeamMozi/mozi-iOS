@@ -13,7 +13,11 @@ public struct AuthRepositoryImpl: Sendable {
     }
 
     public func restoreSession() async throws -> AuthSession? {
-        try await local.load()
+        do {
+            return try await local.load()
+        } catch {
+            throw mapStorageError(error)
+        }
     }
 
     public func currentSession() async -> AuthSession? {
@@ -53,13 +57,22 @@ public struct AuthRepositoryImpl: Sendable {
         } catch {
             // 원격 실패와 무관하게 로컬 세션 삭제
         }
-        try await local.clear()
+
+        do {
+            try await local.clear()
+        } catch {
+            throw mapStorageError(error)
+        }
     }
 
     private func saveLoginSession(_ dto: LoginResponseDTO) async throws -> AuthSession {
         let session = dto.toDomain()
-        try await local.save(session)
-        return session
+        do {
+            try await local.save(session)
+            return session
+        } catch {
+            throw mapStorageError(error)
+        }
     }
 
     private func mapLoginError(_ error: Error) -> AuthError {
@@ -67,8 +80,8 @@ public struct AuthRepositoryImpl: Sendable {
             return authError
         }
 
-        if let keychainError = error as? KeychainError {
-            return .storage(message: String(describing: keychainError))
+        if error is KeychainError {
+            return mapStorageError(error)
         }
 
         guard let networkError = error as? NetworkError else {
@@ -83,5 +96,12 @@ public struct AuthRepositoryImpl: Sendable {
         default:
             return .unknown(message: String(describing: networkError))
         }
+    }
+
+    private func mapStorageError(_ error: Error) -> AuthError {
+        if let authError = error as? AuthError {
+            return authError
+        }
+        return .storage(message: String(describing: error))
     }
 }
