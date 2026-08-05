@@ -8,11 +8,13 @@ let project = ProjectFactory.app(
         .domain,
         .coreNetwork,
         .coreStorage,
+        .coreSocialAuth,
         .sharedLogger,
         .sharedUtils,
         .sharedDesignSystem,
         .thirdParty,
         .thirdPartyUI,
         .thirdPartyCore,
-    ]
+    ],
+    entitlements: .file(path: "Mozi.entitlements")
 )

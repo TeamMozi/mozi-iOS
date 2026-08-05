@@ -1,3 +1,4 @@
+import CoreSocialAuth
 import Feature
 import SwiftUI
 import ThirdParty
@@ -14,6 +15,12 @@ struct MoziApp: App {
         WindowGroup {
             CompositionRoot.rootView(store: store)
                 .preferredColorScheme(.dark)
+                .onOpenURL { url in
+                    if KakaoAuthRedirectHandler.handle(url: url) {
+                        return
+                    }
+                    store.send(.appCoordinator(.deepLinkReceived(url)))
+                }
         }
     }
 }

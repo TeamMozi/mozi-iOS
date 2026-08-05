@@ -34,8 +34,5 @@ public struct AppCoordinatorView: View {
         .task {
             store.send(.onAppear)
         }
-        .onOpenURL { url in
-            store.send(.deepLinkReceived(url))
-        }
     }
 }
