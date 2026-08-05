@@ -61,6 +61,8 @@ MoziApp → CompositionRoot → RootFeature → AppCoordinator
 - `커밋해` 전 staging/commit/push 금지
 - 커밋 계획 전 로컬 린트 1회
 - 커밋은 계획(제목+의도+파일) 1회 승인 후 진행
+- `기능 분해해` = 분해/문서만, 구현·생성 금지
+- `Cycle ... 워크트리/세션 만들어` 전 worktree/session 생성 금지
 - `PR 초안` / `작성만` = 본문만
 - `PR 생성해` / `PR 올려` / `올려` 전 PR 생성 금지
 - PR용 push 전 `origin/dev` rebase, 충돌 시 중단
@@ -70,6 +72,7 @@ MoziApp → CompositionRoot → RootFeature → AppCoordinator
 스킬: [docs/skills.md](docs/skills.md)
 
 - 커밋: `$mozi-commit`
+- 기능 분해/분기: `$mozi-feature-split`
 - PR: `$mozi-pr`
 - cleanup: `$mozi-worktree-cleanup`
 

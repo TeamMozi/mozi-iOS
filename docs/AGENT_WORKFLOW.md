@@ -7,7 +7,7 @@ Mozi 작업 시 에이전트 hard gate, 행동 원칙, runtime flow의 single so
 - [CONVENTIONS.md](CONVENTIONS.md) — 형식/작성규칙 SSOT
 - [ARCHITECTURE.md](ARCHITECTURE.md) — 구조/의존/흐름 SSOT
 - [skills.md](skills.md) — skill 인덱스
-- project skills: `.codex/skills/mozi-commit`, `.codex/skills/mozi-pr`, `.codex/skills/mozi-worktree-cleanup`
+- project skills: `.codex/skills/mozi-commit`, `.codex/skills/mozi-feature-split`, `.codex/skills/mozi-pr`, `.codex/skills/mozi-worktree-cleanup`
 - [../AGENTS.md](../AGENTS.md)
 
 ## 1. Hard Gates
@@ -23,6 +23,18 @@ Mozi 작업 시 에이전트 hard gate, 행동 원칙, runtime flow의 single so
 7. 한 의도 = 한 커밋 (구현/테스트/문서/설정 분리).
 
 커밋 요청 시 `$mozi-commit` 스킬을 사용한다.
+
+### feature split
+
+1. `기능 분해해` / `사이클 나눠줘` / `PR 단위로 쪼개줘` 는 분해 단계다.
+2. 분해 단계에서는 코드 수정, worktree/session 생성, commit/PR 금지.
+3. 분해 초안 + 파일명 1회 승인 후 `docs/superpowers/splits/` 에 저장한다.
+4. 생성 단계 트리거: `Cycle ... 워크트리/세션 만들어` / `ready한 거 전부 만들어`.
+5. 생성은 저장된 split 문서가 있을 때만, 생성 계획 1회 승인 후 진행한다.
+6. 기본은 지정 Cycle만 생성. 범위 없으면 되묻고, `ready 전부`만 일괄 생성한다.
+7. 기존 같은 branch/worktree가 있으면 중단한다. 덮어쓰지 않는다.
+
+기능 분해/분기 요청 시 `$mozi-feature-split` 스킬을 사용한다.
 
 ### PR
 
@@ -67,6 +79,32 @@ PR 요청 시 `$mozi-pr` 스킬을 사용한다.
   → 계획 제안
   → 1회 승인
   → 연속 커밋
+  → 결과 보고
+```
+
+### feature split
+
+```
+기능 분해해
+  → 작은 작업이면 분해 불필요 판정
+  → 얇은 전체 방향 확인
+  → Cycle 분해 + brief
+  → 분해 초안 + 파일명 제안
+  → 1회 승인
+  → docs/superpowers/splits 저장
+  → 다음 메뉴
+```
+
+### feature spawn
+
+```
+Cycle ... 워크트리/세션 만들어
+  → 저장된 split 문서 확인
+  → 생성 계획
+  → 1회 승인
+  → worktree/branch 생성
+  → session 생성 + brief + brainstorming 시작
+  → Spawned 갱신
   → 결과 보고
 ```
 
