@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mozi Feature Split"
+  short_description: "큰 기능을 Cycle/PR 후보로 분해하고 분기 제안"
+  default_prompt: "Use $mozi-feature-split to split this large feature into independent cycles and propose worktree/session spawn plans."
