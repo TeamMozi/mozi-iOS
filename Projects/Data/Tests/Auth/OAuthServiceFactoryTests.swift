@@ -3,7 +3,7 @@ import Domain
 import XCTest
 
 final class OAuthServiceFactoryTests: XCTestCase {
-    func test_stub_kakao는_notConfigured() async {
+    func test_카카오_stub_로그인이면_notConfigured() async {
         let services = OAuthServiceFactory.makeStub()
 
         do {
@@ -19,7 +19,7 @@ final class OAuthServiceFactoryTests: XCTestCase {
         }
     }
 
-    func test_stub_apple은_notConfigured() async {
+    func test_애플_stub_로그인이면_notConfigured() async {
         let services = OAuthServiceFactory.makeStub()
 
         do {

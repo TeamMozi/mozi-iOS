@@ -106,6 +106,51 @@ final class AuthTokenRefresherTests: XCTestCase {
         XCTAssertTrue(AuthURLProtocolStub.requests.isEmpty)
     }
 
+    func test_refresh_400이면_세션_유지_후_unknown() async throws {
+        let local = makeLocal()
+        try await local.save(existingSession)
+        AuthURLProtocolStub.requestHandler = { _ in
+            .init(
+                statusCode: 400,
+                headers: [:],
+                data: Data(#"{"message":"bad request"}"#.utf8)
+            )
+        }
+        let sut = try makeSUT(local: local)
+
+        do {
+            try await sut.refresh()
+            XCTFail("expected unknown")
+        } catch let error as AuthError {
+            guard case .unknown = error else {
+                return XCTFail("unexpected \(error)")
+            }
+        } catch {
+            XCTFail("unexpected \(error)")
+        }
+
+        let stored = try await local.load()
+        XCTAssertEqual(stored, existingSession)
+    }
+
+    func test_refresh_키체인_로드_실패면_AuthError_storage() async throws {
+        let local = AuthLocalDatasource(
+            keychain: FailingKeychainStorage(failingOperations: [.get])
+        )
+        let sut = try makeSUT(local: local)
+
+        do {
+            try await sut.refresh()
+            XCTFail("expected storage")
+        } catch let error as AuthError {
+            guard case .storage = error else {
+                return XCTFail("unexpected \(error)")
+            }
+        } catch {
+            XCTFail("unexpected \(error)")
+        }
+    }
+
     private var existingSession: AuthSession {
         AuthSession(
             accessToken: "old-a",

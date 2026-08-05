@@ -25,7 +25,7 @@ final class AuthClientFactoryTests: XCTestCase {
         }
 
         let sut = AuthClientFactory.make(
-            repository: makeRepository(local: local),
+            repository: try makeRepository(local: local),
             credentialProvider: { _ in
                 XCTFail("credentialProvider must not be called")
                 return "unused"
@@ -50,7 +50,7 @@ final class AuthClientFactoryTests: XCTestCase {
         stubLoginSuccess()
 
         let sut = AuthClientFactory.make(
-            repository: makeRepository(local: local),
+            repository: try makeRepository(local: local),
             credentialProvider: { provider in
                 await probe.record(provider)
                 XCTAssertEqual(provider, .kakao)
@@ -78,7 +78,7 @@ final class AuthClientFactoryTests: XCTestCase {
         stubLoginSuccess()
 
         let sut = AuthClientFactory.make(
-            repository: makeRepository(local: local),
+            repository: try makeRepository(local: local),
             credentialProvider: { provider in
                 await probe.record(provider)
                 XCTAssertEqual(provider, .apple)

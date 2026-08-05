@@ -128,6 +128,45 @@ final class AuthRepositoryImplTests: XCTestCase {
         XCTAssertNil(stored)
     }
 
+    func test_restoreSession_키체인_실패면_AuthError_storage() async throws {
+        let local = AuthLocalDatasource(
+            keychain: FailingKeychainStorage(failingOperations: [.get])
+        )
+        let sut = try makeSUT(local: local)
+
+        do {
+            _ = try await sut.restoreSession()
+            XCTFail("expected storage")
+        } catch let error as AuthError {
+            guard case .storage = error else {
+                return XCTFail("unexpected \(error)")
+            }
+        } catch {
+            XCTFail("unexpected \(error)")
+        }
+    }
+
+    func test_logout_키체인_삭제_실패면_AuthError_storage() async throws {
+        let local = AuthLocalDatasource(
+            keychain: FailingKeychainStorage(failingOperations: [.delete])
+        )
+        AuthURLProtocolStub.requestHandler = { _ in
+            .init(statusCode: 200, headers: [:], data: Data())
+        }
+        let sut = try makeSUT(local: local)
+
+        do {
+            try await sut.logout()
+            XCTFail("expected storage")
+        } catch let error as AuthError {
+            guard case .storage = error else {
+                return XCTFail("unexpected \(error)")
+            }
+        } catch {
+            XCTFail("unexpected \(error)")
+        }
+    }
+
     // MARK: - Helpers
 
     private var expectedLoginSession: AuthSession {
