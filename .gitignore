@@ -37,3 +37,6 @@ Config/*.xcconfig
 # Agent / SDD working docs
 docs/superpowers/
 .superpowers/
+
+# Git worktrees (local isolation)
+.worktrees/
