@@ -93,7 +93,7 @@ App 은 SocialAuth factory 조립과 bootstrap/redirect 호출만 담당한다. 
 | `Mozi-Debug` | Debug | `com.teamMozi.debug` |
 | `Mozi` | Release | `com.teamMozi.app` |
 
-storage namespace 는 Bundle ID 재사용.
+Keychain service 는 Bundle ID 를 사용하고, UserDefaults 는 standard 를 사용한다.
 
 ---
 

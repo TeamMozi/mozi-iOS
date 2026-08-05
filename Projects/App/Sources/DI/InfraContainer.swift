@@ -14,9 +14,7 @@ extension InfraContainer {
         let configuration = AppConfiguration.make()
         return InfraContainer(
             configuration: configuration,
-            userDefaults: DefaultUserDefaultsStorage(
-                suiteName: configuration.bundleID
-            ),
+            userDefaults: DefaultUserDefaultsStorage(),
             keychain: DefaultKeychainStorage(
                 service: configuration.bundleID
             )
