@@ -49,6 +49,11 @@ public enum AppInfo {
         return url
     }
 
+    /// 카카오 네이티브 앱 키. 비어 있거나 없으면 nil.
+    public static var kakaoNativeAppKey: String? {
+        string(.kakaoNativeAppKey)
+    }
+
     public static func string(_ key: InfoPlistKey) -> String? {
         nonEmptyString(fromInfoDictionaryKey: key.rawValue)
     }

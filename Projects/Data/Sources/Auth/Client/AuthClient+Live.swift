@@ -1,4 +1,5 @@
 import CoreNetwork
+import CoreSocialAuth
 import CoreStorage
 import Domain
 import Foundation
@@ -8,7 +9,7 @@ public extension AuthClient {
     static func live(
         baseURL: URL,
         keychain: any KeychainStorage,
-        oauthServices: OAuthServices
+        socialAuthServices: SocialAuthServices
     ) -> AuthClient {
         let networkConfiguration = NetworkConfiguration(baseURL: baseURL)
         let plainNetworkClient = DefaultNetworkClient.plain(
@@ -42,7 +43,10 @@ public extension AuthClient {
         return AuthClientFactory.make(
             repository: repository,
             credentialProvider: { provider in
-                try await oauthServices.service(for: provider).login()
+                try await SocialAuthCredentialProvider.credential(
+                    for: provider,
+                    services: socialAuthServices
+                )
             }
         )
     }

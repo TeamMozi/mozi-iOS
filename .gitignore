@@ -23,7 +23,8 @@ graph.dot
 *.log
 
 # Local Xcode derived data for CLI builds
-.derivedData/
+# .derivedData, .derivedData-pr3, .derivedData-keycheck 등 CLI 임시 경로 전부 무시
+.derivedData*/
 
 # macOS junk
 .DS_Store

@@ -27,7 +27,7 @@ Projects/
   Shared/{Util,DesignSystem,Logger}
   ThirdParty/{ThirdParty,ThirdPartyUI,ThirdPartyCore}
   Domain/
-  Core/{Network,Storage}
+  Core/{Network,Storage,SocialAuth}
   Data/
   Feature/
   App/

@@ -6,7 +6,7 @@
 세로 계층 = 모듈
 가로 Feature = 폴더
 외부 의존성 = ThirdParty*
-live 구현 = Data / live 등록 = App only
+기술 구현 = Core/* / 도메인 오케스트레이션 = Data / live 등록 = App only
 ```
 
 ---
@@ -18,7 +18,7 @@ Projects/
   Shared/{Util,DesignSystem,Logger}
   ThirdParty/{ThirdParty,ThirdPartyUI,ThirdPartyCore}
   Domain/
-  Core/{Network,Storage}
+  Core/{Network,Storage,SocialAuth}
   Data/
   Feature/
   App/
@@ -31,8 +31,8 @@ Projects/
 | SharedLogger | 전역 `Logger.shared` OSLog facade |
 | ThirdParty* | 외부 패키지 진입점 |
 | Domain | Entity, `*Client`, Error |
-| Core/* | Network/Storage |
-| Data | DTO, Datasource, `*RepositoryImpl`, `*ClientFactory`, `*Client.live` |
+| Core/* | Network/Storage/SocialAuth 등 기술 구현. Domain 모름 |
+| Data | DTO, Datasource, `*RepositoryImpl`, `*ClientFactory`, `*Client.live` (Remote는 순수 서버 통신) |
 | Feature | Root, AppCoordinator, Scene |
 | App | bootstrap, live 주입, root store |
 
@@ -53,6 +53,7 @@ App     → 조립
 Feature → Data / Core* / ThirdPartyCore
 Domain  → Data / Core* / Feature
 Data    → Feature
+Core/*  → Domain / Data / Feature / App
 ```
 
 ---
@@ -80,7 +81,8 @@ bootstrapping
       profileCompleted == true → main(Placeholder)
 ```
 
-Auth 인프라와 로그인 게이트 UI 는 존재한다. 소셜 SDK 실연동과 MainTab 은 후속이다.
+Auth 인프라 + 로그인 게이트 + CoreSocialAuth 기반 카카오/애플 연동이 존재한다.
+App 은 SocialAuth factory 조립과 bootstrap/redirect 호출만 담당한다. MainTab 은 후속이다.
 
 ---
 
@@ -91,7 +93,7 @@ Auth 인프라와 로그인 게이트 UI 는 존재한다. 소셜 SDK 실연동�
 | `Mozi-Debug` | Debug | `com.teamMozi.debug` |
 | `Mozi` | Release | `com.teamMozi.app` |
 
-storage namespace 는 Bundle ID 재사용.
+Keychain service 는 Bundle ID 를 사용하고, UserDefaults 는 standard 를 사용한다.
 
 ---
 
@@ -120,6 +122,7 @@ storage namespace 는 Bundle ID 재사용.
 - [Domain](../Projects/Domain/README.md)
 - [Data](../Projects/Data/README.md)
 - [CoreNetwork](../Projects/Core/Network/README.md)
+- [CoreSocialAuth](../Projects/Core/SocialAuth/README.md)
 
 ---
 

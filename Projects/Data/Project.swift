@@ -7,6 +7,7 @@ let project = ProjectFactory.framework(
         .domain,
         .coreNetwork,
         .coreStorage,
+        .coreSocialAuth,
         .sharedLogger,
         .sharedUtils,
     ],
@@ -15,5 +16,6 @@ let project = ProjectFactory.framework(
         .domain,
         .coreNetwork,
         .coreStorage,
+        .coreSocialAuth,
     ]
 )
