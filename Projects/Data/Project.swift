@@ -9,5 +9,11 @@ let project = ProjectFactory.framework(
         .coreStorage,
         .sharedLogger,
         .sharedUtils,
+    ],
+    includesTests: true,
+    testsDependencies: [
+        .domain,
+        .coreNetwork,
+        .coreStorage,
     ]
 )

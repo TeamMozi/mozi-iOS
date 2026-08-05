@@ -6,5 +6,6 @@ let project = ProjectFactory.framework(
     dependencies: [
         .sharedUtils,
         .thirdParty,
-    ]
+    ],
+    includesTests: true
 )
