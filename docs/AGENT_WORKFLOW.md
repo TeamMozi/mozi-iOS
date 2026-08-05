@@ -7,7 +7,7 @@ Mozi 작업 시 에이전트 hard gate, 행동 원칙, runtime flow의 single so
 - [CONVENTIONS.md](CONVENTIONS.md) — 형식/작성규칙 SSOT
 - [ARCHITECTURE.md](ARCHITECTURE.md) — 구조/의존/흐름 SSOT
 - [skills.md](skills.md) — skill 인덱스
-- project skills: `.codex/skills/mozi-worktree-bootstrap`, `.codex/skills/mozi-commit`, `.codex/skills/mozi-pr`, `.codex/skills/mozi-worktree-cleanup`
+- project skills: `.codex/skills/mozi-commit`, `.codex/skills/mozi-pr`, `.codex/skills/mozi-worktree-cleanup`
 - [../AGENTS.md](../AGENTS.md)
 
 ## 1. Hard Gates
@@ -18,8 +18,6 @@ Mozi 작업 시 에이전트 hard gate, 행동 원칙, runtime flow의 single so
 2. ready가 아니면 `./scripts/setup-worktree.sh`를 즉시 실행한다.
 3. ready 기준 (모두 만족): detached HEAD 아님 + `Config/Debug.xcconfig` + `Config/Release.xcconfig` + `Mozi.xcworkspace`
 4. ready면 setup을 재실행하지 않는다.
-
-worktree 진입/미준비 시 `$mozi-worktree-bootstrap` 스킬을 사용한다.
 
 ### 커밋
 

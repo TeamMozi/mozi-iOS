@@ -6,7 +6,6 @@ Mozi workflow를 반복 실행하기 위한 Codex project skills.
 
 ```text
 .codex/skills/
-├── mozi-worktree-bootstrap/
 ├── mozi-commit/
 ├── mozi-pr/
 └── mozi-worktree-cleanup/
@@ -16,7 +15,6 @@ Mozi workflow를 반복 실행하기 위한 Codex project skills.
 
 | skill | 쓰는 시점 | 하지 않을 것 |
 |-------|-----------|--------------|
-| `mozi-worktree-bootstrap` | Mozi worktree 세션 시작/미준비 상태 | ready 인데 setup 재실행, 대체 bootstrap 절차 발명 |
 | `mozi-commit` | 사용자가 `커밋해`라고 했을 때 | `커밋해` 전 staging/commit, 계획 전 린트 생략, body 작성, 여러 의도 혼합 |
 | `mozi-pr` | `PR 초안` / `작성만` / `PR 생성해` / `PR 올려` | 초안 요청에서 PR 생성, draft PR 해석, 충돌 자동 resolve |
 | `mozi-worktree-cleanup` | PR 머지 후 로컬 worktree/브랜치 정리 | 미머지 상태 삭제, dirty 변경 자동 폐기, force 기본 사용 |

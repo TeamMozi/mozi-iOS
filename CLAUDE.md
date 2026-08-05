@@ -25,7 +25,6 @@ ready 판정(모두 만족해야 ready):
 - setup 후 한 줄로 결과(브랜치/workspace/config)를 보고한 뒤 본 요청을 처리한다
 - 이미 ready 면 setup 을 다시 돌리지 않는다
 - 사용자가 명시적으로 다른 옵션을 주면 그때만 `--skip-build` 등을 사용한다
-- 스킬: `$mozi-worktree-bootstrap` (`.codex/skills/mozi-worktree-bootstrap`)
 
 ## 1. 프로젝트 한 줄
 
@@ -94,7 +93,6 @@ MoziApp → CompositionRoot → RootFeature → AppCoordinator
 형식 규칙: [docs/CONVENTIONS.md](docs/CONVENTIONS.md)  
 스킬: [docs/skills.md](docs/skills.md)
 
-- worktree: `$mozi-worktree-bootstrap`
 - 커밋: `$mozi-commit`
 - PR: `$mozi-pr`
 - cleanup: `$mozi-worktree-cleanup`
