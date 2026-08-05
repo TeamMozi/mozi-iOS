@@ -5,8 +5,9 @@
 - Root / AppCoordinator / Scene 구성
 
 ## 현재 상태
-- Root + AppCoordinator + Placeholder scene
-- 딥링크: `mozi://home`
+- Root + AppCoordinator + Login / OnboardingPlaceholder / Placeholder scene
+- restore 기반 로그인 게이트
+- 딥링크: `mozi://home` (main 진입 후 처리)
 
 ## 의존
 - 허용: Domain, SharedUtils, SharedDesignSystem, SharedLogger, ThirdParty, ThirdPartyUI
@@ -23,10 +24,14 @@
 ## 주요 진입점
 - `RootFeature`, `RootView`
 - `AppCoordinatorFeature`, `AppCoordinatorView`
+- `Scene/Login`
+- `Scene/OnboardingPlaceholder`
 - `Scene/Placeholder`
 
 ## 테스트 포인트
-- 부트스트랩 후 main placeholder 진입
+- restore 분기: nil → login / profileCompleted false → onboarding / true → main
+- LoginFeature 성공/실패/취소/중복 탭 방지
+- 온보딩 placeholder 로그아웃 후 login 복귀
 - 딥링크 파싱 (`mozi://home`, https home, unknown)
 
 ## 관련 문서

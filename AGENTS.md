@@ -45,7 +45,7 @@ Data    → Feature
 
 ```text
 MoziApp → CompositionRoot → RootFeature → AppCoordinator
-  bootstrapping → main(Placeholder)
+  bootstrapping → login / onboarding / main
 ```
 
 ## 5. 핵심 규칙 요약
