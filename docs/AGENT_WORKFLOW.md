@@ -12,13 +12,6 @@ Mozi 작업 시 에이전트 hard gate, 행동 원칙, runtime flow의 single so
 
 ## 1. Hard Gates
 
-### worktree
-
-1. Mozi worktree 세션에서는 **어떤 응답/작업보다 먼저** ready 여부를 확인한다.
-2. ready가 아니면 `./scripts/setup-worktree.sh`를 즉시 실행한다.
-3. ready 기준 (모두 만족): detached HEAD 아님 + `Config/Debug.xcconfig` + `Config/Release.xcconfig` + `Mozi.xcworkspace`
-4. ready면 setup을 재실행하지 않는다.
-
 ### 커밋
 
 1. `커밋해` 전에는 staging/commit/push 시작 금지.

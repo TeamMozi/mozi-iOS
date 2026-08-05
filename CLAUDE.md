@@ -2,30 +2,6 @@
 
 Mozi 작업 시 에이전트 진입점.
 
-## 0. Worktree Hard Gate
-
-Mozi worktree 세션에서는 **어떤 응답/작업보다 먼저** ready 여부를 확인한다.
-
-ready 가 아니면 즉시 실행:
-
-```bash
-./scripts/setup-worktree.sh
-```
-
-ready 판정(모두 만족해야 ready):
-
-1. detached HEAD 가 아님
-2. `Config/Debug.xcconfig` 존재
-3. `Config/Release.xcconfig` 존재
-4. `Mozi.xcworkspace` 존재
-
-규칙:
-
-- ready 가 아니면 setup 없이 본 요청을 시작하지 않는다
-- setup 후 한 줄로 결과(브랜치/workspace/config)를 보고한 뒤 본 요청을 처리한다
-- 이미 ready 면 setup 을 다시 돌리지 않는다
-- 사용자가 명시적으로 다른 옵션을 주면 그때만 `--skip-build` 등을 사용한다
-
 ## 1. 프로젝트 한 줄
 
 ```text
