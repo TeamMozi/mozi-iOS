@@ -7,15 +7,18 @@ public struct AppCoordinatorFeature {
     @ObservableState
     public struct State: Equatable {
         public var phase: Phase = .bootstrapping
+        public var isRestoringSession = false
         public var pendingDeepLink: DeepLinkRoute?
         public var overlay = OverlayFeature.State()
 
         public init(
             phase: Phase = .bootstrapping,
+            isRestoringSession: Bool = false,
             pendingDeepLink: DeepLinkRoute? = nil,
             overlay: OverlayFeature.State = OverlayFeature.State()
         ) {
             self.phase = phase
+            self.isRestoringSession = isRestoringSession
             self.pendingDeepLink = pendingDeepLink
             self.overlay = overlay
         }
@@ -133,6 +136,12 @@ public struct AppCoordinatorFeature {
         guard case .bootstrapping = state.phase else {
             return .none
         }
+        // 응답 전 중복 onAppear 가 와도 restore 는 한 번만 실행한다.
+        guard state.isRestoringSession == false else {
+            return .none
+        }
+
+        state.isRestoringSession = true
         return .run { [authClient] send in
             do {
                 let session = try await authClient.restoreSession()
@@ -153,6 +162,12 @@ public struct AppCoordinatorFeature {
         state: inout State,
         result: Result<AuthSession?, AuthError>
     ) -> Effect<Action> {
+        // 진행 중이던 restore 응답만 반영한다.
+        guard state.isRestoringSession else {
+            return .none
+        }
+        state.isRestoringSession = false
+
         switch result {
         case let .success(session):
             applySession(&state, session: session)
