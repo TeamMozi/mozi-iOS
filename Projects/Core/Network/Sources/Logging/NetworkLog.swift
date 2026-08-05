@@ -9,11 +9,11 @@ enum NetworkLog {
 
         #if DEBUG
         if let body = request.httpBody, let bodyText = String(data: body, encoding: .utf8) {
-            message += "\nBody: \(redact(bodyText))"
+            message += "\nBody:\n\(formattedBody(bodyText))"
         }
         #endif
 
-        Logger.shared.info(redact(message), category: .network)
+        Logger.shared.info(message, category: .network)
     }
 
     static func response(
@@ -27,7 +27,7 @@ enum NetworkLog {
 
         #if DEBUG
         if let bodyText = String(data: data, encoding: .utf8), !bodyText.isEmpty {
-            message += "\nBody: \(redact(bodyText))"
+            message += "\nBody:\n\(formattedBody(bodyText))"
         }
         #endif
 
@@ -53,23 +53,58 @@ enum NetworkLog {
         return components.string ?? url.absoluteString
     }
 
+    /// JSON body 는 여러 줄로 정리한 뒤 민감 값만 가린다.
+    static func formattedBody(_ text: String) -> String {
+        let pretty = prettyPrintedJSON(text) ?? text
+        return redact(pretty)
+    }
+
+    static func prettyPrintedJSON(_ text: String) -> String? {
+        guard let data = text.data(using: .utf8),
+              let object = try? JSONSerialization.jsonObject(with: data),
+              let prettyData = try? JSONSerialization.data(
+                withJSONObject: object,
+                options: [.prettyPrinted, .sortedKeys]
+              ),
+              let pretty = String(data: prettyData, encoding: .utf8) else {
+            return nil
+        }
+        return pretty
+    }
+
+    /// 민감 값만 가리고 필드명은 남긴다.
     static func redact(_ text: String) -> String {
         var output = text
-        let patterns = [
-            #"Bearer\s+[A-Za-z0-9\-._~+/]+=*"#,
-            #"(accessToken|refreshToken|Authorization)"\s*:\s*"[^"]+""#,
-        ]
-        for pattern in patterns {
-            if let regex = try? NSRegularExpression(pattern: pattern, options: [.caseInsensitive]) {
-                let range = NSRange(output.startIndex..<output.endIndex, in: output)
-                output = regex.stringByReplacingMatches(
-                    in: output,
-                    options: [],
-                    range: range,
-                    withTemplate: "[REDACTED]"
-                )
-            }
+
+        // Authorization: Bearer <token>
+        if let bearerRegex = try? NSRegularExpression(
+            pattern: #"Bearer\s+[A-Za-z0-9\-._~+/]+=*"#,
+            options: [.caseInsensitive]
+        ) {
+            let range = NSRange(output.startIndex..<output.endIndex, in: output)
+            output = bearerRegex.stringByReplacingMatches(
+                in: output,
+                options: [],
+                range: range,
+                withTemplate: "Bearer [REDACTED]"
+            )
         }
+
+        // JSON string fields: keep key, mask value
+        // pretty print 공백을 허용한다.
+        if let fieldRegex = try? NSRegularExpression(
+            pattern: #""(accessToken|refreshToken|Authorization|identityToken)"\s*:\s*"[^"]*""#,
+            options: [.caseInsensitive]
+        ) {
+            let range = NSRange(output.startIndex..<output.endIndex, in: output)
+            output = fieldRegex.stringByReplacingMatches(
+                in: output,
+                options: [],
+                range: range,
+                withTemplate: #""$1" : "[REDACTED]""#
+            )
+        }
+
         return output
     }
 }
