@@ -7,5 +7,6 @@ let project = ProjectFactory.framework(
         .sharedUtils,
     ],
     resources: ["Resources/**"],
+    product: .framework,
     includesTests: true
 )
