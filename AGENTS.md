@@ -71,6 +71,17 @@ MoziApp → CompositionRoot → RootFeature → AppCoordinator
 형식 규칙: [docs/CONVENTIONS.md](docs/CONVENTIONS.md)  
 스킬: [docs/skills.md](docs/skills.md)
 
+### Model / Effort 요약
+
+- model: 세션 시작 model 상속 (임의 교체 금지)
+- 기본: `medium`
+- design/review: `high`
+- implement: `low`~`medium`
+- commit/cleanup: `low`
+- PR: `medium`
+- `max`/`ultra` 금지
+- 상세: [docs/AGENT_WORKFLOW.md](docs/AGENT_WORKFLOW.md#15-model--effort-policy)
+
 - 커밋: `$mozi-commit`
 - 기능 분해/분기: `$mozi-feature-split`
 - PR: `$mozi-pr`

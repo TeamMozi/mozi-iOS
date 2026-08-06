@@ -21,6 +21,24 @@ Mozi workflow를 반복 실행하기 위한 Codex project skills.
 | `mozi-pr` | `PR 초안` / `작성만` / `PR 생성해` / `PR 올려` | 초안 요청에서 PR 생성, draft PR 해석, 충돌 자동 resolve |
 | `mozi-worktree-cleanup` | PR 머지 후 로컬 worktree/브랜치 정리 | 미머지 상태 삭제, dirty 변경 자동 폐기, force 기본 사용 |
 
+## Model / Effort
+
+model 은 세션 시작 model 을 상속한다. 단계마다 effort 만 다르게 쓴다.
+
+| skill / stage | effort |
+|---------------|--------|
+| feature split | `medium` |
+| Cycle spawn / brief | `low` ~ `medium` |
+| child brainstorm / design | `high` |
+| implement 기계적 | `low` |
+| implement 통합 | `medium` |
+| code review | `high` |
+| commit | `low` |
+| PR | `medium` |
+| worktree cleanup | `low` |
+
+SSOT: [AGENT_WORKFLOW.md](AGENT_WORKFLOW.md#15-model--effort-policy)
+
 ## 기준 문서
 
 - [AGENT_WORKFLOW.md](AGENT_WORKFLOW.md) — hard gate, Agent Behavior, runtime flow

@@ -55,6 +55,53 @@ PR 요청 시 `$mozi-pr` 스킬을 사용한다.
 
 머지 후 정리 요청 시 `$mozi-worktree-cleanup` 스킬을 사용한다.
 
+## 1.5 Model / Effort Policy
+
+Mozi 워크플로우는 **세션 시작 model 을 상속**하고, 단계마다 **reasoning effort 만** 다르게 쓴다.
+model slug 를 문서에 하드코딩하지 않는다.
+
+### 고정 규칙
+
+1. model: 현재 세션 시작 model 을 그대로 따른다 (임의 교체 금지)
+2. 기본 effort: `medium`
+3. `max` / `ultra` 사용 금지
+4. child session / subagent 는 model 을 부모에서 상속하고, effort 만 단계값으로 명시한다
+5. 설계가 끝나면 긴 high 세션을 유지하지 말고 `medium` 으로 복귀한다
+
+### 단계 매핑
+
+| 단계 | effort |
+|------|--------|
+| brainstorm / architecture / design | `high` |
+| writing plans | `medium` (모호하면 `high`) |
+| feature split (`기능 분해해`) | `medium` |
+| Cycle spawn / brief 작성 | `low` ~ `medium` |
+| implement 기계적 (plan 상세, 1~2 파일) | `low` |
+| implement 통합/TCA/다중파일 | `medium` |
+| debug 난이도 높음 | `high` |
+| code review | `high` |
+| small fix re-review | `low` ~ `medium` |
+| commit (`mozi-commit`) | `low` |
+| PR 초안/생성 (`mozi-pr`) | `medium` |
+| worktree cleanup | `low` |
+
+### 운영 한 줄
+
+```text
+model = session start model (inherit)
+design/review = high
+default/implement = medium
+mechanical/ops = low
+never max/ultra
+```
+
+### 적용 위치
+
+- 메인 코디네이터 기본: 세션 시작 model + `medium`
+- Cycle child session 생성 시 model 상속, effort 명시
+- Superpowers implement/review subagent 생성 시 model 상속, effort 명시
+- Mozi skill 실행 시 해당 skill 의 effort 규칙을 따른다
+
 ## 2. Agent Behavior
 
 1. 작업 시작 시 문서 우선순위와 관련 source of truth를 확인한다.
@@ -67,6 +114,7 @@ PR 요청 시 `$mozi-pr` 스킬을 사용한다.
 4. 요구가 모호하면 추측 구현하지 않고 질문한다.
 5. 코드와 문서가 다르면 현재 코드 기준으로 보고하고, 문서 수정 필요 여부를 제안한다.
 6. 문서 변경 시 중복 본문을 늘리지 않고 링크를 유지한다.
+7. model/effort 선택이 필요하면 위 Model / Effort Policy 를 따른다. model 은 세션 시작값을 유지하고 effort 만 조절한다.
 
 ## 3. Runtime Flow
 
