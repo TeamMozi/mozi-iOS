@@ -10,61 +10,118 @@ public struct LoginView: View {
     }
 
     public var body: some View {
-        VStack(spacing: 0) {
-            Spacer()
+        ZStack {
+            VStack(spacing: 0) {
+                // 상단 safe area 하단 ~ 로고 상단
+                Spacer()
+                    .frame(height: LoginLayout.logoTopInset)
 
-            VStack(spacing: CGFloat.ds.spacing.sm) {
-                DesignText(
-                    "Mozi",
-                    style: TextStyle.ds.heading.large32Bold,
-                    color: Color.ds.text.neutral.white,
-                    alignment: .center
-                )
+                // 히어로: 로고 + 숏폼(+타이틀 오버레이)
+                VStack(spacing: LoginLayout.logoToMarqueeSpacing) {
+                    SharedDesignSystemAsset.logoMozi.swiftUIImage
+                        .resizable()
+                        .renderingMode(.original)
+                        .scaledToFit()
+                        .frame(
+                            width: LoginLayout.logoSize.width,
+                            height: LoginLayout.logoSize.height
+                        )
+                        .accessibilityLabel("Mozi")
 
-                DesignText(
-                    "로그인하고 모지를 시작해요",
-                    style: TextStyle.ds.body.medium16Regular,
-                    color: Color.ds.text.neutral.basic,
-                    alignment: .center
-                )
+                    ZStack {
+                        LoginShortformMarqueeView()
+
+                        VStack(spacing: LoginLayout.titleToSubtitleSpacing) {
+                            DesignText(
+                                "내가 찾던 모든 모임",
+                                style: TextStyle.ds.heading.large32Bold,
+                                color: Color.ds.text.primary.basic,
+                                alignment: .center
+                            )
+
+                            VStack(spacing: LoginLayout.subtitleToDescriptionSpacing) {
+                                DesignText(
+                                    "동네라서 가능한 모든 것",
+                                    style: TextStyle.ds.label.large16Medium,
+                                    color: Color.ds.text.primary.basic,
+                                    alignment: .center
+                                )
+
+                                DesignText(
+                                    "부담없이 만나는 원데이 모임부터",
+                                    style: TextStyle.ds.label.large16Medium,
+                                    color: Color.ds.text.primary.basic,
+                                    alignment: .center
+                                )
+                            }
+                        }
+                        // 로고 하단 기준 타이틀 52 = 숏폼 상단 29 + 카드 내부 top 23
+                        .padding(.top, LoginLayout.logoToTitleSpacing - LoginLayout.logoToMarqueeSpacing)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                        .padding(.horizontal, LoginLayout.horizontalPadding)
+                    }
+                    .frame(height: LoginLayout.marqueeHeight)
+                }
+
+                // 숏폼 하단 ~ 카카오 버튼 상단
+                Spacer()
+                    .frame(height: LoginLayout.marqueeToButtonsSpacing)
+
+                VStack(spacing: LoginLayout.buttonSpacing) {
+                    if let errorMessage = store.errorMessage {
+                        DesignText(
+                            errorMessage,
+                            style: TextStyle.ds.body.small14Regular,
+                            color: Color.ds.text.primary.basic,
+                            alignment: .center
+                        )
+                    }
+
+                    SocialLoginButton(provider: .kakao) {
+                        store.send(.kakaoLoginTapped)
+                    }
+                    .disabled(store.isLoading)
+
+                    SocialLoginButton(provider: .apple) {
+                        store.send(.appleLoginTapped)
+                    }
+                    .disabled(store.isLoading)
+                }
+                .padding(.horizontal, LoginLayout.horizontalPadding)
+
+                Spacer(minLength: 0)
             }
 
-            Spacer()
-
-            VStack(spacing: CGFloat.ds.spacing.sm) {
-                if let errorMessage = store.errorMessage {
-                    DesignText(
-                        errorMessage,
-                        style: TextStyle.ds.body.small14Regular,
-                        color: Color.ds.text.primary.basic,
-                        alignment: .center
-                    )
-                    .padding(.bottom, CGFloat.ds.spacing.xs)
-                }
-
-                SocialLoginButton(provider: .kakao) {
-                    store.send(.kakaoLoginTapped)
-                }
-                .disabled(store.isLoading)
-
-                SocialLoginButton(provider: .apple) {
-                    store.send(.appleLoginTapped)
-                }
-                .disabled(store.isLoading)
-
-                if store.isLoading {
-                    ProgressView()
-                        .tint(Color.ds.text.neutral.white)
-                        .padding(.top, CGFloat.ds.spacing.xs)
-                }
+            if store.isLoading {
+                ProgressView()
+                    .tint(Color.ds.text.neutral.white)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                    .allowsHitTesting(false)
             }
-            .padding(.horizontal, CGFloat.ds.spacing.lg)
-            .padding(.bottom, CGFloat.ds.spacing.xl)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.ds.background.black.ignoresSafeArea())
+        .background(Color.ds.background.grayDarker.ignoresSafeArea())
         .task {
             store.send(.onAppear)
         }
     }
+}
+
+private enum LoginLayout {
+    static let horizontalPadding: CGFloat = 16
+    static let buttonSpacing: CGFloat = 8
+    /// 상단 safe area 하단 ~ 로고 상단
+    static let logoTopInset: CGFloat = 162
+    /// 숏폼 하단 ~ 카카오 버튼 상단
+    static let marqueeToButtonsSpacing: CGFloat = 64
+
+    static let logoSize = CGSize(width: 150, height: 84)
+    /// 로고 하단 ~ 숏폼 상단
+    static let logoToMarqueeSpacing: CGFloat = 29
+    /// 로고 하단 ~ 타이틀 상단
+    static let logoToTitleSpacing: CGFloat = 52
+    static let marqueeHeight: CGFloat = 172
+
+    static let titleToSubtitleSpacing: CGFloat = 8
+    static let subtitleToDescriptionSpacing: CGFloat = 2
 }
