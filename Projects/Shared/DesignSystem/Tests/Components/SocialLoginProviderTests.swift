@@ -15,6 +15,6 @@ final class SocialLoginProviderTests: XCTestCase {
         XCTAssertEqual(SocialLoginProvider.apple.background.hexRGB, PrimitiveColor.Neutral._0.hexRGB)
         XCTAssertEqual(SocialLoginProvider.apple.content.hexRGB, PrimitiveColor.Neutral._1000.hexRGB)
         XCTAssertEqual(SocialLoginProvider.apple.border?.hexRGB, PrimitiveColor.Neutral._1000.hexRGB)
-        XCTAssertEqual(SocialLoginProvider.apple.contentGap, 9)
+        XCTAssertEqual(SocialLoginProvider.apple.contentGap, 12)
     }
 }
