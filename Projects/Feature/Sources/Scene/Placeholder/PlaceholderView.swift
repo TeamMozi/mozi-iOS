@@ -16,3 +16,13 @@ public struct PlaceholderView: View {
             }
     }
 }
+
+// MARK: - Preview
+
+#Preview("Main Placeholder") {
+    PlaceholderView(
+        store: Store(initialState: PlaceholderFeature.State()) {
+            PlaceholderFeature()
+        }
+    )
+}

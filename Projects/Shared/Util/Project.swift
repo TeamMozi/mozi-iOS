@@ -3,5 +3,6 @@ import ProjectDescriptionHelpers
 
 let project = ProjectFactory.framework(
     .sharedUtils,
+    product: .framework,
     includesTests: true
 )

@@ -93,12 +93,13 @@ public enum ProjectFactory {
     public static func thirdParty(
         _ module: Module,
         packages: [Package],
-        productDependencies: [TargetDependency]
+        productDependencies: [TargetDependency],
+        product: Product = .staticLibrary
     ) -> Project {
         let target = Target.target(
             name: module.targetName,
             destinations: ProjectEnvironment.destinations,
-            product: .staticLibrary,
+            product: product,
             bundleId: ProjectEnvironment.moduleBundleId(module.bundleIdSuffix),
             deploymentTargets: .iOS(ProjectEnvironment.deploymentTarget),
             sources: ["Sources/**"],
@@ -125,7 +126,7 @@ public enum ProjectFactory {
         let featureTarget = Target.target(
             name: featureName,
             destinations: ProjectEnvironment.destinations,
-            product: .staticLibrary,
+            product: .framework,
             bundleId: ProjectEnvironment.moduleBundleId(Module.feature.bundleIdSuffix),
             deploymentTargets: .iOS(ProjectEnvironment.deploymentTarget),
             sources: ["Sources/**"],

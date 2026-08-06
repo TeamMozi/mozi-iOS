@@ -46,3 +46,40 @@ public struct OverlayView: View {
         }
     }
 }
+
+// MARK: - Preview
+
+#Preview("Overlay / Empty") {
+    OverlayView(
+        store: Store(initialState: OverlayFeature.State()) {
+            OverlayFeature()
+        }
+    )
+    .background(Color.black.opacity(0.2))
+}
+
+#Preview("Overlay / Toast") {
+    OverlayView(
+        store: Store(
+            initialState: OverlayFeature.State(
+                toastMessage: "네트워크 연결을 확인해 주세요"
+            )
+        ) {
+            OverlayFeature()
+        }
+    )
+    .background(Color.black.opacity(0.2))
+}
+
+#Preview("Overlay / Alert") {
+    OverlayView(
+        store: Store(
+            initialState: OverlayFeature.State(
+                alertMessage: "알 수 없는 오류가 발생했어요."
+            )
+        ) {
+            OverlayFeature()
+        }
+    )
+    .background(Color.black.opacity(0.2))
+}

@@ -7,14 +7,9 @@ public struct LoginFeature {
     @ObservableState
     public struct State: Equatable {
         public var isLoading = false
-        public var errorMessage: String?
 
-        public init(
-            isLoading: Bool = false,
-            errorMessage: String? = nil
-        ) {
+        public init(isLoading: Bool = false) {
             self.isLoading = isLoading
-            self.errorMessage = errorMessage
         }
     }
 
@@ -27,6 +22,8 @@ public struct LoginFeature {
 
         public enum Delegate: Equatable {
             case loggedIn(AuthSession)
+            case presentToast(String)
+            case presentAlert(String)
         }
     }
 
@@ -48,18 +45,15 @@ public struct LoginFeature {
 
             case let .loginResponse(.success(session)):
                 state.isLoading = false
-                state.errorMessage = nil
                 return .send(.delegate(.loggedIn(session)))
 
             case let .loginResponse(.failure(error)):
                 state.isLoading = false
-                // 사용자 취소는 에러 메시지 없이 idle 복귀한다.
+                // 사용자 취소는 피드백 없이 idle 복귀한다.
                 if case .cancelled = error {
-                    state.errorMessage = nil
-                } else {
-                    state.errorMessage = Self.errorMessage(for: error)
+                    return .none
                 }
-                return .none
+                return .send(Self.presentationAction(for: error))
 
             case .delegate:
                 return .none
@@ -76,7 +70,6 @@ public struct LoginFeature {
         }
 
         state.isLoading = true
-        state.errorMessage = nil
 
         return .run { [authClient] send in
             do {
@@ -87,6 +80,16 @@ public struct LoginFeature {
             } catch {
                 await send(.loginResponse(.failure(.unknown(message: error.localizedDescription))))
             }
+        }
+    }
+
+    private static func presentationAction(for error: AuthError) -> Action {
+        let message = errorMessage(for: error)
+        switch error {
+        case .notConfigured:
+            return .delegate(.presentAlert(message))
+        case .cancelled, .loginFailed, .network, .unauthorized, .storage, .unknown:
+            return .delegate(.presentToast(message))
         }
     }
 

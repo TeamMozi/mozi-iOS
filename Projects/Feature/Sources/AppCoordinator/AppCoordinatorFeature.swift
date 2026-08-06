@@ -123,6 +123,12 @@ public struct AppCoordinatorFeature {
             applySession(&state, session: session)
             return .send(.flushPendingDeepLink)
 
+        case let .login(.delegate(.presentToast(message))):
+            return .send(.overlay(.showToast(message)))
+
+        case let .login(.delegate(.presentAlert(message))):
+            return .send(.overlay(.showAlert(message)))
+
         case .onboarding(.delegate(.loggedOut)):
             state.phase = .login(LoginFeature.State())
             return .none
