@@ -14,6 +14,15 @@ Mozi project PR hard gates and style.
 - `.github/pull_request_template.md`
 - `AGENTS.md` Git / PR section
 
+## Effort Policy
+
+- model: inherit the current session start model; do not switch models
+- effort: `medium` for draft and create
+- do not use `max`/`ultra`
+- if the current session effort is higher, prefer continuing at `medium` for this skill work
+
+SSOT: `docs/AGENT_WORKFLOW.md` Model / Effort Policy
+
 ## Phrase Mapping
 
 ### Draft only (no publish)

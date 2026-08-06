@@ -13,6 +13,15 @@ PR 머지 후 로컬 worktree / 브랜치를 안전하게 정리한다.
 - `docs/skills.md`
 - `AGENTS.md` Worktree / Git section
 
+## Effort Policy
+
+- model: inherit the current session start model; do not switch models
+- effort: `low`
+- do not use `max`/`ultra`
+- if the current session effort is higher, prefer continuing at `low` for this skill work
+
+SSOT: `docs/AGENT_WORKFLOW.md` Model / Effort Policy
+
 ## Trigger Phrases
 
 Use this skill when the user says things like:

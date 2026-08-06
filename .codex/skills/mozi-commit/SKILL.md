@@ -24,6 +24,15 @@ Mozi project commit hard gates and style.
 6. After one plan approval, execute the approved commits continuously.
 7. If the plan drifts slightly, make the smallest reasonable adjustment and continue; re-ask only when meaning materially changes.
 
+## Effort Policy
+
+- model: inherit the current session start model; do not switch models
+- effort: `low`
+- do not use `max`/`ultra`
+- if the current session effort is higher, prefer continuing at `low` for this skill work
+
+SSOT: `docs/AGENT_WORKFLOW.md` Model / Effort Policy
+
 ## Flow
 
 1. Inspect changes read-only.

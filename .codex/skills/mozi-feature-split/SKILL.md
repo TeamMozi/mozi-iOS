@@ -80,6 +80,29 @@ Respond with a short offer:
 
 Run only after yes.
 
+## Effort Policy
+
+Inherit the session start model. Change effort only.
+
+| stage | effort |
+|-------|--------|
+| split (`기능 분해해`) | `medium` |
+| spawn plan / brief drafting | `low` ~ `medium` |
+| child session start (brainstorm/design) | `high` |
+| child implement after plan approval | `low` (mechanical) or `medium` (integration) |
+| child review | `high` |
+| commit/PR later in child | follow `$mozi-commit` / `$mozi-pr` |
+
+Rules:
+
+1. Do not switch models mid-workflow. Keep the session start model.
+2. Never use `max` / `ultra`.
+3. When creating a child session/thread, inherit the parent model and set thinking/effort explicitly.
+4. Child starts at `high` for brainstorming only; after plan approval, continue implement at `low`/`medium`.
+5. Main session default remains `medium`.
+
+SSOT: `docs/AGENT_WORKFLOW.md` Model / Effort Policy
+
 ## Hard Gates
 
 1. Split ≠ spawn. Split stage never creates worktrees/sessions.
@@ -96,6 +119,8 @@ Run only after yes.
 12. Base branch defaults to `origin/dev` unless the user explicitly overrides.
 13. Child sessions start with brief + automatic `$superpowers:brainstorming` for that Cycle only.
 14. Main session tracks opened Cycle/worktree/session lightly. No active monitoring/orchestration.
+15. Create child sessions by inheriting the parent model and setting thinking/effort explicitly: thinking=`high` for Cycle brainstorm start.
+16. After child plan approval, drop implement effort to `low`/`medium` per complexity. Keep review at `high`.
 
 ## Small Work Guard
 
@@ -404,10 +429,18 @@ Never invent a document path.
    1. Codex native session/thread
    2. else Orca or equivalent available means
    3. else stop at worktree + manual open guidance
-6. Send full brief into the new session.
-7. Auto-start: this Cycle only, `$superpowers:brainstorming`.
-8. Update split doc Spawned section.
-9. Report back to main session with opened locations only.
+6. Set child session model/effort explicitly:
+   - model: inherit parent/session start model
+   - thinking/effort: `high` for initial brainstorm/design
+7. Send full brief into the new session, including the effort schedule:
+   - design: high
+   - implement: low/medium
+   - review: high
+   - commit: low
+   - PR: medium
+8. Auto-start: this Cycle only, `$superpowers:brainstorming`.
+9. Update split doc Spawned section.
+10. Report back to main session with opened locations only.
 
 Worktree readiness means:
 
@@ -475,12 +508,21 @@ Use this structure in the split document. Chat only shows a short summary.
 - ...
 - ...
 
+effort 스케줄 (model: 세션 시작 model 상속):
+- design/brainstorm: high
+- implement: low(기계적) / medium(통합)
+- review: high
+- commit: low
+- PR: medium
+- max/ultra 금지
+
 워크플로:
 1. 이 Cycle 범위만 유지
-2. $superpowers:brainstorming 으로 설계
+2. $superpowers:brainstorming 으로 설계 (high)
 3. 승인 후 plan
-4. 구현
-5. 커밋/PR은 사용자 요청 시에만
+4. 구현 (low/medium)
+5. 리뷰 (high)
+6. 커밋/PR은 사용자 요청 시에만 (commit low / PR medium)
 
 Mozi hard gate:
 - 커밋: `커밋해` 전에 staging/commit/push 금지 → `$mozi-commit`
@@ -526,7 +568,7 @@ Cycle 1a 워크트리/세션 만들어
   → 생성 계획
   → 1회 승인
   → worktree/branch 생성
-  → session 생성 + brief + brainstorming start
+  → session 생성 (model 상속 + high) + brief + brainstorming start
   → Spawned 갱신
   → 결과 보고
 ```
