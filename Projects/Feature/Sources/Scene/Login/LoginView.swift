@@ -69,15 +69,6 @@ public struct LoginView: View {
                     .frame(height: LoginLayout.marqueeToButtonsSpacing)
 
                 VStack(spacing: LoginLayout.buttonSpacing) {
-                    if let errorMessage = store.errorMessage {
-                        DesignText(
-                            errorMessage,
-                            style: TextStyle.ds.body.small14Regular,
-                            color: Color.ds.text.primary.basic,
-                            alignment: .center
-                        )
-                    }
-
                     SocialLoginButton(provider: .kakao) {
                         store.send(.kakaoLoginTapped)
                     }
@@ -166,25 +157,6 @@ private enum LoginLayout {
                     isNewUser: false,
                     profileCompleted: true
                 )
-            }
-        }
-    )
-    .onAppear {
-        _ = DesignSystemFontRegistration.registerIfNeeded()
-    }
-}
-
-#Preview("Login / Error") {
-    LoginView(
-        store: Store(
-            initialState: LoginFeature.State(
-                errorMessage: "로그인에 실패했어요"
-            )
-        ) {
-            LoginFeature()
-        } withDependencies: {
-            $0.authClient.login = { _ in
-                throw AuthError.loginFailed
             }
         }
     )
