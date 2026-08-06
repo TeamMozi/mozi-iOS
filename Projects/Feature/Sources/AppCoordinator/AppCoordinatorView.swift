@@ -132,3 +132,49 @@ public struct AppCoordinatorView: View {
         }
     )
 }
+
+#Preview("Coordinator / Login + Toast") {
+    AppCoordinatorView(
+        store: Store(
+            initialState: AppCoordinatorFeature.State(
+                phase: .login(LoginFeature.State()),
+                overlay: OverlayFeature.State(
+                    toastMessage: "로그인에 실패했어요"
+                )
+            )
+        ) {
+            AppCoordinatorFeature()
+        } withDependencies: {
+            $0.authClient.restoreSession = { nil }
+            $0.authClient.login = { _ in
+                throw AuthError.loginFailed
+            }
+        }
+    )
+    .onAppear {
+        _ = DesignSystemFontRegistration.registerIfNeeded()
+    }
+}
+
+#Preview("Coordinator / Login + Alert") {
+    AppCoordinatorView(
+        store: Store(
+            initialState: AppCoordinatorFeature.State(
+                phase: .login(LoginFeature.State()),
+                overlay: OverlayFeature.State(
+                    alertMessage: "로그인 설정이 완료되지 않았어요."
+                )
+            )
+        ) {
+            AppCoordinatorFeature()
+        } withDependencies: {
+            $0.authClient.restoreSession = { nil }
+            $0.authClient.login = { _ in
+                throw AuthError.notConfigured(message: "missing-key")
+            }
+        }
+    )
+    .onAppear {
+        _ = DesignSystemFontRegistration.registerIfNeeded()
+    }
+}
