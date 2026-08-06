@@ -25,11 +25,9 @@ final class LoginFeatureTests: XCTestCase {
 
         await store.send(.kakaoLoginTapped) {
             $0.isLoading = true
-            $0.errorMessage = nil
         }
         await store.receive(.loginResponse(.success(session))) {
             $0.isLoading = false
-            $0.errorMessage = nil
         }
         await store.receive(.delegate(.loggedIn(session)))
     }
@@ -54,16 +52,14 @@ final class LoginFeatureTests: XCTestCase {
 
         await store.send(.appleLoginTapped) {
             $0.isLoading = true
-            $0.errorMessage = nil
         }
         await store.receive(.loginResponse(.success(session))) {
             $0.isLoading = false
-            $0.errorMessage = nil
         }
         await store.receive(.delegate(.loggedIn(session)))
     }
 
-    func test_로그인_실패하면_에러메시지_표시() async {
+    func test_로그인_실패하면_toast_delegate() async {
         let store = TestStore(
             initialState: LoginFeature.State()
         ) {
@@ -76,15 +72,14 @@ final class LoginFeatureTests: XCTestCase {
 
         await store.send(.appleLoginTapped) {
             $0.isLoading = true
-            $0.errorMessage = nil
         }
         await store.receive(.loginResponse(.failure(.loginFailed))) {
             $0.isLoading = false
-            $0.errorMessage = "로그인에 실패했어요"
         }
+        await store.receive(.delegate(.presentToast("로그인에 실패했어요")))
     }
 
-    func test_네트워크_실패하면_연결확인_메시지_표시() async {
+    func test_네트워크_실패하면_toast_delegate() async {
         let store = TestStore(
             initialState: LoginFeature.State()
         ) {
@@ -97,15 +92,34 @@ final class LoginFeatureTests: XCTestCase {
 
         await store.send(.kakaoLoginTapped) {
             $0.isLoading = true
-            $0.errorMessage = nil
         }
         await store.receive(.loginResponse(.failure(.network))) {
             $0.isLoading = false
-            $0.errorMessage = "네트워크 연결을 확인해 주세요"
         }
+        await store.receive(.delegate(.presentToast("네트워크 연결을 확인해 주세요")))
     }
 
-    func test_로그인_취소하면_에러메시지_없이_idle_복귀() async {
+    func test_설정누락이면_alert_delegate() async {
+        let store = TestStore(
+            initialState: LoginFeature.State()
+        ) {
+            LoginFeature()
+        } withDependencies: {
+            $0.authClient.login = { _ in
+                throw AuthError.notConfigured(message: "missing-key")
+            }
+        }
+
+        await store.send(.kakaoLoginTapped) {
+            $0.isLoading = true
+        }
+        await store.receive(.loginResponse(.failure(.notConfigured(message: "missing-key")))) {
+            $0.isLoading = false
+        }
+        await store.receive(.delegate(.presentAlert("로그인 설정이 완료되지 않았어요.")))
+    }
+
+    func test_로그인_취소하면_피드백_없이_idle_복귀() async {
         let store = TestStore(
             initialState: LoginFeature.State()
         ) {
@@ -118,11 +132,9 @@ final class LoginFeatureTests: XCTestCase {
 
         await store.send(.kakaoLoginTapped) {
             $0.isLoading = true
-            $0.errorMessage = nil
         }
         await store.receive(.loginResponse(.failure(.cancelled))) {
             $0.isLoading = false
-            $0.errorMessage = nil
         }
     }
 

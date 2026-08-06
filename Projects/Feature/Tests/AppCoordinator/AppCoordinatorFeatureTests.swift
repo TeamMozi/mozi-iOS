@@ -224,6 +224,36 @@ final class AppCoordinatorFeatureTests: XCTestCase {
         let count = await gate.startCount
         XCTAssertEqual(count, 1)
     }
+
+    func test_로그인_toast_delegate면_overlay_toast_표시() async {
+        let store = TestStore(
+            initialState: AppCoordinatorFeature.State(
+                phase: .login(LoginFeature.State())
+            )
+        ) {
+            AppCoordinatorFeature()
+        }
+
+        await store.send(.login(.delegate(.presentToast("로그인에 실패했어요"))))
+        await store.receive(.overlay(.showToast("로그인에 실패했어요"))) {
+            $0.overlay.toastMessage = "로그인에 실패했어요"
+        }
+    }
+
+    func test_로그인_alert_delegate면_overlay_alert_표시() async {
+        let store = TestStore(
+            initialState: AppCoordinatorFeature.State(
+                phase: .login(LoginFeature.State())
+            )
+        ) {
+            AppCoordinatorFeature()
+        }
+
+        await store.send(.login(.delegate(.presentAlert("로그인 설정이 완료되지 않았어요."))))
+        await store.receive(.overlay(.showAlert("로그인 설정이 완료되지 않았어요."))) {
+            $0.overlay.alertMessage = "로그인 설정이 완료되지 않았어요."
+        }
+    }
 }
 
 private actor RestoreGate {
