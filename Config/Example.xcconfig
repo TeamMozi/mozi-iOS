@@ -2,3 +2,6 @@
 // https:/$()/... 형태는 // 가 주석으로 파싱되지 않게 하기 위함
 API_BASE_URL =
 KAKAO_NATIVE_APP_KEY =
+
+// Apple Developer Team ID (local Debug/Release.xcconfig only)
+DEVELOPMENT_TEAM =
