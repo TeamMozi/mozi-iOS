@@ -42,10 +42,8 @@ public enum SocialLoginProvider: Sendable {
 
     var contentGap: CGFloat {
         switch self {
-        case .kakao:
+        case .kakao, .apple:
             12
-        case .apple:
-            9
         }
     }
 
