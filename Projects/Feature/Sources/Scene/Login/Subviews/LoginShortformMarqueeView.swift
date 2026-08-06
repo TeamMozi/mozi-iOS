@@ -77,3 +77,15 @@ extension LoginShortformMarqueeView {
         return cardsWidth + gapsWidth
     }
 }
+
+// MARK: - Preview
+
+#Preview("Login Shortform Marquee") {
+    ZStack {
+        Color.ds.background.grayDarker.ignoresSafeArea()
+        LoginShortformMarqueeView()
+    }
+    .onAppear {
+        _ = DesignSystemFontRegistration.registerIfNeeded()
+    }
+}

@@ -1,3 +1,4 @@
+import Domain
 import SharedDesignSystem
 import SwiftUI
 import ThirdParty
@@ -55,5 +56,58 @@ public struct OnboardingPlaceholderView: View {
         .task {
             store.send(.onAppear)
         }
+    }
+}
+
+// MARK: - Preview
+
+#Preview("Onboarding / Idle") {
+    OnboardingPlaceholderView(
+        store: Store(initialState: OnboardingPlaceholderFeature.State()) {
+            OnboardingPlaceholderFeature()
+        } withDependencies: {
+            $0.authClient.logout = {}
+        }
+    )
+    .onAppear {
+        _ = DesignSystemFontRegistration.registerIfNeeded()
+    }
+}
+
+#Preview("Onboarding / Logging Out") {
+    OnboardingPlaceholderView(
+        store: Store(
+            initialState: OnboardingPlaceholderFeature.State(
+                isLoggingOut: true
+            )
+        ) {
+            OnboardingPlaceholderFeature()
+        } withDependencies: {
+            $0.authClient.logout = {
+                try await Task.sleep(nanoseconds: 60_000_000_000)
+            }
+        }
+    )
+    .onAppear {
+        _ = DesignSystemFontRegistration.registerIfNeeded()
+    }
+}
+
+#Preview("Onboarding / Error") {
+    OnboardingPlaceholderView(
+        store: Store(
+            initialState: OnboardingPlaceholderFeature.State(
+                errorMessage: "로그아웃 정보를 지우지 못했어요. 다시 시도해 주세요."
+            )
+        ) {
+            OnboardingPlaceholderFeature()
+        } withDependencies: {
+            $0.authClient.logout = {
+                throw AuthError.storage(message: "preview-storage-error")
+            }
+        }
+    )
+    .onAppear {
+        _ = DesignSystemFontRegistration.registerIfNeeded()
     }
 }

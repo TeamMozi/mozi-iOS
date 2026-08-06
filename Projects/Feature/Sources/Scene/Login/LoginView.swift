@@ -1,3 +1,4 @@
+import Domain
 import SharedDesignSystem
 import SwiftUI
 import ThirdParty
@@ -124,4 +125,70 @@ private enum LoginLayout {
 
     static let titleToSubtitleSpacing: CGFloat = 8
     static let subtitleToDescriptionSpacing: CGFloat = 2
+}
+
+// MARK: - Preview
+
+#Preview("Login / Idle") {
+    LoginView(
+        store: Store(initialState: LoginFeature.State()) {
+            LoginFeature()
+        } withDependencies: {
+            $0.authClient.login = { _ in
+                AuthSession(
+                    accessToken: "preview-access",
+                    refreshToken: "preview-refresh",
+                    isNewUser: false,
+                    profileCompleted: true
+                )
+            }
+        }
+    )
+    .onAppear {
+        _ = DesignSystemFontRegistration.registerIfNeeded()
+    }
+}
+
+#Preview("Login / Loading") {
+    LoginView(
+        store: Store(
+            initialState: LoginFeature.State(
+                isLoading: true
+            )
+        ) {
+            LoginFeature()
+        } withDependencies: {
+            $0.authClient.login = { _ in
+                try await Task.sleep(nanoseconds: 60_000_000_000)
+                return AuthSession(
+                    accessToken: "preview-access",
+                    refreshToken: "preview-refresh",
+                    isNewUser: false,
+                    profileCompleted: true
+                )
+            }
+        }
+    )
+    .onAppear {
+        _ = DesignSystemFontRegistration.registerIfNeeded()
+    }
+}
+
+#Preview("Login / Error") {
+    LoginView(
+        store: Store(
+            initialState: LoginFeature.State(
+                errorMessage: "로그인에 실패했어요"
+            )
+        ) {
+            LoginFeature()
+        } withDependencies: {
+            $0.authClient.login = { _ in
+                throw AuthError.loginFailed
+            }
+        }
+    )
+    .onAppear {
+        _ = DesignSystemFontRegistration.registerIfNeeded()
+    }
 }
