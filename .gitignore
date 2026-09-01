@@ -35,8 +35,8 @@ Config/*.xcconfig
 !Config/Example.xcconfig
 
 # Agent / SDD working docs
-docs/superpowers/
-.superpowers/
+docs/agent
+.agent/
 
 # Git worktrees (local isolation)
 .worktrees/
