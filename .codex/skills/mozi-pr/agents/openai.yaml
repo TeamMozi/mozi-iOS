@@ -1,4 +1,0 @@
-interface:
-  display_name: "Mozi PR"
-  short_description: "Mozi PR draft/create hard gates"
-  default_prompt: "Use $mozi-pr to draft a PR body or create an open PR safely."
