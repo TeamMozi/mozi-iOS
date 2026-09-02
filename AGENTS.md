@@ -31,7 +31,7 @@ Mozi 작업 시 에이전트 진입점.
 ## 먼저 물을 것
 
 - Feature 모듈 분리
-- Feature → Data / Core 직접 참조
+- Feature → Data / Core* 직접 참조
 - scheme / bundle 이름 변경
 - 문서 추가·분리
 
