@@ -34,9 +34,9 @@
 
 ## 테스트 포인트
 - 세션 동등성/Codable 왕복
-- `AuthClient.testValue` 기본 unimplemented 동작 (`@DependencyClient`)
+- `AuthClient.testValue` 생성 가능성
 - User model 동등성/Codable 왕복
-- `UserClient.testValue` 기본 unimplemented 동작 (`@DependencyClient`)
+- `UserClient.testValue` 생성 가능성
 
 ## 관련 문서
 - [ARCHITECTURE.md](../../docs/ARCHITECTURE.md)
