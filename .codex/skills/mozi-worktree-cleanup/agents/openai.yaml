@@ -1,4 +1,0 @@
-interface:
-  display_name: "Mozi Worktree Cleanup"
-  short_description: "Safe post-merge worktree cleanup"
-  default_prompt: "Use $mozi-worktree-cleanup to safely remove a merged Mozi worktree and local branch."
