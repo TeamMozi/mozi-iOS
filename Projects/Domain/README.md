@@ -5,6 +5,7 @@
 
 ## 현재 상태
 - Auth 포트 추가 (`AuthSession`, `AuthError`, `AuthProvider`, `AuthClient`)
+- User 포트 추가 (`UserProfile`, `OnboardingDraft`, `Gender`, `Interest`, `UserError`, `UserClient`)
 
 ## 이후 패턴
 - `Domain/<Name>/{Model,Client,Error}`
@@ -20,14 +21,22 @@
 - UseCase 층 없음
 
 ## 주요 진입점
-- `Sources/Auth/AuthClient.swift`
-- `Sources/Auth/AuthSession.swift`
-- `Sources/Auth/AuthError.swift`
-- `Sources/Auth/AuthProvider.swift`
+- `Sources/Auth/Client/AuthClient.swift`
+- `Sources/Auth/Model/AuthSession.swift`
+- `Sources/Auth/Model/AuthProvider.swift`
+- `Sources/Auth/Error/AuthError.swift`
+- `Sources/User/Client/UserClient.swift`
+- `Sources/User/Model/UserProfile.swift`
+- `Sources/User/Model/OnboardingDraft.swift`
+- `Sources/User/Model/Gender.swift`
+- `Sources/User/Model/Interest.swift`
+- `Sources/User/Error/UserError.swift`
 
 ## 테스트 포인트
 - 세션 동등성/Codable 왕복
-- `AuthClient.testValue` 기본 unimplemented 동작 (`@DependencyClient`)
+- `AuthClient.testValue` 생성 가능성
+- User model 동등성/Codable 왕복
+- `UserClient.testValue` 생성 가능성
 
 ## 관련 문서
 - [ARCHITECTURE.md](../../docs/ARCHITECTURE.md)
