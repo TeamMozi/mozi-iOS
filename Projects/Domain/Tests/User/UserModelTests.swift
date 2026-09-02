@@ -9,6 +9,12 @@ final class UserModelTests: XCTestCase {
         XCTAssertEqual(Gender.male, Gender.male)
     }
 
+    func test_성별_codable_왕복() throws {
+        let data = try JSONEncoder().encode(Gender.other)
+        let decoded = try JSONDecoder().decode(Gender.self, from: data)
+        XCTAssertEqual(decoded, .other)
+    }
+
     func test_관심사_동등성_비교() {
         let a = Interest(id: "sports", name: "운동")
         let b = Interest(id: "sports", name: "운동")
