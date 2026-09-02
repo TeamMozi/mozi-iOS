@@ -30,10 +30,9 @@ final class AuthSessionTests: XCTestCase {
         XCTAssertEqual(decoded, original)
     }
 
-    func test_AuthClient_testValue는_빈_클라이언트로_생성() {
-        // @DependencyClient 는 testValue = AuthClient() 를 기본 제공한다.
-        // 미구현 endpoint 호출 시 issue를 내므로, 생성 가능성만 검증한다.
+    func test_AuthClient_testValue는_생성_가능() {
+        // testValue 는 AuthClient.swift 의 TestDependencyKey 확장이 선언한다.
+        // @DependencyClient 는 미구현 클로저를 채운 init 을 제공한다.
         _ = AuthClient.testValue
-        XCTAssertTrue(true)
     }
 }
