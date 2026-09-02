@@ -8,6 +8,11 @@ on:
 permissions:
   contents: read
 
+# 겹치는 PR 실행은 취소하고, main/dev push 실행은 남긴다.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   lint:
     runs-on: macos-15
@@ -52,16 +57,7 @@ jobs:
       - name: Generate project
         run: mise exec -- tuist generate --no-open
 
-      - name: Build
-        run: |
-          xcodebuild \
-            -workspace Mozi.xcworkspace \
-            -scheme Mozi-Debug \
-            -destination 'generic/platform=iOS Simulator' \
-            -skipMacroValidation \
-            build
-
-      - name: Test Feature Reducers
+      - name: Select simulator
         run: |
           DESTINATION="$(
             python3 -c '
@@ -82,9 +78,32 @@ jobs:
           '
           )"
           echo "Using destination: $DESTINATION"
+          echo "DESTINATION=$DESTINATION" >> "$GITHUB_ENV"
+
+      - name: Cache Swift packages
+        uses: actions/cache@v4
+        with:
+          path: .derivedData/SourcePackages
+          key: spm-${{ runner.os }}-${{ hashFiles('.package.resolved', 'Projects/**/Project.swift') }}
+          restore-keys: |
+            spm-${{ runner.os }}-
+
+      - name: Build
+        run: |
+          xcodebuild \
+            -workspace Mozi.xcworkspace \
+            -scheme Mozi-Debug \
+            -destination "$DESTINATION" \
+            -derivedDataPath .derivedData \
+            -skipMacroValidation \
+            build
+
+      - name: Test Feature Reducers
+        run: |
           xcodebuild \
             -workspace Mozi.xcworkspace \
             -scheme Feature \
             -destination "$DESTINATION" \
+            -derivedDataPath .derivedData \
             -skipMacroValidation \
             test
