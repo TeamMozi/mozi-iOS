@@ -1,5 +1,5 @@
-import XCTest
 @testable import SharedDesignSystem
+import XCTest
 
 final class DesignButtonMetricsTests: XCTestCase {
     func test_버튼_사이즈_메트릭스() {

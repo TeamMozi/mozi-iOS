@@ -1,5 +1,5 @@
-import XCTest
 @testable import SharedDesignSystem
+import XCTest
 
 final class PrimitiveColorTests: XCTestCase {
     func test_primary300_hex가_기대값() {

@@ -1,6 +1,6 @@
+@testable import SharedDesignSystem
 import SwiftUI
 import XCTest
-@testable import SharedDesignSystem
 
 final class SemanticColorTests: XCTestCase {
     func test_버튼_primary_default가_primary300_매핑() {

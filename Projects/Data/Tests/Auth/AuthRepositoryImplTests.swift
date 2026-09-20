@@ -1,5 +1,5 @@
-@testable import Data
 import CoreNetwork
+@testable import Data
 import Domain
 import Foundation
 import XCTest

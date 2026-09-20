@@ -1,5 +1,5 @@
-import XCTest
 @testable import SharedDesignSystem
+import XCTest
 
 final class SocialLoginProviderTests: XCTestCase {
     func test_카카오_카피와_컬러() {

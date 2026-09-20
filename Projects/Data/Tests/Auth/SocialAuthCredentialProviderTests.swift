@@ -1,5 +1,5 @@
-@testable import Data
 import CoreSocialAuth
+@testable import Data
 import Domain
 import XCTest
 
