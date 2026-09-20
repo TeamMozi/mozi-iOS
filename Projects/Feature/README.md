@@ -2,10 +2,10 @@
 
 ## 책임
 - 앱 화면 상태와 네비게이션 골격
-- Root / AppCoordinator / Scene 구성
+- Root / Flow / Scene 구성
 
 ## 현재 상태
-- Root + AppCoordinator + Login / OnboardingPlaceholder / Placeholder scene
+- Root + RootFlow + Login / OnboardingPlaceholder / Placeholder scene
 - restore 기반 로그인 게이트
 - 딥링크: `mozi://home` (main 진입 후 처리)
 
@@ -19,11 +19,11 @@
 - Scene 간 직접 참조 금지
 - 외부 요청은 delegate bubble-up
 - Feature 는 Domain `*Client` 만 사용
-- 전역 전환/딥링크/overlay 는 AppCoordinator
+- 전역 전환/딥링크/overlay 는 RootFlowFeature
 
 ## 주요 진입점
 - `RootFeature`, `RootView`
-- `AppCoordinatorFeature`, `AppCoordinatorView`
+- `RootFlowFeature`, `RootFlowView`
 - `Scene/Login`
 - `Scene/OnboardingPlaceholder`
 - `Scene/Placeholder`

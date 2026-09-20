@@ -33,8 +33,10 @@ Projects/
 | Domain | Entity, `*Client`, Error |
 | Core/* | Network/Storage/SocialAuth 등 기술 구현. Domain 모름 |
 | Data | DTO, Datasource, `*RepositoryImpl`, `*ClientFactory`, `*Client.live` (Remote는 순수 서버 통신) |
-| Feature | Root, AppCoordinator, Scene |
+| Feature | Root, Flow, Scene |
 | App | bootstrap, live 주입, root store |
+
+`RootFeature` 는 상태가 없는 통과 계층이지만 남긴다. 앱 전체에 걸치는 상태가 생기면 둘 자리다.
 
 ### 의존
 
@@ -68,7 +70,7 @@ MoziApp
           → Dependencies.register
               → AuthClient.live(...)
       → Store(RootFeature)
-  → RootView → AppCoordinatorView
+  → RootView → RootFlowView
 ```
 
 앱 상태:
@@ -103,7 +105,7 @@ Keychain service 는 Bundle ID 를 사용하고, UserDefaults 는 standard 를 �
 2. Data `{DTO,Datasource,RepositoryImpl,ClientFactory,Client.live}`
 3. App `Dependencies.register`
 4. Feature `Scene/<Name>`
-5. 필요 시 AppCoordinator/DeepLink
+5. 필요 시 Flow/Root/DeepLink
 6. Feature 테스트
 
 ---
