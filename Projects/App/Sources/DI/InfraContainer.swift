@@ -10,7 +10,7 @@ struct InfraContainer: Sendable {
 
 extension InfraContainer {
     @MainActor
-    static func live() -> InfraContainer {
+    static func make() -> InfraContainer {
         let configuration = AppConfiguration.make()
         return InfraContainer(
             configuration: configuration,

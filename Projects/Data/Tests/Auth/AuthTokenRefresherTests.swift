@@ -21,7 +21,7 @@ final class AuthTokenRefresherTests: XCTestCase {
             return .init(
                 statusCode: 200,
                 headers: [:],
-                data: Data(#"{"accessToken":"a2","refreshToken":"r2"}"#.utf8)
+                data: Data(#"{"accessToken":"a2","refreshToken":"r2","userId":1}"#.utf8)
             )
         }
         let sut = try makeSUT(local: local)
@@ -31,11 +31,12 @@ final class AuthTokenRefresherTests: XCTestCase {
         let stored = try await local.load()
         XCTAssertEqual(
             stored,
-            AuthSession(
+            AuthSessionStorageDTO(
                 accessToken: "a2",
                 refreshToken: "r2",
                 isNewUser: true,
-                profileCompleted: false
+                profileCompleted: false,
+                userID: "1"
             )
         )
         XCTAssertEqual(AuthURLProtocolStub.requests.count, 1)
@@ -151,12 +152,13 @@ final class AuthTokenRefresherTests: XCTestCase {
         }
     }
 
-    private var existingSession: AuthSession {
-        AuthSession(
+    private var existingSession: AuthSessionStorageDTO {
+        AuthSessionStorageDTO(
             accessToken: "old-a",
             refreshToken: "old-r",
             isNewUser: true,
-            profileCompleted: false
+            profileCompleted: false,
+            userID: "u1"
         )
     }
 

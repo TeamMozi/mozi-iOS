@@ -1,7 +1,7 @@
 # Data
 
 ## 책임
-- DTO, Datasource, `*RepositoryImpl`, `*ClientFactory`, Domain 오케스트레이션(`*Client.live`)
+- DTO, Datasource, Mapper, `*RepositoryImpl`, `*ClientFactory`, Domain 오케스트레이션(`*SessionAssembly`)
 
 ## 현재 상태
 - Auth 구현
@@ -9,21 +9,21 @@
   - `AuthLocalDatasource`
   - `AuthTokenRefresher`
   - `AuthRepositoryImpl`
-  - `AuthClientFactory` (repository → Domain client adapter)
-  - `AuthClient.live` (plain/refresher/authed 풀 조립)
+  - `AuthClientFactory` (조립체 → Domain client adapter)
+  - `AuthSessionAssembly` (plain/refresher/authed 풀 조립)
   - `SocialAuthCredentialProvider` (`CoreSocialAuth` credential → Domain `AuthError` 매핑)
 
 ## 이후 패턴
-- `Data/<Name>/{Client,DTO,Datasource,Repository,Service}`
+- `Data/<Name>/{Factory,Mapper,DTO,Datasource,Repository,Service}`
 - `*RepositoryImpl`
-- `*ClientFactory` + `*Client.live`
+- `*ClientFactory` + `*SessionAssembly`
 
 ## 의존
 - 허용: Domain, Core/*, SharedLogger, SharedUtils
 - 금지: Feature
 
 ## 내부 규칙
-- Domain `*Client` 의 live 오케스트레이션(`*Client.live`)은 Data 에서 제공
+- Domain `*Client` 의 조립(`*ClientFactory`)은 Data 에서 제공
 - 기술 구현(SDK wrapper 등)은 Core/* 에 둔다
 - App 은 config/factory 조립 + `prepareDependencies` 등록만 담당
 - Feature 가 Data 를 직접 import 하지 않음
@@ -42,8 +42,8 @@
 - OAuth/SDK, 로컬 저장, Domain 매핑은 Remote 밖
 
 ## 주요 진입점
-- `Sources/Auth/Client/AuthClient+Live.swift`
-- `Sources/Auth/Client/AuthClientFactory.swift`
+- `Sources/Auth/Factory/AuthSessionAssembly.swift`
+- `Sources/Auth/Factory/AuthClientFactory.swift`
 - `Sources/Auth/Repository/AuthRepositoryImpl.swift`
 - `Sources/Auth/Datasource/AuthRemoteDatasource.swift`
 - `Sources/Auth/Datasource/AuthLocalDatasource.swift`

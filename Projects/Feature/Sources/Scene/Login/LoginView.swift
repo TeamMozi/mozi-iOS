@@ -130,7 +130,8 @@ private enum LoginLayout {
                     accessToken: "preview-access",
                     refreshToken: "preview-refresh",
                     isNewUser: false,
-                    profileCompleted: true
+                    profileCompleted: true,
+                    userID: "preview-user"
                 )
             }
         }
@@ -155,7 +156,8 @@ private enum LoginLayout {
                     accessToken: "preview-access",
                     refreshToken: "preview-refresh",
                     isNewUser: false,
-                    profileCompleted: true
+                    profileCompleted: true,
+                    userID: "preview-user"
                 )
             }
         }

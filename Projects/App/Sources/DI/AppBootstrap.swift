@@ -8,7 +8,7 @@ enum AppBootstrap {
     @MainActor
     static func run() {
         _ = DesignSystemFontRegistration.registerIfNeeded()
-        let infra = InfraContainer.live()
+        let infra = InfraContainer.make()
         let kakaoAppKey = requireKakaoNativeAppKeyIfNeeded(
             infra.configuration.kakaoNativeAppKey
         )

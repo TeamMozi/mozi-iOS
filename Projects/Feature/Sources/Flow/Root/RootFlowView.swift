@@ -74,7 +74,8 @@ public struct RootFlowView: View {
                     accessToken: "preview-access",
                     refreshToken: "preview-refresh",
                     isNewUser: false,
-                    profileCompleted: true
+                    profileCompleted: true,
+                    userID: "preview-user"
                 )
             }
         }
