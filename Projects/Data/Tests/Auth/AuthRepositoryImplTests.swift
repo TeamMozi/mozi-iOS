@@ -22,7 +22,7 @@ final class AuthRepositoryImplTests: XCTestCase {
 
         XCTAssertEqual(session, expectedLoginSession)
         let stored = try await local.load()
-        XCTAssertEqual(stored, expectedLoginSession)
+        XCTAssertEqual(stored, expectedStoredSession)
         XCTAssertEqual(AuthURLProtocolStub.requests.count, 1)
         XCTAssertEqual(AuthURLProtocolStub.requests.first?.url?.path, "/api/auth/login/kakao")
     }
@@ -36,7 +36,7 @@ final class AuthRepositoryImplTests: XCTestCase {
 
         XCTAssertEqual(session, expectedLoginSession)
         let stored = try await local.load()
-        XCTAssertEqual(stored, expectedLoginSession)
+        XCTAssertEqual(stored, expectedStoredSession)
         XCTAssertEqual(AuthURLProtocolStub.requests.count, 1)
         XCTAssertEqual(AuthURLProtocolStub.requests.first?.url?.path, "/api/auth/login/apple")
     }
@@ -50,14 +50,14 @@ final class AuthRepositoryImplTests: XCTestCase {
 
         XCTAssertEqual(session, expectedLoginSession)
         let stored = try await local.load()
-        XCTAssertEqual(stored, expectedLoginSession)
+        XCTAssertEqual(stored, expectedStoredSession)
         XCTAssertEqual(AuthURLProtocolStub.requests.count, 1)
         XCTAssertEqual(AuthURLProtocolStub.requests.first?.url?.path, "/api/auth/login/dev")
     }
 
     func test_restoreSession은_로컬만_읽고_네트워크_호출_없음() async throws {
         let local = makeLocal()
-        try await local.save(existingSession)
+        try await local.save(existingStoredSession)
         AuthURLProtocolStub.requestHandler = { _ in
             XCTFail("restoreSession must not call network")
             return .init(statusCode: 500, headers: [:], data: Data())
@@ -72,7 +72,7 @@ final class AuthRepositoryImplTests: XCTestCase {
 
     func test_logout_원격_실패해도_로컬_세션_삭제() async throws {
         let local = makeLocal()
-        try await local.save(existingSession)
+        try await local.save(existingStoredSession)
         AuthURLProtocolStub.requestHandler = { _ in
             throw NSError(domain: NSURLErrorDomain, code: NSURLErrorNotConnectedToInternet)
         }
@@ -128,6 +128,25 @@ final class AuthRepositoryImplTests: XCTestCase {
         XCTAssertNil(stored)
     }
 
+    func test_login_키체인_저장_실패면_AuthError_storage() async throws {
+        let local = AuthLocalDatasource(
+            keychain: FailingKeychainStorage(failingOperations: [.save])
+        )
+        stubLoginSuccess()
+        let sut = try makeSUT(local: local)
+
+        do {
+            _ = try await sut.loginWithKakao(accessToken: "kakao-token")
+            XCTFail("expected storage")
+        } catch let error as AuthError {
+            guard case .storage = error else {
+                return XCTFail("unexpected \(error)")
+            }
+        } catch {
+            XCTFail("unexpected \(error)")
+        }
+    }
+
     func test_restoreSession_키체인_실패면_AuthError_storage() async throws {
         let local = AuthLocalDatasource(
             keychain: FailingKeychainStorage(failingOperations: [.get])
@@ -174,7 +193,18 @@ final class AuthRepositoryImplTests: XCTestCase {
             accessToken: "a1",
             refreshToken: "r1",
             isNewUser: false,
-            profileCompleted: true
+            profileCompleted: true,
+            userID: "1"
+        )
+    }
+
+    private var expectedStoredSession: AuthSessionStorageDTO {
+        AuthSessionStorageDTO(
+            accessToken: "a1",
+            refreshToken: "r1",
+            isNewUser: false,
+            profileCompleted: true,
+            userID: "1"
         )
     }
 
@@ -183,7 +213,18 @@ final class AuthRepositoryImplTests: XCTestCase {
             accessToken: "old-a",
             refreshToken: "old-r",
             isNewUser: true,
-            profileCompleted: false
+            profileCompleted: false,
+            userID: "u1"
+        )
+    }
+
+    private var existingStoredSession: AuthSessionStorageDTO {
+        AuthSessionStorageDTO(
+            accessToken: "old-a",
+            refreshToken: "old-r",
+            isNewUser: true,
+            profileCompleted: false,
+            userID: "u1"
         )
     }
 
@@ -197,6 +238,7 @@ final class AuthRepositoryImplTests: XCTestCase {
                     {
                       "accessToken":"a1",
                       "refreshToken":"r1",
+                      "userId":1,
                       "isNewUser":false,
                       "profileCompleted":true
                     }

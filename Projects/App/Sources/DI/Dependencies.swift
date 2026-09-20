@@ -13,10 +13,11 @@ enum Dependencies {
         let socialAuthServices = SocialAuthServiceFactory().make(
             configuration: socialConfig
         )
-        values.authClient = .live(
-            baseURL: infra.configuration.baseURL,
+        let authSession = AuthSessionAssembly.make(
             keychain: infra.keychain,
+            baseURL: infra.configuration.baseURL,
             socialAuthServices: socialAuthServices
         )
+        values.authClient = AuthClientFactory.make(session: authSession)
     }
 }

@@ -1,5 +1,3 @@
-import CoreNetwork
-import CoreStorage
 import Domain
 import Foundation
 
@@ -14,14 +12,20 @@ public struct AuthRepositoryImpl: Sendable {
 
     public func restoreSession() async throws -> AuthSession? {
         do {
-            return try await local.load()
+            guard let stored = try await local.load() else {
+                return nil
+            }
+            return AuthDTOMapper.domain(from: stored)
         } catch {
-            throw mapStorageError(error)
+            throw AuthErrorMapper.storage(error)
         }
     }
 
     public func currentSession() async -> AuthSession? {
-        try? await local.load()
+        guard let stored = try? await local.load() else {
+            return nil
+        }
+        return AuthDTOMapper.domain(from: stored)
     }
 
     public func loginWithKakao(accessToken: String) async throws -> AuthSession {
@@ -29,7 +33,7 @@ public struct AuthRepositoryImpl: Sendable {
             let dto = try await remote.loginWithKakao(accessToken: accessToken)
             return try await saveLoginSession(dto)
         } catch {
-            throw mapLoginError(error)
+            throw AuthErrorMapper.login(error)
         }
     }
 
@@ -38,7 +42,7 @@ public struct AuthRepositoryImpl: Sendable {
             let dto = try await remote.loginWithApple(identityToken: identityToken)
             return try await saveLoginSession(dto)
         } catch {
-            throw mapLoginError(error)
+            throw AuthErrorMapper.login(error)
         }
     }
 
@@ -47,7 +51,7 @@ public struct AuthRepositoryImpl: Sendable {
             let dto = try await remote.loginWithDev()
             return try await saveLoginSession(dto)
         } catch {
-            throw mapLoginError(error)
+            throw AuthErrorMapper.login(error)
         }
     }
 
@@ -61,47 +65,13 @@ public struct AuthRepositoryImpl: Sendable {
         do {
             try await local.clear()
         } catch {
-            throw mapStorageError(error)
+            throw AuthErrorMapper.storage(error)
         }
     }
 
+    /// 오류를 바꾸지 않고 그대로 던진다. 로그인 메서드의 catch 가 한 번만 바꾼다.
     private func saveLoginSession(_ dto: LoginResponseDTO) async throws -> AuthSession {
-        let session = dto.toDomain()
-        do {
-            try await local.save(session)
-            return session
-        } catch {
-            throw mapStorageError(error)
-        }
-    }
-
-    private func mapLoginError(_ error: Error) -> AuthError {
-        if let authError = error as? AuthError {
-            return authError
-        }
-
-        if error is KeychainError {
-            return mapStorageError(error)
-        }
-
-        guard let networkError = error as? NetworkError else {
-            return .unknown(message: String(describing: error))
-        }
-
-        switch networkError {
-        case .transport:
-            return .network
-        case .unauthorized, .badRequest:
-            return .loginFailed
-        default:
-            return .unknown(message: String(describing: networkError))
-        }
-    }
-
-    private func mapStorageError(_ error: Error) -> AuthError {
-        if let authError = error as? AuthError {
-            return authError
-        }
-        return .storage(message: String(describing: error))
+        try await local.save(AuthDTOMapper.storage(from: dto))
+        return AuthDTOMapper.domain(from: dto)
     }
 }

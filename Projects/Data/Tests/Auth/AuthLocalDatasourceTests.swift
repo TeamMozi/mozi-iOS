@@ -1,15 +1,15 @@
 @testable import Data
-import Domain
 import XCTest
 
 final class AuthLocalDatasourceTests: XCTestCase {
     func test_세션_저장_후_로드() async throws {
         let sut = makeSUT()
-        let session = AuthSession(
+        let session = AuthSessionStorageDTO(
             accessToken: "access",
             refreshToken: "refresh",
             isNewUser: true,
-            profileCompleted: false
+            profileCompleted: false,
+            userID: "u1"
         )
 
         try await sut.save(session)
@@ -20,11 +20,12 @@ final class AuthLocalDatasourceTests: XCTestCase {
 
     func test_세션_삭제_후_nil() async throws {
         let sut = makeSUT()
-        let session = AuthSession(
+        let session = AuthSessionStorageDTO(
             accessToken: "access",
             refreshToken: "refresh",
             isNewUser: false,
-            profileCompleted: true
+            profileCompleted: true,
+            userID: "u1"
         )
         try await sut.save(session)
 
@@ -36,11 +37,12 @@ final class AuthLocalDatasourceTests: XCTestCase {
 
     func test_accessToken은_세션_accessToken을_반환() async throws {
         let sut = makeSUT()
-        let session = AuthSession(
+        let session = AuthSessionStorageDTO(
             accessToken: "access-token-value",
             refreshToken: "refresh",
             isNewUser: false,
-            profileCompleted: true
+            profileCompleted: true,
+            userID: "u1"
         )
         try await sut.save(session)
 

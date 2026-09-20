@@ -29,7 +29,8 @@ final class RootFlowFeatureTests: XCTestCase {
             accessToken: "a",
             refreshToken: "r",
             isNewUser: true,
-            profileCompleted: false
+            profileCompleted: false,
+            userID: "u1"
         )
         let store = TestStore(
             initialState: RootFlowFeature.State(phase: .bootstrapping)
@@ -54,7 +55,8 @@ final class RootFlowFeatureTests: XCTestCase {
             accessToken: "a",
             refreshToken: "r",
             isNewUser: false,
-            profileCompleted: true
+            profileCompleted: true,
+            userID: "u1"
         )
         let store = TestStore(
             initialState: RootFlowFeature.State(phase: .bootstrapping)
@@ -79,7 +81,8 @@ final class RootFlowFeatureTests: XCTestCase {
             accessToken: "a",
             refreshToken: "r",
             isNewUser: false,
-            profileCompleted: true
+            profileCompleted: true,
+            userID: "u1"
         )
         let store = TestStore(
             initialState: RootFlowFeature.State(
@@ -100,7 +103,8 @@ final class RootFlowFeatureTests: XCTestCase {
             accessToken: "a",
             refreshToken: "r",
             isNewUser: true,
-            profileCompleted: false
+            profileCompleted: false,
+            userID: "u1"
         )
         let store = TestStore(
             initialState: RootFlowFeature.State(

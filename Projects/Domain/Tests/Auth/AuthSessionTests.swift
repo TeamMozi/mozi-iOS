@@ -7,27 +7,17 @@ final class AuthSessionTests: XCTestCase {
             accessToken: "a",
             refreshToken: "r",
             isNewUser: true,
-            profileCompleted: false
+            profileCompleted: false,
+            userID: "u1"
         )
         let b = AuthSession(
             accessToken: "a",
             refreshToken: "r",
             isNewUser: true,
-            profileCompleted: false
+            profileCompleted: false,
+            userID: "u1"
         )
         XCTAssertEqual(a, b)
-    }
-
-    func test_세션_codable_왕복() throws {
-        let original = AuthSession(
-            accessToken: "access",
-            refreshToken: "refresh",
-            isNewUser: false,
-            profileCompleted: true
-        )
-        let data = try JSONEncoder().encode(original)
-        let decoded = try JSONDecoder().decode(AuthSession.self, from: data)
-        XCTAssertEqual(decoded, original)
     }
 
     func test_AuthClient_testValue는_생성_가능() {

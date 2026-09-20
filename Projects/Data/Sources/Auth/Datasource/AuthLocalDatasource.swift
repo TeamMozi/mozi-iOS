@@ -1,6 +1,5 @@
 import CoreNetwork
 import CoreStorage
-import Domain
 import Foundation
 
 public struct AuthLocalDatasource: TokenProviding {
@@ -12,15 +11,15 @@ public struct AuthLocalDatasource: TokenProviding {
         self.sessionKey = sessionKey
     }
 
-    public func save(_ session: AuthSession) async throws {
-        try await keychain.save(session, forKey: sessionKey)
+    func save(_ dto: AuthSessionStorageDTO) async throws {
+        try await keychain.save(dto, forKey: sessionKey)
     }
 
-    public func load() async throws -> AuthSession? {
+    func load() async throws -> AuthSessionStorageDTO? {
         try await keychain.get(forKey: sessionKey)
     }
 
-    public func clear() async throws {
+    func clear() async throws {
         try await keychain.delete(forKey: sessionKey)
     }
 

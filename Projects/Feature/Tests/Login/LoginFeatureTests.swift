@@ -10,7 +10,8 @@ final class LoginFeatureTests: XCTestCase {
             accessToken: "a",
             refreshToken: "r",
             isNewUser: false,
-            profileCompleted: true
+            profileCompleted: true,
+            userID: "u1"
         )
         let store = TestStore(
             initialState: LoginFeature.State()
@@ -37,7 +38,8 @@ final class LoginFeatureTests: XCTestCase {
             accessToken: "a",
             refreshToken: "r",
             isNewUser: true,
-            profileCompleted: false
+            profileCompleted: false,
+            userID: "u1"
         )
         let store = TestStore(
             initialState: LoginFeature.State()

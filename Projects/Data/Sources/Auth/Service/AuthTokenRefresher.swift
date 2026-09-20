@@ -13,12 +13,12 @@ public actor AuthTokenRefresher: TokenRefreshing {
     }
 
     public func refresh() async throws {
-        let session: AuthSession
+        let stored: AuthSessionStorageDTO
         do {
             guard let loaded = try await local.load() else {
                 throw AuthError.unauthorized
             }
-            session = loaded
+            stored = loaded
         } catch let error as AuthError {
             throw error
         } catch {
@@ -26,9 +26,9 @@ public actor AuthTokenRefresher: TokenRefreshing {
         }
 
         do {
-            let tokens = try await remote.refresh(refreshToken: session.refreshToken)
+            let tokens = try await remote.refresh(refreshToken: stored.refreshToken)
             do {
-                try await local.save(tokens.applying(to: session))
+                try await local.save(AuthDTOMapper.storage(from: tokens, keeping: stored))
             } catch {
                 throw AuthError.storage(message: String(describing: error))
             }
