@@ -114,5 +114,6 @@ excluded:
   - DerivedData
   - .derivedData
   - .git
+  - .worktrees
   - Mozi.xcworkspace
   - "**/*.xcodeproj"
