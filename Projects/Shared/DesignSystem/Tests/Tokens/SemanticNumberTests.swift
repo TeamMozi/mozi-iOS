@@ -1,5 +1,5 @@
-import XCTest
 @testable import SharedDesignSystem
+import XCTest
 
 final class SemanticNumberTests: XCTestCase {
     func test_spacing과_radius_시맨틱_값() {

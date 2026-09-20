@@ -1,6 +1,6 @@
+@testable import SharedDesignSystem
 import SwiftUI
 import XCTest
-@testable import SharedDesignSystem
 
 final class TypographyTests: XCTestCase {
     func test_body_small14_regular_메트릭스() {

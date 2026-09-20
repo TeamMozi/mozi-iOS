@@ -1,5 +1,5 @@
-import XCTest
 @testable import SharedDesignSystem
+import XCTest
 
 final class FontRegistrationTests: XCTestCase {
     func test_폰트_리소스가_존재() {
