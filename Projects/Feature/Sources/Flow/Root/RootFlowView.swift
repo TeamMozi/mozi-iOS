@@ -3,10 +3,10 @@ import SharedDesignSystem
 import SwiftUI
 import ThirdParty
 
-public struct AppCoordinatorView: View {
-    @Bindable public var store: StoreOf<AppCoordinatorFeature>
+public struct RootFlowView: View {
+    @Bindable public var store: StoreOf<RootFlowFeature>
 
-    public init(store: StoreOf<AppCoordinatorFeature>) {
+    public init(store: StoreOf<RootFlowFeature>) {
         self.store = store
     }
 
@@ -41,15 +41,15 @@ public struct AppCoordinatorView: View {
 
 // MARK: - Preview
 
-#Preview("Coordinator / Bootstrapping") {
-    AppCoordinatorView(
+#Preview("RootFlow / Bootstrapping") {
+    RootFlowView(
         store: Store(
-            initialState: AppCoordinatorFeature.State(
+            initialState: RootFlowFeature.State(
                 phase: .bootstrapping,
                 isRestoringSession: true
             )
         ) {
-            AppCoordinatorFeature()
+            RootFlowFeature()
         } withDependencies: {
             $0.authClient.restoreSession = {
                 try await Task.sleep(nanoseconds: 60_000_000_000)
@@ -59,14 +59,14 @@ public struct AppCoordinatorView: View {
     )
 }
 
-#Preview("Coordinator / Login") {
-    AppCoordinatorView(
+#Preview("RootFlow / Login") {
+    RootFlowView(
         store: Store(
-            initialState: AppCoordinatorFeature.State(
+            initialState: RootFlowFeature.State(
                 phase: .login(LoginFeature.State())
             )
         ) {
-            AppCoordinatorFeature()
+            RootFlowFeature()
         } withDependencies: {
             $0.authClient.restoreSession = { nil }
             $0.authClient.login = { _ in
@@ -84,14 +84,14 @@ public struct AppCoordinatorView: View {
     }
 }
 
-#Preview("Coordinator / Onboarding") {
-    AppCoordinatorView(
+#Preview("RootFlow / Onboarding") {
+    RootFlowView(
         store: Store(
-            initialState: AppCoordinatorFeature.State(
+            initialState: RootFlowFeature.State(
                 phase: .onboarding(OnboardingPlaceholderFeature.State())
             )
         ) {
-            AppCoordinatorFeature()
+            RootFlowFeature()
         } withDependencies: {
             $0.authClient.restoreSession = { nil }
             $0.authClient.logout = {}
@@ -102,48 +102,48 @@ public struct AppCoordinatorView: View {
     }
 }
 
-#Preview("Coordinator / Main") {
-    AppCoordinatorView(
+#Preview("RootFlow / Main") {
+    RootFlowView(
         store: Store(
-            initialState: AppCoordinatorFeature.State(
+            initialState: RootFlowFeature.State(
                 phase: .main(PlaceholderFeature.State())
             )
         ) {
-            AppCoordinatorFeature()
+            RootFlowFeature()
         } withDependencies: {
             $0.authClient.restoreSession = { nil }
         }
     )
 }
 
-#Preview("Coordinator / Main + Toast") {
-    AppCoordinatorView(
+#Preview("RootFlow / Main + Toast") {
+    RootFlowView(
         store: Store(
-            initialState: AppCoordinatorFeature.State(
+            initialState: RootFlowFeature.State(
                 phase: .main(PlaceholderFeature.State()),
                 overlay: OverlayFeature.State(
                     toastMessage: "홈으로 이동했어요"
                 )
             )
         ) {
-            AppCoordinatorFeature()
+            RootFlowFeature()
         } withDependencies: {
             $0.authClient.restoreSession = { nil }
         }
     )
 }
 
-#Preview("Coordinator / Login + Toast") {
-    AppCoordinatorView(
+#Preview("RootFlow / Login + Toast") {
+    RootFlowView(
         store: Store(
-            initialState: AppCoordinatorFeature.State(
+            initialState: RootFlowFeature.State(
                 phase: .login(LoginFeature.State()),
                 overlay: OverlayFeature.State(
                     toastMessage: "로그인에 실패했어요"
                 )
             )
         ) {
-            AppCoordinatorFeature()
+            RootFlowFeature()
         } withDependencies: {
             $0.authClient.restoreSession = { nil }
             $0.authClient.login = { _ in
@@ -156,17 +156,17 @@ public struct AppCoordinatorView: View {
     }
 }
 
-#Preview("Coordinator / Login + Alert") {
-    AppCoordinatorView(
+#Preview("RootFlow / Login + Alert") {
+    RootFlowView(
         store: Store(
-            initialState: AppCoordinatorFeature.State(
+            initialState: RootFlowFeature.State(
                 phase: .login(LoginFeature.State()),
                 overlay: OverlayFeature.State(
                     alertMessage: "로그인 설정이 완료되지 않았어요."
                 )
             )
         ) {
-            AppCoordinatorFeature()
+            RootFlowFeature()
         } withDependencies: {
             $0.authClient.restoreSession = { nil }
             $0.authClient.login = { _ in

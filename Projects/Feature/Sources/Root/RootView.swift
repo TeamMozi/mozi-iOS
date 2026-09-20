@@ -11,8 +11,8 @@ public struct RootView: View {
     }
 
     public var body: some View {
-        AppCoordinatorView(
-            store: store.scope(state: \.appCoordinator, action: \.appCoordinator)
+        RootFlowView(
+            store: store.scope(state: \.rootFlow, action: \.rootFlow)
         )
     }
 }
@@ -23,7 +23,7 @@ public struct RootView: View {
     RootView(
         store: Store(
             initialState: RootFeature.State(
-                appCoordinator: AppCoordinatorFeature.State(
+                rootFlow: RootFlowFeature.State(
                     phase: .bootstrapping,
                     isRestoringSession: true
                 )
@@ -43,7 +43,7 @@ public struct RootView: View {
     RootView(
         store: Store(
             initialState: RootFeature.State(
-                appCoordinator: AppCoordinatorFeature.State(
+                rootFlow: RootFlowFeature.State(
                     phase: .login(LoginFeature.State())
                 )
             )
@@ -70,7 +70,7 @@ public struct RootView: View {
     RootView(
         store: Store(
             initialState: RootFeature.State(
-                appCoordinator: AppCoordinatorFeature.State(
+                rootFlow: RootFlowFeature.State(
                     phase: .onboarding(OnboardingPlaceholderFeature.State())
                 )
             )
@@ -90,7 +90,7 @@ public struct RootView: View {
     RootView(
         store: Store(
             initialState: RootFeature.State(
-                appCoordinator: AppCoordinatorFeature.State(
+                rootFlow: RootFlowFeature.State(
                     phase: .main(PlaceholderFeature.State())
                 )
             )

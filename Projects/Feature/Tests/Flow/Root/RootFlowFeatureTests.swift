@@ -4,12 +4,12 @@ import ThirdParty
 import XCTest
 
 @MainActor
-final class AppCoordinatorFeatureTests: XCTestCase {
+final class RootFlowFeatureTests: XCTestCase {
     func test_세션없으면_로그인으로_진입() async {
         let store = TestStore(
-            initialState: AppCoordinatorFeature.State(phase: .bootstrapping)
+            initialState: RootFlowFeature.State(phase: .bootstrapping)
         ) {
-            AppCoordinatorFeature()
+            RootFlowFeature()
         } withDependencies: {
             $0.authClient.restoreSession = { nil }
         }
@@ -32,9 +32,9 @@ final class AppCoordinatorFeatureTests: XCTestCase {
             profileCompleted: false
         )
         let store = TestStore(
-            initialState: AppCoordinatorFeature.State(phase: .bootstrapping)
+            initialState: RootFlowFeature.State(phase: .bootstrapping)
         ) {
-            AppCoordinatorFeature()
+            RootFlowFeature()
         } withDependencies: {
             $0.authClient.restoreSession = { session }
         }
@@ -57,9 +57,9 @@ final class AppCoordinatorFeatureTests: XCTestCase {
             profileCompleted: true
         )
         let store = TestStore(
-            initialState: AppCoordinatorFeature.State(phase: .bootstrapping)
+            initialState: RootFlowFeature.State(phase: .bootstrapping)
         ) {
-            AppCoordinatorFeature()
+            RootFlowFeature()
         } withDependencies: {
             $0.authClient.restoreSession = { session }
         }
@@ -82,11 +82,11 @@ final class AppCoordinatorFeatureTests: XCTestCase {
             profileCompleted: true
         )
         let store = TestStore(
-            initialState: AppCoordinatorFeature.State(
+            initialState: RootFlowFeature.State(
                 phase: .login(LoginFeature.State())
             )
         ) {
-            AppCoordinatorFeature()
+            RootFlowFeature()
         }
 
         await store.send(.login(.delegate(.loggedIn(session)))) {
@@ -103,11 +103,11 @@ final class AppCoordinatorFeatureTests: XCTestCase {
             profileCompleted: false
         )
         let store = TestStore(
-            initialState: AppCoordinatorFeature.State(
+            initialState: RootFlowFeature.State(
                 phase: .login(LoginFeature.State())
             )
         ) {
-            AppCoordinatorFeature()
+            RootFlowFeature()
         }
 
         await store.send(.login(.delegate(.loggedIn(session)))) {
@@ -118,11 +118,11 @@ final class AppCoordinatorFeatureTests: XCTestCase {
 
     func test_온보딩_로그아웃_delegate면_로그인으로_전환() async {
         let store = TestStore(
-            initialState: AppCoordinatorFeature.State(
+            initialState: RootFlowFeature.State(
                 phase: .onboarding(OnboardingPlaceholderFeature.State())
             )
         ) {
-            AppCoordinatorFeature()
+            RootFlowFeature()
         }
 
         await store.send(.onboarding(.delegate(.loggedOut))) {
@@ -132,9 +132,9 @@ final class AppCoordinatorFeatureTests: XCTestCase {
 
     func test_restore_실패하면_로그인으로_진입() async {
         let store = TestStore(
-            initialState: AppCoordinatorFeature.State(phase: .bootstrapping)
+            initialState: RootFlowFeature.State(phase: .bootstrapping)
         ) {
-            AppCoordinatorFeature()
+            RootFlowFeature()
         } withDependencies: {
             $0.authClient.restoreSession = {
                 throw AuthError.storage(message: "keychain")
@@ -153,11 +153,11 @@ final class AppCoordinatorFeatureTests: XCTestCase {
 
     func test_로그인_중_딥링크는_pending으로_유지() async {
         let store = TestStore(
-            initialState: AppCoordinatorFeature.State(
+            initialState: RootFlowFeature.State(
                 phase: .login(LoginFeature.State())
             )
         ) {
-            AppCoordinatorFeature()
+            RootFlowFeature()
         }
 
         await store.send(.routeDeepLink(.home)) {
@@ -167,12 +167,12 @@ final class AppCoordinatorFeatureTests: XCTestCase {
 
     func test_온보딩_중_flush는_딥링크를_처리하지_않음() async {
         let store = TestStore(
-            initialState: AppCoordinatorFeature.State(
+            initialState: RootFlowFeature.State(
                 phase: .onboarding(OnboardingPlaceholderFeature.State()),
                 pendingDeepLink: .home
             )
         ) {
-            AppCoordinatorFeature()
+            RootFlowFeature()
         }
 
         await store.send(.flushPendingDeepLink)
@@ -180,12 +180,12 @@ final class AppCoordinatorFeatureTests: XCTestCase {
 
     func test_메인_진입_후_pending_딥링크를_flush() async {
         let store = TestStore(
-            initialState: AppCoordinatorFeature.State(
+            initialState: RootFlowFeature.State(
                 phase: .main(PlaceholderFeature.State()),
                 pendingDeepLink: .home
             )
         ) {
-            AppCoordinatorFeature()
+            RootFlowFeature()
         }
 
         await store.send(.flushPendingDeepLink) {
@@ -197,9 +197,9 @@ final class AppCoordinatorFeatureTests: XCTestCase {
     func test_부트스트랩_중복_onAppear는_restore를_한_번만_호출() async {
         let gate = RestoreGate()
         let store = TestStore(
-            initialState: AppCoordinatorFeature.State(phase: .bootstrapping)
+            initialState: RootFlowFeature.State(phase: .bootstrapping)
         ) {
-            AppCoordinatorFeature()
+            RootFlowFeature()
         } withDependencies: {
             $0.authClient.restoreSession = {
                 await gate.markStartedAndWait()
@@ -227,11 +227,11 @@ final class AppCoordinatorFeatureTests: XCTestCase {
 
     func test_로그인_toast_delegate면_overlay_toast_표시() async {
         let store = TestStore(
-            initialState: AppCoordinatorFeature.State(
+            initialState: RootFlowFeature.State(
                 phase: .login(LoginFeature.State())
             )
         ) {
-            AppCoordinatorFeature()
+            RootFlowFeature()
         }
 
         await store.send(.login(.delegate(.presentToast("로그인에 실패했어요"))))
@@ -242,11 +242,11 @@ final class AppCoordinatorFeatureTests: XCTestCase {
 
     func test_로그인_alert_delegate면_overlay_alert_표시() async {
         let store = TestStore(
-            initialState: AppCoordinatorFeature.State(
+            initialState: RootFlowFeature.State(
                 phase: .login(LoginFeature.State())
             )
         ) {
-            AppCoordinatorFeature()
+            RootFlowFeature()
         }
 
         await store.send(.login(.delegate(.presentAlert("로그인 설정이 완료되지 않았어요."))))

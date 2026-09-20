@@ -3,7 +3,7 @@ import Foundation
 import ThirdParty
 
 @Reducer
-public struct AppCoordinatorFeature {
+public struct RootFlowFeature {
     @ObservableState
     public struct State: Equatable {
         public var phase: Phase = .bootstrapping
