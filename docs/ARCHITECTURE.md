@@ -6,7 +6,7 @@
 세로 계층 = 모듈
 가로 Feature = 폴더
 외부 의존성 = ThirdParty*
-기술 구현 = Core/* / 도메인 오케스트레이션 = Data / live 등록 = App only
+기술 구현 = Core/* / 도메인 오케스트레이션 = Data / 등록 = App only
 ```
 
 ---
@@ -32,9 +32,9 @@ Projects/
 | ThirdParty* | 외부 패키지 진입점 |
 | Domain | Entity, `*Client`, Error |
 | Core/* | Network/Storage/SocialAuth 등 기술 구현. Domain 모름 |
-| Data | DTO, Datasource, `*RepositoryImpl`, `*ClientFactory`, `*Client.live` (Remote는 순수 서버 통신) |
+| Data | DTO, Datasource, Mapper, `*RepositoryImpl`, `*ClientFactory`, `*SessionAssembly` (Remote는 순수 서버 통신) |
 | Feature | Root, Flow, Scene |
-| App | bootstrap, live 주입, root store |
+| App | bootstrap, 의존성 주입, root store |
 
 `RootFeature` 는 상태가 없는 통과 계층이지만 남긴다. 앱 전체에 걸치는 상태가 생기면 둘 자리다.
 
@@ -66,9 +66,9 @@ Core/*  → Domain / Data / Feature / App
 MoziApp
   → CompositionRoot.makeRootStore()
       → AppBootstrap
-          → InfraContainer.live()
+          → InfraContainer.make()
           → Dependencies.register
-              → AuthClient.live(...)
+              → AuthClientFactory.make(session:)
       → Store(RootFeature)
   → RootView → RootFlowView
 ```
@@ -102,7 +102,7 @@ Keychain service 는 Bundle ID 를 사용하고, UserDefaults 는 standard 를 �
 ## 4. 새 기능
 
 1. Domain `{Model,Error,Client}`
-2. Data `{DTO,Datasource,RepositoryImpl,ClientFactory,Client.live}`
+2. Data `{DTO,Datasource,Mapper,RepositoryImpl,ClientFactory,SessionAssembly}`
 3. App `Dependencies.register`
 4. Feature `Scene/<Name>`
 5. 필요 시 Flow/Root/DeepLink
