@@ -34,6 +34,10 @@ opt_in_rules:
   - closure_spacing
   - vertical_whitespace_closing_braces
 
+# swiftlint analyze 에서만 도는 규칙. swiftlint lint 는 돌리지 않는다.
+analyzer_rules:
+  - unused_import
+
 # 안전성
 force_unwrapping: error
 implicitly_unwrapped_optional: error
