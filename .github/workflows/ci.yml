@@ -55,9 +55,11 @@ jobs:
           cp Config/Example.xcconfig Config/Release.xcconfig
 
       - name: Generate project
+        id: generate
         run: mise exec -- tuist generate --no-open
 
       - name: Select simulator
+        id: simulator
         run: |
           DESTINATION="$(
             python3 -c '
@@ -98,11 +100,78 @@ jobs:
             -skipMacroValidation \
             build
 
-      - name: Test Feature Reducers
+      - name: Test Feature
+        if: ${{ !cancelled() && steps.generate.outcome == 'success' && steps.simulator.outcome == 'success' }}
         run: |
           xcodebuild \
             -workspace Mozi.xcworkspace \
             -scheme Feature \
+            -destination "$DESTINATION" \
+            -derivedDataPath .derivedData \
+            -skipMacroValidation \
+            test
+
+      - name: Test Data
+        if: ${{ !cancelled() && steps.generate.outcome == 'success' && steps.simulator.outcome == 'success' }}
+        run: |
+          xcodebuild \
+            -workspace Mozi.xcworkspace \
+            -scheme Data \
+            -destination "$DESTINATION" \
+            -derivedDataPath .derivedData \
+            -skipMacroValidation \
+            test
+
+      - name: Test Domain
+        if: ${{ !cancelled() && steps.generate.outcome == 'success' && steps.simulator.outcome == 'success' }}
+        run: |
+          xcodebuild \
+            -workspace Mozi.xcworkspace \
+            -scheme Domain \
+            -destination "$DESTINATION" \
+            -derivedDataPath .derivedData \
+            -skipMacroValidation \
+            test
+
+      - name: Test CoreNetwork
+        if: ${{ !cancelled() && steps.generate.outcome == 'success' && steps.simulator.outcome == 'success' }}
+        run: |
+          xcodebuild \
+            -workspace Mozi.xcworkspace \
+            -scheme CoreNetwork \
+            -destination "$DESTINATION" \
+            -derivedDataPath .derivedData \
+            -skipMacroValidation \
+            test
+
+      - name: Test CoreSocialAuth
+        if: ${{ !cancelled() && steps.generate.outcome == 'success' && steps.simulator.outcome == 'success' }}
+        run: |
+          xcodebuild \
+            -workspace Mozi.xcworkspace \
+            -scheme CoreSocialAuth \
+            -destination "$DESTINATION" \
+            -derivedDataPath .derivedData \
+            -skipMacroValidation \
+            test
+
+      - name: Test SharedDesignSystem
+        if: ${{ !cancelled() && steps.generate.outcome == 'success' && steps.simulator.outcome == 'success' }}
+        run: |
+          xcodebuild \
+            -workspace Mozi.xcworkspace \
+            -scheme SharedDesignSystem \
+            -destination "$DESTINATION" \
+            -derivedDataPath .derivedData \
+            -skipMacroValidation \
+            test
+
+      - name: Test SharedUtils
+        if: ${{ !cancelled() && steps.generate.outcome == 'success' && steps.simulator.outcome == 'success' }}
+        run: |
+          xcodebuild \
+            -workspace Mozi.xcworkspace \
+            -scheme SharedUtils \
             -destination "$DESTINATION" \
             -derivedDataPath .derivedData \
             -skipMacroValidation \
