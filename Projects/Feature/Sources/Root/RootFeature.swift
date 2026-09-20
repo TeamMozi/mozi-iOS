@@ -5,22 +5,22 @@ import ThirdParty
 public struct RootFeature {
     @ObservableState
     public struct State: Equatable {
-        public var appCoordinator = AppCoordinatorFeature.State()
+        public var rootFlow = RootFlowFeature.State()
 
-        public init(appCoordinator: AppCoordinatorFeature.State = AppCoordinatorFeature.State()) {
-            self.appCoordinator = appCoordinator
+        public init(rootFlow: RootFlowFeature.State = RootFlowFeature.State()) {
+            self.rootFlow = rootFlow
         }
     }
 
     public enum Action: Equatable {
-        case appCoordinator(AppCoordinatorFeature.Action)
+        case rootFlow(RootFlowFeature.Action)
     }
 
     public init() {}
 
     public var body: some ReducerOf<Self> {
-        Scope(state: \.appCoordinator, action: \.appCoordinator) {
-            AppCoordinatorFeature()
+        Scope(state: \.rootFlow, action: \.rootFlow) {
+            RootFlowFeature()
         }
     }
 }

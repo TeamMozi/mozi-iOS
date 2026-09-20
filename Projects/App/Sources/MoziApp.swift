@@ -19,7 +19,7 @@ struct MoziApp: App {
                     if KakaoAuthRedirectHandler.handle(url: url) {
                         return
                     }
-                    store.send(.appCoordinator(.deepLinkReceived(url)))
+                    store.send(.rootFlow(.deepLinkReceived(url)))
                 }
         }
     }
