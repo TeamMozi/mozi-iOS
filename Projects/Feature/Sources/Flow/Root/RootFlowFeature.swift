@@ -26,8 +26,8 @@ public struct RootFlowFeature {
         public enum Phase: Equatable {
             case bootstrapping
             case login(LoginFeature.State)
-            case onboarding(OnboardingPlaceholderFeature.State)
-            case main(PlaceholderFeature.State)
+            case onboarding(OnboardingFlowFeature.State)
+            case main(MainTabFeature.State)
         }
 
         public var login: LoginFeature.State? {
@@ -42,7 +42,7 @@ public struct RootFlowFeature {
             }
         }
 
-        public var onboarding: OnboardingPlaceholderFeature.State? {
+        public var onboarding: OnboardingFlowFeature.State? {
             get {
                 guard case let .onboarding(state) = phase else { return nil }
                 return state
@@ -54,7 +54,7 @@ public struct RootFlowFeature {
             }
         }
 
-        public var mainPlaceholder: PlaceholderFeature.State? {
+        public var mainTab: MainTabFeature.State? {
             get {
                 guard case let .main(state) = phase else { return nil }
                 return state
@@ -74,8 +74,8 @@ public struct RootFlowFeature {
         case routeDeepLink(DeepLinkRoute)
         case flushPendingDeepLink
         case login(LoginFeature.Action)
-        case onboarding(OnboardingPlaceholderFeature.Action)
-        case main(PlaceholderFeature.Action)
+        case onboarding(OnboardingFlowFeature.Action)
+        case main(MainTabFeature.Action)
         case overlay(OverlayFeature.Action)
     }
 
@@ -92,10 +92,10 @@ public struct RootFlowFeature {
                 LoginFeature()
             }
             .ifLet(\.onboarding, action: \.onboarding) {
-                OnboardingPlaceholderFeature()
+                OnboardingFlowFeature()
             }
-            .ifLet(\.mainPlaceholder, action: \.main) {
-                PlaceholderFeature()
+            .ifLet(\.mainTab, action: \.main) {
+                MainTabFeature()
             }
     }
 
@@ -129,7 +129,7 @@ public struct RootFlowFeature {
         case let .login(.delegate(.presentAlert(message))):
             return .send(.overlay(.showAlert(message)))
 
-        case .onboarding(.delegate(.loggedOut)):
+        case .main(.delegate(.loggedOut)):
             state.phase = .login(LoginFeature.State())
             return .none
 
@@ -220,9 +220,9 @@ public struct RootFlowFeature {
         }
 
         if session.profileCompleted {
-            state.phase = .main(PlaceholderFeature.State())
+            state.phase = .main(MainTabFeature.State())
         } else {
-            state.phase = .onboarding(OnboardingPlaceholderFeature.State())
+            state.phase = .onboarding(OnboardingFlowFeature.State())
         }
     }
 }

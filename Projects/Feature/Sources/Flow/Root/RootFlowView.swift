@@ -22,11 +22,11 @@ public struct RootFlowView: View {
                 }
             case .onboarding:
                 if let onboardingStore = store.scope(state: \.onboarding, action: \.onboarding) {
-                    OnboardingPlaceholderView(store: onboardingStore)
+                    OnboardingFlowView(store: onboardingStore)
                 }
             case .main:
-                if let mainStore = store.scope(state: \.mainPlaceholder, action: \.main) {
-                    PlaceholderView(store: mainStore)
+                if let mainStore = store.scope(state: \.mainTab, action: \.main) {
+                    MainTabView(store: mainStore)
                 }
             }
         }
@@ -89,7 +89,7 @@ public struct RootFlowView: View {
     RootFlowView(
         store: Store(
             initialState: RootFlowFeature.State(
-                phase: .onboarding(OnboardingPlaceholderFeature.State())
+                phase: .onboarding(OnboardingFlowFeature.State())
             )
         ) {
             RootFlowFeature()
@@ -107,12 +107,13 @@ public struct RootFlowView: View {
     RootFlowView(
         store: Store(
             initialState: RootFlowFeature.State(
-                phase: .main(PlaceholderFeature.State())
+                phase: .main(MainTabFeature.State())
             )
         ) {
             RootFlowFeature()
         } withDependencies: {
             $0.authClient.restoreSession = { nil }
+            $0.authClient.logout = {}
         }
     )
 }
@@ -121,7 +122,7 @@ public struct RootFlowView: View {
     RootFlowView(
         store: Store(
             initialState: RootFlowFeature.State(
-                phase: .main(PlaceholderFeature.State()),
+                phase: .main(MainTabFeature.State()),
                 overlay: OverlayFeature.State(
                     toastMessage: "홈으로 이동했어요"
                 )
@@ -130,6 +131,7 @@ public struct RootFlowView: View {
             RootFlowFeature()
         } withDependencies: {
             $0.authClient.restoreSession = { nil }
+            $0.authClient.logout = {}
         }
     )
 }
