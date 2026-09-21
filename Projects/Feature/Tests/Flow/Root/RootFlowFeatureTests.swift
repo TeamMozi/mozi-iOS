@@ -45,7 +45,7 @@ final class RootFlowFeatureTests: XCTestCase {
         }
         await store.receive(.bootstrapResponse(.success(session))) {
             $0.isRestoringSession = false
-            $0.phase = .onboarding(OnboardingPlaceholderFeature.State())
+            $0.phase = .onboarding(OnboardingFlowFeature.State())
         }
         await store.receive(.flushPendingDeepLink)
     }
@@ -71,7 +71,7 @@ final class RootFlowFeatureTests: XCTestCase {
         }
         await store.receive(.bootstrapResponse(.success(session))) {
             $0.isRestoringSession = false
-            $0.phase = .main(PlaceholderFeature.State())
+            $0.phase = .main(MainTabFeature.State())
         }
         await store.receive(.flushPendingDeepLink)
     }
@@ -93,7 +93,7 @@ final class RootFlowFeatureTests: XCTestCase {
         }
 
         await store.send(.login(.delegate(.loggedIn(session)))) {
-            $0.phase = .main(PlaceholderFeature.State())
+            $0.phase = .main(MainTabFeature.State())
         }
         await store.receive(.flushPendingDeepLink)
     }
@@ -115,21 +115,21 @@ final class RootFlowFeatureTests: XCTestCase {
         }
 
         await store.send(.login(.delegate(.loggedIn(session)))) {
-            $0.phase = .onboarding(OnboardingPlaceholderFeature.State())
+            $0.phase = .onboarding(OnboardingFlowFeature.State())
         }
         await store.receive(.flushPendingDeepLink)
     }
 
-    func test_온보딩_로그아웃_delegate면_로그인으로_전환() async {
+    func test_탭허브_로그아웃_delegate면_로그인으로_전환() async {
         let store = TestStore(
             initialState: RootFlowFeature.State(
-                phase: .onboarding(OnboardingPlaceholderFeature.State())
+                phase: .main(MainTabFeature.State())
             )
         ) {
             RootFlowFeature()
         }
 
-        await store.send(.onboarding(.delegate(.loggedOut))) {
+        await store.send(.main(.delegate(.loggedOut))) {
             $0.phase = .login(LoginFeature.State())
         }
     }
@@ -172,7 +172,7 @@ final class RootFlowFeatureTests: XCTestCase {
     func test_온보딩_중_flush는_딥링크를_처리하지_않음() async {
         let store = TestStore(
             initialState: RootFlowFeature.State(
-                phase: .onboarding(OnboardingPlaceholderFeature.State()),
+                phase: .onboarding(OnboardingFlowFeature.State()),
                 pendingDeepLink: .home
             )
         ) {
@@ -185,7 +185,7 @@ final class RootFlowFeatureTests: XCTestCase {
     func test_메인_진입_후_pending_딥링크를_flush() async {
         let store = TestStore(
             initialState: RootFlowFeature.State(
-                phase: .main(PlaceholderFeature.State()),
+                phase: .main(MainTabFeature.State()),
                 pendingDeepLink: .home
             )
         ) {

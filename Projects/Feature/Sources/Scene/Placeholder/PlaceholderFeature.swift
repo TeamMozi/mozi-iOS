@@ -5,7 +5,11 @@ import ThirdParty
 public struct PlaceholderFeature {
     @ObservableState
     public struct State: Equatable {
-        public init() {}
+        public var title: String
+
+        public init(title: String) {
+            self.title = title
+        }
     }
 
     public enum Action: Equatable {

@@ -79,12 +79,16 @@ MoziApp
 bootstrapping
   → restoreSession()
       nil → login(LoginFeature)
-      profileCompleted == false → onboarding(OnboardingPlaceholderFeature)
-      profileCompleted == true → main(Placeholder)
+      profileCompleted == false → onboarding(OnboardingFlowFeature)
+      profileCompleted == true → main(MainTabFeature)
 ```
 
 Auth 인프라 + 로그인 게이트 + CoreSocialAuth 기반 카카오/애플 연동이 존재한다.
-App 은 SocialAuth factory 조립과 bootstrap/redirect 호출만 담당한다. MainTab 은 후속이다.
+App 은 SocialAuth factory 조립과 bootstrap/redirect 호출만 담당한다.
+
+MainTab 이 탭 다섯(`shortform` / `search` / `chat` / `myPage` / `create`)을 쥔다.
+탭 안에 들어갈 화면은 아직 없고 컨테이너와 자리표시 화면만 있다.
+로그아웃은 마이 탭 하나에서만 나가고 MyPageFlow → MainTab → RootFlow 를 거쳐 login 으로 되돌린다.
 
 ---
 

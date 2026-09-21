@@ -9,7 +9,7 @@ public struct PlaceholderView: View {
     }
 
     public var body: some View {
-        Text("Mozi")
+        Text(store.title)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .task {
                 store.send(.onAppear)
@@ -19,9 +19,9 @@ public struct PlaceholderView: View {
 
 // MARK: - Preview
 
-#Preview("Main Placeholder") {
+#Preview("Placeholder / Shortform") {
     PlaceholderView(
-        store: Store(initialState: PlaceholderFeature.State()) {
+        store: Store(initialState: PlaceholderFeature.State(title: "Shortform")) {
             PlaceholderFeature()
         }
     )

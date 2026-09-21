@@ -72,7 +72,7 @@ public struct RootView: View {
         store: Store(
             initialState: RootFeature.State(
                 rootFlow: RootFlowFeature.State(
-                    phase: .onboarding(OnboardingPlaceholderFeature.State())
+                    phase: .onboarding(OnboardingFlowFeature.State())
                 )
             )
         ) {
@@ -92,13 +92,14 @@ public struct RootView: View {
         store: Store(
             initialState: RootFeature.State(
                 rootFlow: RootFlowFeature.State(
-                    phase: .main(PlaceholderFeature.State())
+                    phase: .main(MainTabFeature.State())
                 )
             )
         ) {
             RootFeature()
         } withDependencies: {
             $0.authClient.restoreSession = { nil }
+            $0.authClient.logout = {}
         }
     )
 }
