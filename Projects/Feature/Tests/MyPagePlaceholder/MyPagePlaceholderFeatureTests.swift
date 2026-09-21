@@ -4,12 +4,12 @@ import ThirdParty
 import XCTest
 
 @MainActor
-final class OnboardingPlaceholderFeatureTests: XCTestCase {
+final class MyPagePlaceholderFeatureTests: XCTestCase {
     func test_로그아웃_성공하면_delegate_loggedOut() async {
         let store = TestStore(
-            initialState: OnboardingPlaceholderFeature.State()
+            initialState: MyPagePlaceholderFeature.State()
         ) {
-            OnboardingPlaceholderFeature()
+            MyPagePlaceholderFeature()
         } withDependencies: {
             $0.authClient.logout = {}
         }
@@ -18,7 +18,7 @@ final class OnboardingPlaceholderFeatureTests: XCTestCase {
             $0.isLoggingOut = true
             $0.errorMessage = nil
         }
-        await store.receive(.logoutResponse(.success(OnboardingPlaceholderFeature.EquatableVoid()))) {
+        await store.receive(.logoutResponse(.success(MyPagePlaceholderFeature.EquatableVoid()))) {
             $0.isLoggingOut = false
             $0.errorMessage = nil
         }
@@ -27,9 +27,9 @@ final class OnboardingPlaceholderFeatureTests: XCTestCase {
 
     func test_로그아웃_로컬삭제_실패면_에러표시_후_유지() async {
         let store = TestStore(
-            initialState: OnboardingPlaceholderFeature.State()
+            initialState: MyPagePlaceholderFeature.State()
         ) {
-            OnboardingPlaceholderFeature()
+            MyPagePlaceholderFeature()
         } withDependencies: {
             $0.authClient.logout = {
                 throw AuthError.storage(message: "keychain")
@@ -44,5 +44,15 @@ final class OnboardingPlaceholderFeatureTests: XCTestCase {
             $0.isLoggingOut = false
             $0.errorMessage = "로그아웃 정보를 지우지 못했어요. 다시 시도해 주세요."
         }
+    }
+
+    func test_로그아웃_중_중복탭은_무시한다() async {
+        let store = TestStore(
+            initialState: MyPagePlaceholderFeature.State(isLoggingOut: true)
+        ) {
+            MyPagePlaceholderFeature()
+        }
+
+        await store.send(.logoutTapped)
     }
 }
