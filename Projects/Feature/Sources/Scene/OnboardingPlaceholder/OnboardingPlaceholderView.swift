@@ -1,4 +1,3 @@
-import Domain
 import SharedDesignSystem
 import SwiftUI
 import ThirdParty
@@ -29,27 +28,6 @@ public struct OnboardingPlaceholderView: View {
             )
 
             Spacer()
-
-            if let errorMessage = store.errorMessage {
-                DesignText(
-                    errorMessage,
-                    style: TextStyle.ds.body.small14Regular,
-                    color: Color.ds.text.primary.basic,
-                    alignment: .center
-                )
-            }
-
-            DesignButton(
-                "로그아웃",
-                variant: .outlined,
-                size: .lg,
-                isEnabled: store.isLoggingOut == false,
-                isFullWidth: true
-            ) {
-                store.send(.logoutTapped)
-            }
-            .padding(.horizontal, CGFloat.ds.spacing.lg)
-            .padding(.bottom, CGFloat.ds.spacing.xl)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.ds.background.black.ignoresSafeArea())
@@ -61,50 +39,10 @@ public struct OnboardingPlaceholderView: View {
 
 // MARK: - Preview
 
-#Preview("Onboarding / Idle") {
+#Preview("Onboarding") {
     OnboardingPlaceholderView(
         store: Store(initialState: OnboardingPlaceholderFeature.State()) {
             OnboardingPlaceholderFeature()
-        } withDependencies: {
-            $0.authClient.logout = {}
-        }
-    )
-    .onAppear {
-        _ = DesignSystemFontRegistration.registerIfNeeded()
-    }
-}
-
-#Preview("Onboarding / Logging Out") {
-    OnboardingPlaceholderView(
-        store: Store(
-            initialState: OnboardingPlaceholderFeature.State(
-                isLoggingOut: true
-            )
-        ) {
-            OnboardingPlaceholderFeature()
-        } withDependencies: {
-            $0.authClient.logout = {
-                try await Task.sleep(nanoseconds: 60_000_000_000)
-            }
-        }
-    )
-    .onAppear {
-        _ = DesignSystemFontRegistration.registerIfNeeded()
-    }
-}
-
-#Preview("Onboarding / Error") {
-    OnboardingPlaceholderView(
-        store: Store(
-            initialState: OnboardingPlaceholderFeature.State(
-                errorMessage: "로그아웃 정보를 지우지 못했어요. 다시 시도해 주세요."
-            )
-        ) {
-            OnboardingPlaceholderFeature()
-        } withDependencies: {
-            $0.authClient.logout = {
-                throw AuthError.storage(message: "preview-storage-error")
-            }
         }
     )
     .onAppear {
