@@ -43,6 +43,3 @@ docs/agent
 
 # Cycle brief (하위 세션 지시서, 로컬 전용)
 CYCLE-BRIEF.md
-
-# graft 코드 그래프 색인
-graft/
