@@ -94,12 +94,14 @@ MainTab 이 탭 다섯(`shortform` / `search` / `chat` / `myPage` / `create`)을
 
 ## 3. App / Config
 
-| Scheme | Config | Bundle ID |
-|---|---|---|
-| `Mozi-Debug` | Debug | `com.teamMozi.debug` |
-| `Mozi` | Release | `com.teamMozi.app` |
+| Scheme | Config | Bundle ID | 용도 |
+|---|---|---|---|
+| `Mozi-Debug` | Debug | `com.teamMozi.debug` | 개발 · CI 빌드 |
+| `Mozi` | Release | `com.teamMozi.app` | 아카이브 · TestFlight 업로드 (`fastlane beta`) |
 
 Keychain service 는 Bundle ID 를 사용하고, UserDefaults 는 standard 를 사용한다.
+
+TestFlight 업로드 절차는 `fastlane/Fastfile` 에 있다. 빌드 번호 `YYYYMMDD.N` 은 fastlane 이 아카이브 때 `CURRENT_PROJECT_VERSION` 으로 넣는다. 키 값은 `fastlane/.env` 에 두고 `fastlane/.env.example` 을 견본으로 쓴다.
 
 ---
 
