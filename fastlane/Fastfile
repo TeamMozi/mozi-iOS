@@ -75,7 +75,8 @@ end
 
 def latest_build_number(app)
   # Build.all 은 모든 페이지를 돈다. 가장 최근 한 건만 한 번에 받는다.
-  response = Spaceship::ConnectAPI.get_builds(filter: { app: app.id }, sort: "-uploadedDate", limit: 1)
+  # 기본 includes 의 betaBuildMetrics 는 App Store Connect 가 거부하므로 직접 지정한다.
+  response = Spaceship::ConnectAPI.get_builds(filter: { app: app.id }, sort: "-uploadedDate", limit: 1, includes: "buildBetaDetail")
   response.to_models.first&.version
 end
 
