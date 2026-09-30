@@ -77,10 +77,15 @@ public enum ProjectSettings {
             "APP_DISPLAY_NAME": .string(ProjectEnvironment.displayName),
             "PRODUCT_NAME": .string(ProjectEnvironment.productName),
             "GENERATE_INFOPLIST_FILE": "NO",
+            // 자동 서명. 팀 ID 는 Config/Release.xcconfig 의 DEVELOPMENT_TEAM 에서 온다.
+            "CODE_SIGN_STYLE": "Automatic",
+            "CODE_SIGN_IDENTITY": "Apple Development",
         ]) { _, new in new }
 
         return .settings(
-            base: base,
+            base: base.merging([
+                "CURRENT_PROJECT_VERSION": .string(ProjectEnvironment.appBuildNumber),
+            ]) { _, new in new },
             configurations: [
                 .debug(
                     name: ProjectEnvironment.debugConfigName,

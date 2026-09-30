@@ -44,4 +44,9 @@ mise install
 mise exec -- tuist generate --no-open
 open Mozi.xcworkspace
 xcodebuild -workspace Mozi.xcworkspace -scheme Mozi-Debug -destination 'generic/platform=iOS Simulator' build
+
+# TestFlight 업로드 (fastlane/.env 필요)
+mise exec -- bundle install
+mise exec -- bundle exec fastlane beta app:mozi note:"이번 빌드에서 볼 것"
+mise exec -- bundle exec fastlane resume app:mozi build:20260923.1 note:"이번 빌드에서 볼 것 (6c004cd)"
 ```

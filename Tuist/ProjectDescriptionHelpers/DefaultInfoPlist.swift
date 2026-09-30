@@ -4,7 +4,10 @@ public enum DefaultInfoPlist {
     public static let app: InfoPlist = .extendingDefault(with: [
         "CFBundleDisplayName": "$(APP_DISPLAY_NAME)",
         "CFBundleShortVersionString": .string(ProjectEnvironment.appVersion),
-        "CFBundleVersion": .string(ProjectEnvironment.appBuildNumber),
+        // TestFlight 업로드 때 fastlane 이 CURRENT_PROJECT_VERSION 을 아카이브 인자로 덮어쓴다.
+        "CFBundleVersion": "$(CURRENT_PROJECT_VERSION)",
+        // 표준 HTTPS 외 암호화를 쓰지 않는다. 업로드마다 수출 규정 질문이 뜨지 않게 한다.
+        "ITSAppUsesNonExemptEncryption": false,
 
         "API_BASE_URL": "$(API_BASE_URL)",
         "KAKAO_NATIVE_APP_KEY": "$(KAKAO_NATIVE_APP_KEY)",

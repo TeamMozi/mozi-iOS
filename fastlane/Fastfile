@@ -1,0 +1,197 @@
+require "shellwords"
+require_relative "lib/build_number"
+
+default_platform(:ios)
+
+ROOT = File.expand_path("..", __dir__)
+
+# 앱 인자 → 값. 데모 앱은 다음 작업에서 한 줄 더한다.
+APPS = {
+  "mozi" => { scheme: "Mozi", bundle_id: "com.teamMozi.app", group: "모지 팀" },
+}.freeze
+
+KEY_ENV = %w[
+  APP_STORE_CONNECT_API_KEY_KEY_ID
+  APP_STORE_CONNECT_API_KEY_ISSUER_ID
+  APP_STORE_CONNECT_API_KEY_KEY_FILEPATH
+].freeze
+
+PROCESSING_TIMEOUT = 60 * 60
+PROCESSING_POLL = 30
+
+def app_config(name)
+  APPS.fetch(name.to_s) do
+    UI.user_error!("알 수 없는 앱: #{name.inspect}. 가능한 값: #{APPS.keys.join(', ')}")
+  end
+end
+
+def required_text(value, label)
+  text = value.to_s.strip
+  UI.user_error!("#{label} 값이 비었습니다") if text.empty?
+  text
+end
+
+# 네트워크 없이 .env 값과 .p8 파일이 있는지만 본다.
+def check_key_env!
+  missing = KEY_ENV.select { |key| ENV[key].to_s.strip.empty? }
+  unless missing.empty?
+    UI.user_error!("fastlane/.env 에 값이 비었습니다: #{missing.join(', ')}. fastlane/.env.example 을 복사해 채우세요")
+  end
+  path = File.expand_path(ENV["APP_STORE_CONNECT_API_KEY_KEY_FILEPATH"])
+  UI.user_error!(".p8 파일이 없습니다: #{path}") unless File.exist?(path)
+end
+
+def key_path
+  File.expand_path(ENV["APP_STORE_CONNECT_API_KEY_KEY_FILEPATH"])
+end
+
+def api_key
+  @api_key ||= app_store_connect_api_key(
+    key_id: ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],
+    issuer_id: ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"],
+    key_filepath: key_path
+  )
+end
+
+def connect!
+  Spaceship::ConnectAPI.token = Spaceship::ConnectAPI::Token.from(hash: api_key)
+end
+
+def git(*args)
+  Dir.chdir(ROOT) { sh("git", *args, log: false).strip }
+end
+
+def ensure_pushed!
+  git("fetch", "--quiet", "origin")
+  head = git("rev-parse", "HEAD")
+  if git("branch", "-r", "--contains", head).empty?
+    UI.user_error!("지금 커밋 #{head[0, 7]} 이 origin 에 없습니다. 먼저 push 하세요")
+  end
+end
+
+def find_app(bundle_id)
+  Spaceship::ConnectAPI::App.find(bundle_id) || UI.user_error!("App Store Connect 에 #{bundle_id} 앱이 없습니다")
+end
+
+def latest_build_number(app)
+  # Build.all 은 모든 페이지를 돈다. 가장 최근 한 건만 한 번에 받는다.
+  # 기본 includes 의 betaBuildMetrics 는 App Store Connect 가 거부하므로 직접 지정한다.
+  response = Spaceship::ConnectAPI.get_builds(filter: { app: app.id }, sort: "-uploadedDate", limit: 1, includes: "buildBetaDetail")
+  response.to_models.first&.version
+end
+
+def find_build(app, build_number)
+  Spaceship::ConnectAPI::Build.all(app_id: app.id, build_number: build_number, includes: "preReleaseVersion").first
+end
+
+def wait_until_processed(app, build_number)
+  deadline = Time.now + PROCESSING_TIMEOUT
+  loop do
+    build = find_build(app, build_number)
+    state = build&.processing_state
+    return build if state == Spaceship::ConnectAPI::Build::ProcessingState::VALID
+    if [Spaceship::ConnectAPI::Build::ProcessingState::FAILED, Spaceship::ConnectAPI::Build::ProcessingState::INVALID].include?(state)
+      UI.user_error!("빌드 #{build_number} 처리가 실패했습니다: #{state}")
+    end
+    UI.user_error!("빌드 #{build_number} 처리가 #{PROCESSING_TIMEOUT / 60}분 안에 끝나지 않았습니다") if Time.now > deadline
+    UI.message("빌드 #{build_number} 처리 대기 중: #{state || '아직 보이지 않음'}")
+    sleep(PROCESSING_POLL)
+  end
+end
+
+# 문구를 먼저 붙이고 그 뒤에 그룹에 넣는다. 그래야 팀원 알림에 문구가 실린다.
+def distribute(config, app, build, changelog)
+  upload_to_testflight(
+    api_key: api_key,
+    app_identifier: config[:bundle_id],
+    distribute_only: true,
+    # ipa 없이 배포만 하면 pilot 이 플랫폼을 대화형으로 묻는다.
+    app_platform: "ios",
+    app_version: build.pre_release_version.version,
+    build_number: build.version,
+    # changelog 옵션은 빌드에 이미 있는 언어에만 쓴다. 새 빌드는 언어가 없어 문구가 빠진다.
+    localized_build_info: { app.primary_locale => { whats_new: changelog } },
+    groups: [config[:group]],
+    distribute_external: false,
+    notify_external_testers: false,
+    submit_beta_review: false
+  )
+end
+
+def resume_command(app_name, build_number, changelog)
+  "mise exec -- bundle exec fastlane resume app:#{app_name} build:#{build_number} note:'#{changelog.gsub("'") { %q('\\'') }}'"
+end
+
+platform :ios do
+  desc "앱을 TestFlight 에 올려 팀원 그룹에 넣는다. 예: fastlane beta app:mozi note:\"로그인 화면 추가\""
+  lane :beta do |options|
+    app_name = options[:app]
+    config = app_config(app_name)
+    note = required_text(options[:note], "note")
+    check_key_env!
+
+    ensure_git_status_clean(show_uncommitted_changes: true)
+    ensure_pushed!
+
+    Dir.chdir(ROOT) { sh("mise", "exec", "--", "tuist", "generate", "--no-open") }
+
+    connect!
+    app = find_app(config[:bundle_id])
+    build_number = BuildNumber.next(latest_build_number(app), BuildNumber.today_kst)
+    changelog = "#{note} (#{git('rev-parse', '--short=7', 'HEAD')})"
+    UI.important("빌드 번호 #{build_number}, 문구: #{changelog}")
+
+    auth_args = [
+      "-allowProvisioningUpdates",
+      "-authenticationKeyPath", key_path,
+      "-authenticationKeyID", ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],
+      "-authenticationKeyIssuerID", ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"],
+    ].shelljoin
+
+    build_app(
+      workspace: File.join(ROOT, "Mozi.xcworkspace"),
+      scheme: config[:scheme],
+      configuration: "Release",
+      derived_data_path: File.join(ROOT, ".derivedData"),
+      output_directory: File.join(ROOT, "build"),
+      output_name: "#{config[:scheme]}-#{build_number}",
+      # gym 은 xcargs 를 내보내기 명령에도 붙인다. 인증 인자를 export_xcargs 에 또 넣으면 xcodebuild 가 거부한다.
+      xcargs: "CURRENT_PROJECT_VERSION=#{build_number} -skipMacroValidation #{auth_args}",
+      export_method: "app-store",
+      export_options: { testFlightInternalTestingOnly: true, signingStyle: "automatic" }
+    )
+
+    upload_to_testflight(
+      api_key: api_key,
+      app_identifier: config[:bundle_id],
+      ipa: lane_context[SharedValues::IPA_OUTPUT_PATH],
+      skip_waiting_for_build_processing: true,
+      distribute_external: false
+    )
+
+    begin
+      build = wait_until_processed(app, build_number)
+      distribute(config, app, build, changelog)
+    rescue StandardError => e
+      UI.error("업로드는 끝났지만 팀원 그룹에 넣지 못했습니다: #{e.message}")
+      UI.error("이어가기 명령: #{resume_command(app_name, build_number, changelog)}")
+      raise
+    end
+
+    UI.success("#{build_number} 를 「#{config[:group]}」 그룹에 넣었습니다")
+  end
+
+  desc "업로드 뒤 끊긴 빌드에 문구를 붙이고 팀원 그룹에 넣는다. note 는 해시까지 붙은 최종 문구다"
+  lane :resume do |options|
+    config = app_config(options[:app])
+    build_number = required_text(options[:build], "build")
+    changelog = required_text(options[:note], "note")
+    check_key_env!
+
+    connect!
+    app = find_app(config[:bundle_id])
+    build = wait_until_processed(app, build_number)
+    distribute(config, app, build, changelog)
+    UI.success("#{build_number} 를 「#{config[:group]}」 그룹에 넣었습니다")
+  end
+end

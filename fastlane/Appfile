@@ -1,0 +1,2 @@
+# 앱별 값은 Fastfile 의 APPS 표에 있다.
+app_identifier("com.teamMozi.app")
