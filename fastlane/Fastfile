@@ -105,6 +105,8 @@ def distribute(config, build, changelog)
     api_key: api_key,
     app_identifier: config[:bundle_id],
     distribute_only: true,
+    # ipa 없이 배포만 하면 pilot 이 플랫폼을 대화형으로 묻는다.
+    app_platform: "ios",
     app_version: build.pre_release_version.version,
     build_number: build.version,
     changelog: changelog,
