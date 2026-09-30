@@ -152,8 +152,8 @@ platform :ios do
       derived_data_path: File.join(ROOT, ".derivedData"),
       output_directory: File.join(ROOT, "build"),
       output_name: "#{config[:scheme]}-#{build_number}",
+      # gym 은 xcargs 를 내보내기 명령에도 붙인다. 인증 인자를 export_xcargs 에 또 넣으면 xcodebuild 가 거부한다.
       xcargs: "CURRENT_PROJECT_VERSION=#{build_number} -skipMacroValidation #{auth_args}",
-      export_xcargs: auth_args,
       export_method: "app-store",
       export_options: { testFlightInternalTestingOnly: true, signingStyle: "automatic" }
     )
