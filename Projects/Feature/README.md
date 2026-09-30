@@ -19,6 +19,7 @@
 
 ## 내부 규칙
 - Feature 모듈 분리 금지, 기능 분리는 폴더
+  - 다시 볼 조건: Feature 스킴 증분 빌드가 20초를 넘으면 화면별 분리를 다시 검토한다 (2026-09-25 결정. 당시 31파일, 6초)
 - Scene 내부 flat (`*Feature`, `*View`)
 - Scene 간 직접 참조 금지
 - 외부 요청은 delegate bubble-up
