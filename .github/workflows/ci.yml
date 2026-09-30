@@ -8,6 +8,10 @@ on:
 permissions:
   contents: read
 
+# 없으면 mise exec 가 .mise.toml 의 빠진 도구(Ruby)까지 설치한다.
+env:
+  MISE_EXEC_AUTO_INSTALL: "false"
+
 # 겹치는 PR 실행은 취소하고, main/dev push 실행은 남긴다.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -28,6 +32,8 @@ jobs:
         uses: jdx/mise-action@v4
         with:
           install: true
+          # CI 는 fastlane 을 쓰지 않는다. Ruby 설치를 건너뛴다.
+          install_args: "tuist swiftlint"
           cache: true
 
       - name: SwiftLint
@@ -47,6 +53,8 @@ jobs:
         uses: jdx/mise-action@v4
         with:
           install: true
+          # CI 는 fastlane 을 쓰지 않는다. Ruby 설치를 건너뛴다.
+          install_args: "tuist swiftlint"
           cache: true
 
       - name: Prepare local config
