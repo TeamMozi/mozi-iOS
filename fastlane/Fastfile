@@ -100,7 +100,7 @@ def wait_until_processed(app, build_number)
 end
 
 # 문구를 먼저 붙이고 그 뒤에 그룹에 넣는다. 그래야 팀원 알림에 문구가 실린다.
-def distribute(config, build, changelog)
+def distribute(config, app, build, changelog)
   upload_to_testflight(
     api_key: api_key,
     app_identifier: config[:bundle_id],
@@ -109,7 +109,8 @@ def distribute(config, build, changelog)
     app_platform: "ios",
     app_version: build.pre_release_version.version,
     build_number: build.version,
-    changelog: changelog,
+    # changelog 옵션은 빌드에 이미 있는 언어에만 쓴다. 새 빌드는 언어가 없어 문구가 빠진다.
+    localized_build_info: { app.primary_locale => { whats_new: changelog } },
     groups: [config[:group]],
     distribute_external: false,
     notify_external_testers: false,
@@ -170,7 +171,7 @@ platform :ios do
 
     begin
       build = wait_until_processed(app, build_number)
-      distribute(config, build, changelog)
+      distribute(config, app, build, changelog)
     rescue StandardError => e
       UI.error("업로드는 끝났지만 팀원 그룹에 넣지 못했습니다: #{e.message}")
       UI.error("이어가기 명령: #{resume_command(app_name, build_number, changelog)}")
@@ -190,7 +191,7 @@ platform :ios do
     connect!
     app = find_app(config[:bundle_id])
     build = wait_until_processed(app, build_number)
-    distribute(config, build, changelog)
+    distribute(config, app, build, changelog)
     UI.success("#{build_number} 를 「#{config[:group]}」 그룹에 넣었습니다")
   end
 end
