@@ -43,3 +43,18 @@ docs/agent
 
 # Cycle brief (하위 세션 지시서, 로컬 전용)
 CYCLE-BRIEF.md
+
+# fastlane (로컬 키와 산출물)
+fastlane/.env
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/README.md
+fastlane/screenshots/
+fastlane/test_output/
+build/
+.bundle/
+vendor/bundle/
+*.ipa
+*.xcarchive
+*.dSYM.zip
+*.p8
