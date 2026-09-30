@@ -9,6 +9,7 @@ public enum ProjectEnvironment {
     public static let displayName = "모지(mozi)"
 
     public static let appVersion = "1.0.0"
+    /// 빌드 설정 CURRENT_PROJECT_VERSION 의 기본값. Debug·CI 빌드가 쓴다.
     public static let appBuildNumber = "1"
 
     public static let swiftVersion = "6"
