@@ -49,6 +49,32 @@ public enum DefaultInfoPlist {
         ],
     ])
 
+    /// 데모 앱. 서버 주소·카카오 키·URL scheme 을 넣지 않는다.
+    public static let demoApp: InfoPlist = .extendingDefault(with: [
+        "CFBundleDisplayName": "$(APP_DISPLAY_NAME)",
+        "CFBundleShortVersionString": .string(ProjectEnvironment.appVersion),
+        // TestFlight 업로드 때 fastlane 이 CURRENT_PROJECT_VERSION 을 아카이브 인자로 덮어쓴다.
+        "CFBundleVersion": "$(CURRENT_PROJECT_VERSION)",
+        "ITSAppUsesNonExemptEncryption": false,
+
+        // 업로드 때만 값이 들어온다. 비어 있으면 개발 빌드다.
+        "MoziBuildNote": .string("$(\(ProjectEnvironment.UploadBuildSetting.note))"),
+        "MoziBuildHash": .string("$(\(ProjectEnvironment.UploadBuildSetting.commitHash))"),
+
+        "UILaunchStoryboardName": "LaunchScreen",
+        "UIUserInterfaceStyle": "Dark",
+        "LSRequiresIPhoneOS": true,
+        "UIRequiresFullScreen": true,
+        "UISupportedInterfaceOrientations": [
+            "UIInterfaceOrientationPortrait",
+        ],
+        "UISupportedInterfaceOrientations~ipad": [],
+        "UIApplicationSceneManifest": [
+            "UIApplicationSupportsMultipleScenes": false,
+            "UISceneConfigurations": [:],
+        ],
+    ])
+
     public static let framework: InfoPlist = .default
     public static let test: InfoPlist = .default
 }

@@ -64,18 +64,21 @@ public enum ProjectSettings {
         ])
     }
 
-    public static func app() -> Settings {
+    public static func app(_ description: AppDescription) -> Settings {
         let debugSettings = debug.merging([
-            "PRODUCT_BUNDLE_IDENTIFIER": .string(ProjectEnvironment.AppBundle.debug),
-            "APP_DISPLAY_NAME": .string(ProjectEnvironment.displayName + " Dev"),
-            "PRODUCT_NAME": .string(ProjectEnvironment.productName),
+            "PRODUCT_BUNDLE_IDENTIFIER": .string(description.debugBundleID),
+            "APP_DISPLAY_NAME": .string(description.debugDisplayName),
+            "PRODUCT_NAME": .string(description.targetName),
             "GENERATE_INFOPLIST_FILE": "NO",
         ]) { _, new in new }
+        .merging(description.debugAppIconName.map {
+            ["ASSETCATALOG_COMPILER_APPICON_NAME": .string($0)]
+        } ?? [:]) { _, new in new }
 
         let releaseSettings = release.merging([
-            "PRODUCT_BUNDLE_IDENTIFIER": .string(ProjectEnvironment.AppBundle.release),
-            "APP_DISPLAY_NAME": .string(ProjectEnvironment.displayName),
-            "PRODUCT_NAME": .string(ProjectEnvironment.productName),
+            "PRODUCT_BUNDLE_IDENTIFIER": .string(description.releaseBundleID),
+            "APP_DISPLAY_NAME": .string(description.releaseDisplayName),
+            "PRODUCT_NAME": .string(description.targetName),
             "GENERATE_INFOPLIST_FILE": "NO",
             // 자동 서명. 팀 ID 는 Config/Release.xcconfig 의 DEVELOPMENT_TEAM 에서 온다.
             "CODE_SIGN_STYLE": "Automatic",

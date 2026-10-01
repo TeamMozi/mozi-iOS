@@ -2,6 +2,7 @@ import ProjectDescription
 import ProjectDescriptionHelpers
 
 let project = ProjectFactory.app(
+    .mozi,
     dependencies: [
         .feature,
         .data,
