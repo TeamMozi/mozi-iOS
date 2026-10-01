@@ -6,7 +6,7 @@
 세로 계층 = 모듈
 가로 Feature = 폴더
 외부 의존성 = ThirdParty*
-기술 구현 = Core/* / 도메인 오케스트레이션 = Data / 등록 = App only
+기술 구현 = Core/* / 도메인 오케스트레이션 = Data / 등록 = App 과 DemoApp 만
 ```
 
 ---
@@ -22,6 +22,7 @@ Projects/
   Data/
   Feature/
   App/
+  DemoApp/
 ```
 
 | 모듈 | 책임 |
@@ -35,6 +36,7 @@ Projects/
 | Data | DTO, Datasource, Mapper, `*RepositoryImpl`, `*ClientFactory`, `*SessionAssembly` (Remote는 순수 서버 통신) |
 | Feature | Root, Flow, Scene |
 | App | bootstrap, 의존성 주입, root store |
+| DemoApp | 데모 앱 「모지 데모」. 서버 없이 화면·상태를 보는 목록, 가짜 응답, 디자인 시스템 모음 |
 
 `RootFeature` 는 상태가 없는 통과 계층이지만 남긴다. 앱 전체에 걸치는 상태가 생기면 둘 자리다.
 
@@ -47,6 +49,7 @@ Domain  → SharedUtils, ThirdParty
 Core/*  → SharedUtils, SharedLogger, ThirdPartyCore
 SharedLogger → SharedUtils, OSLog
 App     → 조립
+DemoApp → Feature, Domain, SharedDesignSystem, ThirdParty, ThirdPartyUI (가짜 응답 조립)
 ```
 
 ### 금지
@@ -56,6 +59,7 @@ Feature → Data / Core* / ThirdPartyCore
 Domain  → Data / Core* / Feature
 Data    → Feature
 Core/*  → Domain / Data / Feature / App
+DemoApp → Data / Core* / ThirdPartyCore
 ```
 
 ---
@@ -98,10 +102,11 @@ MainTab 이 탭 다섯(`shortform` / `search` / `chat` / `myPage` / `create`)을
 |---|---|---|---|
 | `Mozi-Debug` | Debug | `com.teamMozi.debug` | 개발 · CI 빌드 |
 | `Mozi` | Release | `com.teamMozi.app` | 아카이브 · TestFlight 업로드 (`fastlane beta`) |
+| `MoziDemo` | 실행 Debug · 아카이브 Release | `com.teamMozi.demo` | 데모 앱 「모지 데모」 · TestFlight 업로드 (`fastlane beta app:demo`) |
 
 Keychain service 는 Bundle ID 를 사용하고, UserDefaults 는 standard 를 사용한다.
 
-TestFlight 업로드 절차는 `fastlane/Fastfile` 에 있다. 빌드 번호 `YYYYMMDD.N` 은 fastlane 이 아카이브 때 `CURRENT_PROJECT_VERSION` 으로 넣는다. 키 값은 `fastlane/.env` 에 두고 `fastlane/.env.example` 을 견본으로 쓴다.
+TestFlight 업로드 절차는 `fastlane/Fastfile` 에 있다. 빌드 번호 `YYYYMMDD.N` 은 fastlane 이 아카이브 때 `CURRENT_PROJECT_VERSION` 으로 넣는다. 키 값은 `fastlane/.env` 에 두고 `fastlane/.env.example` 을 견본으로 쓴다. 아카이브 때 업로드 문구(해시 포함, UTF-8 → Base64)와 커밋 해시를 빌드 설정 `MOZI_BUILD_NOTE`·`MOZI_BUILD_HASH` 로 두 앱 모두에 넘긴다. 읽는 것은 데모 앱뿐이다(Info.plist `MoziBuildNote`·`MoziBuildHash`).
 
 ---
 
@@ -131,6 +136,7 @@ TestFlight 업로드 절차는 `fastlane/Fastfile` 에 있다. 빌드 번호 `YY
 - [Data](../Projects/Data/README.md)
 - [CoreNetwork](../Projects/Core/Network/README.md)
 - [CoreSocialAuth](../Projects/Core/SocialAuth/README.md)
+- [DemoApp](../Projects/DemoApp/README.md)
 
 ---
 

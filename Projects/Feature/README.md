@@ -27,6 +27,7 @@
 - 전역 전환/딥링크/overlay 는 RootFlowFeature
 - 탭 사이 이동은 MainTabFeature 만 한다. Scene 이 `selectedTab` 을 직접 바꾸지 않는다
 - 컨테이너는 화면을 그리지 않는다. 경로와 자식만 갖는다
+- 화면이나 상태를 더하는 작업은 데모 앱 목록에도 한 줄 더한다. 방법은 [DemoApp README](../DemoApp/README.md)
 
 ## 주요 진입점
 - `RootFeature`, `RootView`
