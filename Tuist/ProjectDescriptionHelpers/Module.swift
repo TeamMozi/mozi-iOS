@@ -13,6 +13,7 @@ public enum Module: String, CaseIterable {
     case data
     case feature
     case app
+    case demoApp
     case coreNetwork
     case coreStorage
     case coreSocialAuth
@@ -29,6 +30,7 @@ public enum Module: String, CaseIterable {
         case .data: return "Data"
         case .feature: return "Feature"
         case .app: return "App"
+        case .demoApp: return "DemoApp"
         case .coreNetwork: return "CoreNetwork"
         case .coreStorage: return "CoreStorage"
         case .coreSocialAuth: return "CoreSocialAuth"
@@ -47,6 +49,7 @@ public enum Module: String, CaseIterable {
         case .data: return "Projects/Data"
         case .feature: return "Projects/Feature"
         case .app: return "Projects/App"
+        case .demoApp: return "Projects/DemoApp"
         case .coreNetwork: return "Projects/Core/Network"
         case .coreStorage: return "Projects/Core/Storage"
         case .coreSocialAuth: return "Projects/Core/SocialAuth"
@@ -69,6 +72,7 @@ public enum Module: String, CaseIterable {
         case .data: return "data"
         case .feature: return "feature"
         case .app: return "app"
+        case .demoApp: return "demo"
         case .coreNetwork: return "core.network"
         case .coreStorage: return "core.storage"
         case .coreSocialAuth: return "core.socialauth"

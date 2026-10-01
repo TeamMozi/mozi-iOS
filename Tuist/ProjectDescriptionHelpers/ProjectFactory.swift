@@ -163,46 +163,61 @@ public enum ProjectFactory {
         )
     }
 
-    /// App 타겟 생성.
+    /// App 타겟 생성. 이름·식별자·표시 이름·Info.plist·scheme 은 `AppDescription` 에서 온다.
+    /// `includesTests` 면 `<targetName>Tests` 를 만들어 모든 scheme 의 테스트 동작에 넣는다.
     public static func app(
-        name: String = ProjectEnvironment.productName,
+        _ description: AppDescription,
         dependencies: [TargetDependency],
-        infoPlist: InfoPlist = DefaultInfoPlist.app,
         sources: SourceFilesList = ["Sources/**"],
         resources: ResourceFileElements = ["Resources/**"],
-        entitlements: Entitlements? = nil
+        entitlements: Entitlements? = nil,
+        includesTests: Bool = false,
+        testsDependencies: [TargetDependency] = []
     ) -> Project {
         let target = Target.target(
-            name: name,
+            name: description.targetName,
             destinations: ProjectEnvironment.destinations,
             product: .app,
-            bundleId: ProjectEnvironment.AppBundle.release,
+            bundleId: description.releaseBundleID,
             deploymentTargets: .iOS(ProjectEnvironment.deploymentTarget),
-            infoPlist: infoPlist,
+            infoPlist: description.infoPlist,
             sources: sources,
             resources: resources,
             entitlements: entitlements,
             dependencies: dependencies,
-            settings: ProjectSettings.app()
+            settings: ProjectSettings.app(description)
         )
 
+        var targets = [target]
+        var testsName: String?
+
+        if includesTests {
+            let name = "\(description.targetName)Tests"
+            targets.append(
+                Target.target(
+                    name: name,
+                    destinations: ProjectEnvironment.destinations,
+                    product: .unitTests,
+                    bundleId: "\(description.releaseBundleID).tests",
+                    deploymentTargets: .iOS(ProjectEnvironment.deploymentTarget),
+                    sources: ["Tests/**"],
+                    dependencies: [
+                        .target(name: description.targetName),
+                    ] + testsDependencies,
+                    settings: ProjectSettings.unitTests()
+                )
+            )
+            testsName = name
+        }
+
         return Project(
-            name: Module.app.targetName,
+            name: description.module.targetName,
             organizationName: ProjectEnvironment.organizationName,
             settings: ProjectSettings.project(),
-            targets: [target],
-            schemes: [
-                makeAppScheme(
-                    name: "Mozi-Debug",
-                    targetName: name,
-                    configuration: ProjectEnvironment.debugConfigName
-                ),
-                makeAppScheme(
-                    name: "Mozi",
-                    targetName: name,
-                    configuration: ProjectEnvironment.releaseConfigName
-                ),
-            ]
+            targets: targets,
+            schemes: description.schemes.map { scheme in
+                makeAppScheme(scheme, targetName: description.targetName, testsName: testsName)
+            }
         )
     }
 
@@ -215,24 +230,30 @@ public enum ProjectFactory {
     }
 
     private static func makeAppScheme(
-        name: String,
+        _ scheme: AppScheme,
         targetName: String,
-        configuration: ConfigurationName
+        testsName: String?
     ) -> Scheme {
         .scheme(
-            name: name,
+            name: scheme.name,
             shared: true,
             buildAction: .buildAction(targets: [.target(targetName)]),
+            testAction: testsName.map { name in
+                .targets(
+                    [.testableTarget(target: .target(name))],
+                    configuration: scheme.runConfiguration
+                )
+            },
             runAction: .runAction(
-                configuration: configuration,
+                configuration: scheme.runConfiguration,
                 executable: .target(targetName)
             ),
-            archiveAction: .archiveAction(configuration: configuration),
+            archiveAction: .archiveAction(configuration: scheme.archiveConfiguration),
             profileAction: .profileAction(
-                configuration: configuration,
+                configuration: scheme.archiveConfiguration,
                 executable: .target(targetName)
             ),
-            analyzeAction: .analyzeAction(configuration: configuration)
+            analyzeAction: .analyzeAction(configuration: scheme.runConfiguration)
         )
     }
 }

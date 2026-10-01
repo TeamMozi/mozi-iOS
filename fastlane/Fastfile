@@ -1,13 +1,15 @@
 require "shellwords"
+require_relative "lib/build_note"
 require_relative "lib/build_number"
 
 default_platform(:ios)
 
 ROOT = File.expand_path("..", __dir__)
 
-# 앱 인자 → 값. 데모 앱은 다음 작업에서 한 줄 더한다.
+# 앱 인자 → 값.
 APPS = {
   "mozi" => { scheme: "Mozi", bundle_id: "com.teamMozi.app", group: "모지 팀" },
+  "demo" => { scheme: "MoziDemo", bundle_id: "com.teamMozi.demo", group: "모지 데모 팀" },
 }.freeze
 
 KEY_ENV = %w[
@@ -123,7 +125,7 @@ def resume_command(app_name, build_number, changelog)
 end
 
 platform :ios do
-  desc "앱을 TestFlight 에 올려 팀원 그룹에 넣는다. 예: fastlane beta app:mozi note:\"로그인 화면 추가\""
+  desc "앱을 TestFlight 에 올려 팀원 그룹에 넣는다. app 은 mozi 또는 demo. 예: fastlane beta app:mozi note:\"로그인 화면 추가\""
   lane :beta do |options|
     app_name = options[:app]
     config = app_config(app_name)
@@ -138,7 +140,8 @@ platform :ios do
     connect!
     app = find_app(config[:bundle_id])
     build_number = BuildNumber.next(latest_build_number(app), BuildNumber.today_kst)
-    changelog = "#{note} (#{git('rev-parse', '--short=7', 'HEAD')})"
+    commit_hash = git("rev-parse", "--short=7", "HEAD")
+    changelog = BuildNote.changelog(note, commit_hash)
     UI.important("빌드 번호 #{build_number}, 문구: #{changelog}")
 
     auth_args = [
@@ -156,7 +159,8 @@ platform :ios do
       output_directory: File.join(ROOT, "build"),
       output_name: "#{config[:scheme]}-#{build_number}",
       # gym 은 xcargs 를 내보내기 명령에도 붙인다. 인증 인자를 export_xcargs 에 또 넣으면 xcodebuild 가 거부한다.
-      xcargs: "CURRENT_PROJECT_VERSION=#{build_number} -skipMacroValidation #{auth_args}",
+      # 문구와 해시는 두 앱 모두에 넘긴다. 읽는 것은 데모 앱뿐이다.
+      xcargs: "CURRENT_PROJECT_VERSION=#{build_number} #{BuildNote.xcargs(changelog, commit_hash)} -skipMacroValidation #{auth_args}",
       export_method: "app-store",
       export_options: { testFlightInternalTestingOnly: true, signingStyle: "automatic" }
     )

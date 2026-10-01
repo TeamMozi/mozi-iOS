@@ -25,6 +25,22 @@ public enum ProjectEnvironment {
         public static let release = "\(ProjectEnvironment.bundlePrefix).app"
     }
 
+    /// 데모 앱 「모지 데모」 값. 두 구성이 같은 값을 쓴다.
+    public enum DemoApp {
+        public static let targetName = "MoziDemo"
+        public static let schemeName = "MoziDemo"
+        public static let bundleID = "\(ProjectEnvironment.bundlePrefix).demo"
+        public static let displayName = "모지 데모"
+    }
+
+    /// 업로드 때 fastlane 이 아카이브 인자로 넘기는 빌드 설정 이름. 데모 앱 Info.plist 만 읽는다.
+    public enum UploadBuildSetting {
+        /// 업로드 문구(해시 포함)를 UTF-8 → Base64 로 바꾼 값.
+        public static let note = "MOZI_BUILD_NOTE"
+        /// 커밋 해시 7자리.
+        public static let commitHash = "MOZI_BUILD_HASH"
+    }
+
     public static func moduleBundleId(_ suffix: String) -> String {
         "\(bundlePrefix).\(suffix)"
     }

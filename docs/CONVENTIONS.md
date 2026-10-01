@@ -17,7 +17,7 @@
 - Scene 내부 flat (`*Feature`, `*View`)
 - Domain 포트는 `*Client`
 - Data 구현은 `*RepositoryImpl` + `*ClientFactory` + `*SessionAssembly`
-- 구현 조립은 Data, 등록과 주입은 App only
+- 구현 조립은 Data, 등록과 주입은 App 과 DemoApp 만
 - Feature 는 Domain `*Client` 만 사용
 - Scene 통신은 delegate bubble-up
 - SharedUtils 는 pure Foundation / App metadata 만. UI·I/O·Domain 금지
@@ -68,6 +68,7 @@ TODO:
 |---|---|
 | `Mozi-Debug` | `com.teamMozi.debug` |
 | `Mozi` | `com.teamMozi.app` |
+| `MoziDemo` | `com.teamMozi.demo` |
 
 ### 5. 언어
 
@@ -79,6 +80,7 @@ TODO:
 - Feature 모듈 쪼개기
 - AppShell / AppRuntime / AppEnvironment / AppConstants
 - Feature → Data / Core* / ThirdPartyCore
+- DemoApp → Data / Core* / ThirdPartyCore
 - Scene 간 직접 통신
 - UseCase 층
 
