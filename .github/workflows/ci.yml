@@ -16,6 +16,9 @@ env:
   XCODE_VERSION: "26.4.1"
   # 로컬 규칙(docs/agent/rules/verify.md)과 같은 지정값이다. 런타임 표시 이름은 iOS 26.4 지만 OS 는 26.4.1 로 써야 찾는다.
   DESTINATION: "platform=iOS Simulator,name=iPhone 17e,OS=26.4.1"
+  # Boot simulator 단계가 DESTINATION 과 같은 기기를 찾는 데 쓴다. Xcode 를 올릴 때 함께 올린다.
+  SIMULATOR_NAME: "iPhone 17e"
+  SIMULATOR_RUNTIME: "com.apple.CoreSimulator.SimRuntime.iOS-26-4"
 
 # 겹치는 PR 실행은 취소하고, main/dev push 실행은 남긴다.
 concurrency:
@@ -23,7 +26,7 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  # 프로젝트를 생성하지 않는다. 그래서 캐시도 쓰지 않는다.
+  # 프로젝트를 생성하지 않는다. 그래서 DerivedData 캐시도 쓰지 않는다.
   lint:
     runs-on: macos-26
     timeout-minutes: 20
@@ -55,6 +58,9 @@ jobs:
   test:
     runs-on: macos-26
     timeout-minutes: 60
+    env:
+      # Tuist.swift 가 읽는다. 매니페스트에는 셸 환경 변수가 전달되지 않아 TUIST_ 접두어를 쓴다.
+      TUIST_CI_WORKSPACE: ${{ github.workspace }}
 
     steps:
       - name: Checkout
@@ -66,6 +72,18 @@ jobs:
         run: |
           sudo xcode-select -s "/Applications/Xcode_${XCODE_VERSION}.app"
           xcodebuild -version
+
+      # 새 기기의 첫 부팅(45~87초)을 빌드와 겹치게 한다. 준비 완료는 Test 직전에 기다린다.
+      # 지정한 런타임에 그 기기가 없으면 여기서 실패한다.
+      - name: Boot simulator
+        run: |
+          UDID="$(xcrun simctl list devices available -j | python3 -c '
+          import json, os, sys
+          devices = json.load(sys.stdin)["devices"].get(os.environ["SIMULATOR_RUNTIME"], [])
+          print(next(d["udid"] for d in devices if d["name"] == os.environ["SIMULATOR_NAME"]))
+          ')"
+          echo "SIMULATOR_UDID=$UDID" >> "$GITHUB_ENV"
+          xcrun simctl boot "$UDID"
 
       - name: Install mise
         uses: jdx/mise-action@v4
@@ -82,6 +100,7 @@ jobs:
 
       # 생성보다 먼저 복원한다. 저장은 아래 Save 단계가 dev push 에서만 한다.
       - name: Restore derived data
+        id: restore
         uses: actions/cache/restore@v6
         with:
           path: .derivedData
@@ -90,11 +109,13 @@ jobs:
             dd-test-${{ runner.os }}-xcode${{ env.XCODE_VERSION }}-${{ hashFiles('.package.resolved', 'Projects/**/Project.swift') }}-
             dd-test-${{ runner.os }}-xcode${{ env.XCODE_VERSION }}-
 
+      # 복원한 캐시의 패키지 해시가 지금과 같을 때만 패키지 원격 갱신을 건너뛴다. 다르면 낡은 패키지로 빌드하게 된다.
+      - name: Check package cache
+        if: startsWith(steps.restore.outputs.cache-matched-key, format('dd-test-{0}-xcode{1}-{2}-', runner.os, env.XCODE_VERSION, hashFiles('.package.resolved', 'Projects/**/Project.swift')))
+        run: echo "TUIST_CI_SKIP_PACKAGE_UPDATES=true" >> "$GITHUB_ENV"
+
       - name: Generate project
         run: mise exec -- tuist generate --no-open
-
-      - name: Check simulator
-        run: xcrun simctl list devices available | grep "iPhone 17e"
 
       - name: Build for testing
         run: |
@@ -105,6 +126,9 @@ jobs:
             -derivedDataPath .derivedData \
             -skipMacroValidation \
             build-for-testing
+
+      - name: Wait for simulator
+        run: xcrun simctl bootstatus "$SIMULATOR_UDID" -b
 
       - name: Test
         run: |
