@@ -105,8 +105,17 @@ jobs:
       - name: Generate project
         run: mise exec -- tuist generate --no-open
 
-      # 새 기기의 첫 부팅(45~87초)을 빌드와 겹치게 한다. 준비 완료는 Test 직전에 기다린다.
-      # 잡 시작 때 부팅하면 mise 설치·캐시 복원까지 느려져서(2026-10-02 실측) 생성 뒤에 시작한다.
+      - name: Build for testing
+        run: |
+          xcodebuild \
+            -workspace Mozi.xcworkspace \
+            -scheme Mozi-Workspace \
+            -destination "$DESTINATION" \
+            -derivedDataPath .derivedData \
+            -skipMacroValidation \
+            build-for-testing
+
+      # 첫 부팅은 겹치는 단계를 모두 느리게 해서(2026-10-02 실측) 빌드가 끝난 뒤에 부팅한다.
       # 지정한 런타임에 그 기기가 없으면 여기서 실패한다.
       - name: Boot simulator
         run: |
@@ -117,16 +126,6 @@ jobs:
           ')"
           echo "SIMULATOR_UDID=$UDID" >> "$GITHUB_ENV"
           xcrun simctl boot "$UDID"
-
-      - name: Build for testing
-        run: |
-          xcodebuild \
-            -workspace Mozi.xcworkspace \
-            -scheme Mozi-Workspace \
-            -destination "$DESTINATION" \
-            -derivedDataPath .derivedData \
-            -skipMacroValidation \
-            build-for-testing
 
       - name: Wait for simulator
         run: xcrun simctl bootstatus "$SIMULATOR_UDID" -b
