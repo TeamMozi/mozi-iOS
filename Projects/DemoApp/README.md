@@ -47,7 +47,7 @@
 
 ## 명령
 ```bash
-xcodebuild -workspace Mozi.xcworkspace -scheme MoziDemo -destination 'platform=iOS Simulator,name=iPhone 14,OS=18.6' -skipMacroValidation test
+xcodebuild -workspace Mozi.xcworkspace -scheme MoziDemo -destination 'platform=iOS Simulator,name=iPhone 17e,OS=26.4.1' -skipMacroValidation test
 mise exec -- bundle exec fastlane beta app:demo note:"이번 빌드에서 볼 것"
 ```
 

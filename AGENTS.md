@@ -43,8 +43,8 @@ Mozi 작업 시 에이전트 진입점.
 mise install
 mise exec -- tuist generate --no-open
 open Mozi.xcworkspace
-xcodebuild -workspace Mozi.xcworkspace -scheme Mozi-Debug -destination 'generic/platform=iOS Simulator' build
-xcodebuild -workspace Mozi.xcworkspace -scheme MoziDemo -destination 'generic/platform=iOS Simulator' build
+xcodebuild -workspace Mozi.xcworkspace -scheme Mozi-Debug -destination 'platform=iOS Simulator,name=iPhone 17e,OS=26.4.1' build
+xcodebuild -workspace Mozi.xcworkspace -scheme MoziDemo -destination 'platform=iOS Simulator,name=iPhone 17e,OS=26.4.1' build
 
 # TestFlight 업로드 (fastlane/.env 필요). app 은 mozi(본 앱) 또는 demo(데모 앱 「모지 데모」)
 mise exec -- bundle install
