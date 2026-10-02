@@ -42,7 +42,7 @@ Figma 경로를 낱말 단위로 옮긴다.
 - 이전의 Secondary 색 9개, System orange, `CGFloat.ds.dim`, `Font.ds` 는 지웠다
 
 ## Figma 와 맞춰 볼 것
-- 알파 색 셋은 이름과 값이 어긋난다. `overlay/light/70` 은 알파 0.8, `overlay/gray/40`·`overlay/gray/80` 은 알파 0.2 이고 RGB 도 다르다. 코드는 Figma 값을 그대로 옮겼다
+- `overlay/gray/40`·`overlay/gray/80` 은 다른 gray(#AFAFAF)와 RGB 가 다르다(#706D82·#423F55). Figma 값 그대로다
 - 의미 색 가운데 system·swatch 원시 색을 가리키는 것이 없다. 오류·성공 색이 필요하면 Figma 에 의미 색이 먼저 있어야 한다
 
 ## 부품

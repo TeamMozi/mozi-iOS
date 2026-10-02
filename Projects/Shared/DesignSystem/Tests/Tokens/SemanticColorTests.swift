@@ -463,7 +463,7 @@ private let semanticCases: [SemanticCase] = [
         SemanticColor.overlay.dim._70,
         Color.ds.overlay.dim._70,
         dark: 0x000000B2,
-        light: 0xFAFAFACC
+        light: 0xFAFAFAB2
     ),
     SemanticCase(
         "overlay/dim/90",
@@ -497,7 +497,7 @@ private let semanticCases: [SemanticCase] = [
         "overlay/gray/default",
         SemanticColor.overlay.gray.default,
         Color.ds.overlay.gray.default,
-        dark: 0x706D8233,
+        dark: 0x706D8266,
         light: 0xAFAFAF33
     ),
     SemanticCase(
