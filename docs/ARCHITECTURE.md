@@ -36,7 +36,7 @@ Projects/
 | Data | DTO, Datasource, Mapper, `*RepositoryImpl`, `*ClientFactory`, `*SessionAssembly` (Remote는 순수 서버 통신) |
 | Feature | Root, Flow, Scene |
 | App | bootstrap, 의존성 주입, root store |
-| DemoApp | 데모 앱 「모지 데모」. 서버 없이 화면·상태를 보는 목록, 가짜 응답, 디자인 시스템 모음 |
+| DemoApp | 데모 앱 「모지 데모」. 서버 없이 화면·상태를 보는 목록, 가짜 응답, 디자인 시스템 화면(색·글자·버튼) |
 
 `RootFeature` 는 상태가 없는 통과 계층이지만 남긴다. 앱 전체에 걸치는 상태가 생기면 둘 자리다.
 
