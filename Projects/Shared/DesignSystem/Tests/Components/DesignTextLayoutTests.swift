@@ -58,7 +58,8 @@ final class DesignTextLayoutTests: XCTestCase {
 
     @MainActor
     private func fittingSize(_ view: some View, width: CGFloat) -> CGSize {
-        let host = UIHostingController(rootView: view)
+        // 기대값은 기본 글자 크기 .large 기준이다. 기기 글자 크기 설정에 흔들리지 않게 고정한다.
+        let host = UIHostingController(rootView: view.dynamicTypeSize(.large))
         return host.sizeThatFits(in: CGSize(width: width, height: .greatestFiniteMagnitude))
     }
 }

@@ -33,7 +33,10 @@ final class TextStyleFontRenderTests: XCTestCase {
     private func render(_ view: some View) throws -> Data {
         let size = CGSize(width: 320, height: 120)
         let window = UIWindow(frame: CGRect(origin: .zero, size: size))
-        let host = UIHostingController(rootView: view.frame(width: size.width, height: size.height))
+        // `Font.custom(_:size:)` 는 기기 글자 크기를 따른다. 기본 크기 .large 로 고정해야 고정 크기 UIFont 와 같게 그린다.
+        let host = UIHostingController(
+            rootView: view.dynamicTypeSize(.large).frame(width: size.width, height: size.height)
+        )
         window.rootViewController = host
         window.makeKeyAndVisible()
         host.view.frame = window.bounds
