@@ -1,6 +1,14 @@
 {
   "images" : [
     {
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
       "filename" : "login_shortform_04.jpg",
       "idiom" : "universal",
       "scale" : "3x"
