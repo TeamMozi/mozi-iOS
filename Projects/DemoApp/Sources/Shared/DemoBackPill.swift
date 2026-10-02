@@ -8,18 +8,25 @@ struct DemoBackPill: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 6) {
+            HStack(spacing: DemoBackPillLayout.iconSpacing) {
                 Image(systemName: "chevron.left")
-                    .font(.system(size: 13, weight: .semibold))
-                DesignText(title, style: TextStyle.ds.label.medium14Medium, color: Color.ds.text.neutral.lighter)
+                    .font(TextStyle.ds.caption2.semiBold.font)
+                DesignText(title, style: TextStyle.ds.subtext.medium, color: Color.ds.text.neutral.primary)
             }
-            .foregroundStyle(Color.ds.text.neutral.lighter)
-            .padding(.leading, 10)
-            .padding(.trailing, 14)
-            .frame(minHeight: 44)
-            .background(Color.ds.background.grayDarker, in: Capsule())
+            .foregroundStyle(Color.ds.text.neutral.primary)
+            .padding(.leading, DemoBackPillLayout.leadingPadding)
+            .padding(.trailing, DemoBackPillLayout.trailingPadding)
+            .frame(minHeight: DemoBackPillLayout.minHeight)
+            .background(Color.ds.fill.neutral.subtle, in: Capsule())
             .contentShape(Capsule())
         }
         .buttonStyle(.plain)
     }
+}
+
+private enum DemoBackPillLayout {
+    static let iconSpacing: CGFloat = 6
+    static let leadingPadding: CGFloat = 10
+    static let trailingPadding: CGFloat = 14
+    static let minHeight: CGFloat = 44
 }

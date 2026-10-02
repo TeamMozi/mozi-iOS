@@ -15,7 +15,7 @@ struct DemoMenuSheet: View {
             exitRow
 
             if !options.isEmpty {
-                DesignText("화면 상태", style: TextStyle.ds.title.xsmall18Semibold)
+                DesignText("화면 상태", style: TextStyle.ds.title3.semiBold)
                     .padding(.top, CGFloat.ds.spacing.sm)
 
                 ForEach(options) { option in
@@ -24,7 +24,7 @@ struct DemoMenuSheet: View {
             }
         }
         .padding(.top, CGFloat.ds.spacing.xxl)
-        .padding(.horizontal, CGFloat.ds.spacing.lg)
+        .padding(.horizontal, CGFloat.ds.layout.margin)
         .padding(.bottom, CGFloat.ds.spacing.sm)
         .frame(maxWidth: .infinity, alignment: .topLeading)
         .onGeometryChange(for: CGFloat.self) { proxy in
@@ -34,24 +34,24 @@ struct DemoMenuSheet: View {
         }
         .presentationDetents([.height(contentHeight)])
         .presentationDragIndicator(.visible)
-        .presentationBackground(Color.ds.background.grayDark)
-        .presentationCornerRadius(CGFloat.ds.radius.xxlg)
+        .presentationBackground(Color.ds.fill.neutral.muted)
+        .presentationCornerRadius(CGFloat.ds.radius._24)
     }
 
     private var exitRow: some View {
         Button(action: onExit) {
-            HStack(spacing: 10) {
+            HStack(spacing: DemoMenuSheetLayout.iconSpacing) {
                 Image(systemName: "chevron.left")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(Color.ds.text.neutral.lighter)
-                DesignText("목록으로 돌아가기", style: TextStyle.ds.label.large16Medium)
+                    .font(TextStyle.ds.caption1.semiBold.font)
+                    .foregroundStyle(Color.ds.text.neutral.primary)
+                DesignText("목록으로 돌아가기", style: TextStyle.ds.headline.medium)
                 Spacer(minLength: 0)
             }
             .padding(.horizontal, CGFloat.ds.spacing.lg)
             .frame(height: DemoMenuSheetLayout.rowHeight)
             .background(
-                Color.ds.background.grayDarker,
-                in: RoundedRectangle(cornerRadius: CGFloat.ds.radius.md, style: .continuous)
+                Color.ds.fill.neutral.subtle,
+                in: RoundedRectangle(cornerRadius: CGFloat.ds.radius._12, style: .continuous)
             )
             .contentShape(Rectangle())
         }
@@ -65,19 +65,19 @@ struct DemoMenuSheet: View {
             onSelect(option.id)
         } label: {
             HStack(spacing: CGFloat.ds.spacing.md) {
-                DesignText(option.title, style: TextStyle.ds.label.large16Medium)
+                DesignText(option.title, style: TextStyle.ds.headline.medium)
                 Spacer(minLength: 0)
                 if isSelected {
                     Image(systemName: "checkmark")
-                        .font(.system(size: 14, weight: .bold))
-                        .foregroundStyle(Color.ds.text.primary.basic)
+                        .font(TextStyle.ds.caption1.bold.font)
+                        .foregroundStyle(Color.ds.text.accent.subtle)
                 }
             }
             .padding(.horizontal, CGFloat.ds.spacing.lg)
             .frame(height: DemoMenuSheetLayout.rowHeight)
             .background(
-                isSelected ? DemoPalette.selectedRow : Color.ds.background.grayDarker,
-                in: RoundedRectangle(cornerRadius: CGFloat.ds.radius.md, style: .continuous)
+                isSelected ? Color.ds.fill.neutral.strong : Color.ds.fill.neutral.subtle,
+                in: RoundedRectangle(cornerRadius: CGFloat.ds.radius._12, style: .continuous)
             )
             .contentShape(Rectangle())
         }
@@ -88,4 +88,5 @@ struct DemoMenuSheet: View {
 
 private enum DemoMenuSheetLayout {
     static let rowHeight: CGFloat = 52
+    static let iconSpacing: CGFloat = 10
 }
