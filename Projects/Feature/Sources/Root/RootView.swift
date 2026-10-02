@@ -1,5 +1,4 @@
 import Domain
-import SharedDesignSystem
 import SwiftUI
 import ThirdParty
 
@@ -62,9 +61,6 @@ public struct RootView: View {
             }
         }
     )
-    .onAppear {
-        _ = DesignSystemFontRegistration.registerIfNeeded()
-    }
 }
 
 #Preview("Root / Onboarding") {
@@ -82,9 +78,6 @@ public struct RootView: View {
             $0.authClient.logout = {}
         }
     )
-    .onAppear {
-        _ = DesignSystemFontRegistration.registerIfNeeded()
-    }
 }
 
 #Preview("Root / Main") {

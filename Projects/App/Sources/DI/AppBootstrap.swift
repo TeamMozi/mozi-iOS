@@ -1,13 +1,11 @@
 import CoreSocialAuth
 import Foundation
-import SharedDesignSystem
 import SharedLogger
 import ThirdParty
 
 enum AppBootstrap {
     @MainActor
     static func run() {
-        _ = DesignSystemFontRegistration.registerIfNeeded()
         let infra = InfraContainer.make()
         let kakaoAppKey = requireKakaoNativeAppKeyIfNeeded(
             infra.configuration.kakaoNativeAppKey

@@ -16,8 +16,8 @@ public struct MyPagePlaceholderView: View {
 
             DesignText(
                 "MyPage",
-                style: TextStyle.ds.title.large24Bold,
-                color: Color.ds.text.neutral.white,
+                style: TextStyle.ds.title2.bold,
+                color: Color.ds.text.neutral.primary,
                 alignment: .center
             )
 
@@ -26,8 +26,8 @@ public struct MyPagePlaceholderView: View {
             if let errorMessage = store.errorMessage {
                 DesignText(
                     errorMessage,
-                    style: TextStyle.ds.body.small14Regular,
-                    color: Color.ds.text.primary.basic,
+                    style: TextStyle.ds.subtext.regular,
+                    color: Color.ds.text.accent.subtle,
                     alignment: .center
                 )
             }
@@ -41,11 +41,11 @@ public struct MyPagePlaceholderView: View {
             ) {
                 store.send(.logoutTapped)
             }
-            .padding(.horizontal, CGFloat.ds.spacing.lg)
+            .padding(.horizontal, CGFloat.ds.layout.margin)
             .padding(.bottom, CGFloat.ds.spacing.xl)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.ds.background.black.ignoresSafeArea())
+        .background(Color.ds.fill.neutral.default.ignoresSafeArea())
         .task {
             store.send(.onAppear)
         }
@@ -62,9 +62,6 @@ public struct MyPagePlaceholderView: View {
             $0.authClient.logout = {}
         }
     )
-    .onAppear {
-        _ = DesignSystemFontRegistration.registerIfNeeded()
-    }
 }
 
 #Preview("MyPage / Error") {
@@ -81,7 +78,4 @@ public struct MyPagePlaceholderView: View {
             }
         }
     )
-    .onAppear {
-        _ = DesignSystemFontRegistration.registerIfNeeded()
-    }
 }

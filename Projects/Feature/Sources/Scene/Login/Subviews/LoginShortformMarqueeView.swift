@@ -48,17 +48,17 @@ struct LoginShortformMarqueeView: View {
             .frame(width: Self.cardSize.width, height: Self.cardSize.height)
             .clipped()
             .overlay {
-                Color.black.opacity(CGFloat.ds.dim.heavy)
+                Color.ds.overlay.dim._60
             }
             .clipShape(
-                RoundedRectangle(cornerRadius: CGFloat.ds.radius.md, style: .continuous)
+                RoundedRectangle(cornerRadius: CGFloat.ds.radius._12, style: .continuous)
             )
     }
 }
 
 extension LoginShortformMarqueeView {
     static let cardSize = CGSize(width: 118, height: 172)
-    static let cardGap: CGFloat = 12
+    static let cardGap = CGFloat.ds.spacing.md
 
     static var defaultImages: [Image] {
         [
@@ -82,10 +82,7 @@ extension LoginShortformMarqueeView {
 
 #Preview("Login Shortform Marquee") {
     ZStack {
-        Color.ds.background.grayDarker.ignoresSafeArea()
+        Color.ds.fill.neutral.subtle.ignoresSafeArea()
         LoginShortformMarqueeView()
-    }
-    .onAppear {
-        _ = DesignSystemFontRegistration.registerIfNeeded()
     }
 }

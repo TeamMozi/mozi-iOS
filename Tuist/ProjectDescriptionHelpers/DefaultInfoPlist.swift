@@ -13,7 +13,6 @@ public enum DefaultInfoPlist {
         "KAKAO_NATIVE_APP_KEY": "$(KAKAO_NATIVE_APP_KEY)",
 
         "UILaunchStoryboardName": "LaunchScreen",
-        "UIUserInterfaceStyle": "Dark",
         "LSRequiresIPhoneOS": true,
         "UIRequiresFullScreen": true,
         "UISupportedInterfaceOrientations": [
@@ -62,7 +61,6 @@ public enum DefaultInfoPlist {
         "MoziBuildHash": .string("$(\(ProjectEnvironment.UploadBuildSetting.commitHash))"),
 
         "UILaunchStoryboardName": "LaunchScreen",
-        "UIUserInterfaceStyle": "Dark",
         "LSRequiresIPhoneOS": true,
         "UIRequiresFullScreen": true,
         "UISupportedInterfaceOrientations": [

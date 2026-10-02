@@ -15,22 +15,22 @@ public struct OnboardingPlaceholderView: View {
 
             DesignText(
                 "추가 정보 입력이 필요해요",
-                style: TextStyle.ds.title.large24Bold,
-                color: Color.ds.text.neutral.white,
+                style: TextStyle.ds.title2.bold,
+                color: Color.ds.text.neutral.primary,
                 alignment: .center
             )
 
             DesignText(
                 "온보딩 화면은 곧 연결될 예정이에요.",
-                style: TextStyle.ds.body.medium16Regular,
-                color: Color.ds.text.neutral.basic,
+                style: TextStyle.ds.body.regular,
+                color: Color.ds.text.neutral.subtle,
                 alignment: .center
             )
 
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.ds.background.black.ignoresSafeArea())
+        .background(Color.ds.fill.neutral.default.ignoresSafeArea())
         .task {
             store.send(.onAppear)
         }
@@ -45,7 +45,4 @@ public struct OnboardingPlaceholderView: View {
             OnboardingPlaceholderFeature()
         }
     )
-    .onAppear {
-        _ = DesignSystemFontRegistration.registerIfNeeded()
-    }
 }
