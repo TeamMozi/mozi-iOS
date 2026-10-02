@@ -10,7 +10,7 @@ public struct DesignText: View {
     public init(
         _ text: String,
         style: TextStyle,
-        color: Color = Color.ds.text.neutral.white,
+        color: Color = Color.ds.text.neutral.primary,
         alignment: TextAlignment = .leading,
         lineLimit: Int? = nil
     ) {
@@ -29,5 +29,6 @@ public struct DesignText: View {
             .foregroundStyle(color)
             .multilineTextAlignment(alignment)
             .lineLimit(lineLimit)
+            .padding(.vertical, style.lineBoxVerticalPadding)
     }
 }

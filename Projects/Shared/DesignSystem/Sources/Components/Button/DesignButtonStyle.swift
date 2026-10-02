@@ -7,13 +7,16 @@ enum DesignButtonInteractionState: Sendable {
     case disabled
 }
 
+/// 버튼 한 상태의 색과 테두리. 색은 다크·라이트 쌍이다.
 struct DesignButtonResolvedStyle: Equatable, Sendable {
-    let background: TokenColor
-    let content: TokenColor
-    let border: TokenColor?
+    let background: ThemedColor
+    let content: ThemedColor
+    let border: ThemedColor?
     let borderWidth: CGFloat
 }
 
+/// 버튼 모양 넷을 Figma 버튼 묶음 색으로 옮긴다.
+/// primary → main, secondary → neutral, outlined → ghost, text → text.
 enum DesignButtonStyleResolver {
     static func resolve(
         variant: DesignButtonVariant,
@@ -31,116 +34,69 @@ enum DesignButtonStyleResolver {
         }
     }
 
-    private static func resolvePrimary(
-        state: DesignButtonInteractionState
-    ) -> DesignButtonResolvedStyle {
+    private static func resolvePrimary(state: DesignButtonInteractionState) -> DesignButtonResolvedStyle {
+        let background = SemanticColor.button.background.main
+        let label = SemanticColor.button.label.main
         switch state {
         case .default:
-            DesignButtonResolvedStyle(
-                background: SemanticColor.Button.Primary.background.default,
-                content: SemanticColor.Button.Primary.content.default,
-                border: nil,
-                borderWidth: 0
-            )
+            return filled(background: background.default, content: label.default)
         case .pressed:
-            DesignButtonResolvedStyle(
-                background: SemanticColor.Button.Primary.background.pressed,
-                content: SemanticColor.Button.Primary.content.pressed,
-                border: nil,
-                borderWidth: 0
-            )
+            return filled(background: background.pressed, content: label.pressed)
         case .disabled:
-            DesignButtonResolvedStyle(
-                background: SemanticColor.Button.Primary.background.disabled,
-                content: SemanticColor.Button.Primary.content.disabled,
-                border: nil,
-                borderWidth: 0
-            )
+            return filled(background: background.disabled, content: label.disabled)
         }
     }
 
-    private static func resolveSecondary(
-        state: DesignButtonInteractionState
-    ) -> DesignButtonResolvedStyle {
+    private static func resolveSecondary(state: DesignButtonInteractionState) -> DesignButtonResolvedStyle {
+        let background = SemanticColor.button.background.neutral
+        let label = SemanticColor.button.label.neutral
         switch state {
         case .default:
-            DesignButtonResolvedStyle(
-                background: SemanticColor.Button.Secondary.background.default,
-                content: SemanticColor.Button.Secondary.content.default,
-                border: nil,
-                borderWidth: 0
-            )
+            return filled(background: background.default, content: label.default)
         case .pressed:
-            DesignButtonResolvedStyle(
-                background: SemanticColor.Button.Secondary.background.pressed,
-                content: SemanticColor.Button.Secondary.content.pressed,
-                border: nil,
-                borderWidth: 0
-            )
+            return filled(background: background.pressed, content: label.pressed)
         case .disabled:
-            DesignButtonResolvedStyle(
-                background: SemanticColor.Button.Secondary.background.disabled,
-                content: SemanticColor.Button.Secondary.content.disabled,
-                border: nil,
-                borderWidth: 0
-            )
+            return filled(background: background.disabled, content: label.disabled)
         }
     }
 
-    private static func resolveOutlined(
-        state: DesignButtonInteractionState
-    ) -> DesignButtonResolvedStyle {
+    // ghost 묶음에는 테두리 색이 없다. 전과 같은 모양을 지키려고 테두리는 글자 색을 따른다.
+    private static func resolveOutlined(state: DesignButtonInteractionState) -> DesignButtonResolvedStyle {
+        let background = SemanticColor.button.background.ghost
+        let label = SemanticColor.button.label.ghost
         switch state {
         case .default:
-            DesignButtonResolvedStyle(
-                background: SemanticColor.Button.Outlined.background.default,
-                content: SemanticColor.Button.Outlined.content.default,
-                border: SemanticColor.Button.Outlined.border.default,
-                borderWidth: SemanticNumber.Border.thin
-            )
+            return outlined(background: background.default, content: label.default)
         case .pressed:
-            DesignButtonResolvedStyle(
-                background: SemanticColor.Button.Outlined.background.pressed,
-                content: SemanticColor.Button.Outlined.content.pressed,
-                border: SemanticColor.Button.Outlined.border.pressed,
-                borderWidth: SemanticNumber.Border.thin
-            )
+            return outlined(background: background.pressed, content: label.pressed)
         case .disabled:
-            DesignButtonResolvedStyle(
-                background: SemanticColor.Button.Outlined.background.disabled,
-                content: SemanticColor.Button.Outlined.content.disabled,
-                border: SemanticColor.Button.Outlined.border.disabled,
-                borderWidth: SemanticNumber.Border.thin
-            )
+            return outlined(background: background.disabled, content: label.disabled)
         }
     }
 
-    private static func resolveText(
-        state: DesignButtonInteractionState
-    ) -> DesignButtonResolvedStyle {
+    // text 묶음에는 글자 색만 있다. 바탕은 투명한 `overlay.dim._0` 이다.
+    private static func resolveText(state: DesignButtonInteractionState) -> DesignButtonResolvedStyle {
+        let clear = SemanticColor.overlay.dim._0
+        let label = SemanticColor.button.label.text
         switch state {
-        case .default:
-            DesignButtonResolvedStyle(
-                background: SemanticColor.Button.Text.background.default,
-                content: SemanticColor.Button.Text.content.default,
-                border: nil,
-                borderWidth: 0
-            )
-        case .pressed:
-            DesignButtonResolvedStyle(
-                background: SemanticColor.Button.Text.background.pressed,
-                content: SemanticColor.Button.Text.content.pressed,
-                border: nil,
-                borderWidth: 0
-            )
+        case .default, .pressed:
+            return filled(background: clear, content: label.accent)
         case .disabled:
-            DesignButtonResolvedStyle(
-                background: SemanticColor.Button.Text.background.disabled,
-                content: SemanticColor.Button.Text.content.disabled,
-                border: nil,
-                borderWidth: 0
-            )
+            return filled(background: clear, content: label.neutral)
         }
+    }
+
+    private static func filled(background: ThemedColor, content: ThemedColor) -> DesignButtonResolvedStyle {
+        DesignButtonResolvedStyle(background: background, content: content, border: nil, borderWidth: 0)
+    }
+
+    private static func outlined(background: ThemedColor, content: ThemedColor) -> DesignButtonResolvedStyle {
+        DesignButtonResolvedStyle(
+            background: background,
+            content: content,
+            border: content,
+            borderWidth: CGFloat.ds.border.thin
+        )
     }
 }
 

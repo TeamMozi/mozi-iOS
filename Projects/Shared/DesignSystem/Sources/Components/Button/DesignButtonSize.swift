@@ -8,11 +8,11 @@ public enum DesignButtonSize: Sendable {
     public var height: CGFloat {
         switch self {
         case .sm:
-            SemanticNumber.ControlHeight.sm
+            CGFloat.ds.buttonHeight.controlSm
         case .md:
-            SemanticNumber.ControlHeight.md
+            CGFloat.ds.buttonHeight.controlMd
         case .lg:
-            SemanticNumber.ControlHeight.lg
+            CGFloat.ds.buttonHeight.controlLg
         }
     }
 
@@ -30,9 +30,9 @@ public enum DesignButtonSize: Sendable {
     public var cornerRadius: CGFloat {
         switch self {
         case .sm, .md:
-            SemanticNumber.Radius.xsm
+            CGFloat.ds.radius._4
         case .lg:
-            SemanticNumber.Radius.sm
+            CGFloat.ds.radius._8
         }
     }
 
@@ -50,15 +50,15 @@ public enum DesignButtonSize: Sendable {
     public var textStyle: TextStyle {
         switch self {
         case .sm:
-            TextStyle.ds.button.sm14Semibold
+            TextStyle.ds.caption1.semiBold
         case .md:
-            TextStyle.ds.button.md16Semibold
+            TextStyle.ds.headline.semiBold
         case .lg:
-            TextStyle.ds.button.lg18Semibold
+            TextStyle.ds.title3.semiBold
         }
     }
 
     public var contentGap: CGFloat {
-        SemanticNumber.Spacing.sm
+        CGFloat.ds.spacing.sm
     }
 }
