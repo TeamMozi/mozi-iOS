@@ -13,7 +13,7 @@ public enum ProjectEnvironment {
     public static let appBuildNumber = "1"
 
     public static let swiftVersion = "6"
-    public static let deploymentTarget = "18.0"
+    public static let deploymentTarget = "26.0"
     /// iPhone only. iPad / Mac / Vision 제외.
     public static let destinations: Destinations = [.iPhone]
 
