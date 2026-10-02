@@ -35,23 +35,23 @@ public struct LoginView: View {
                         VStack(spacing: LoginLayout.titleToSubtitleSpacing) {
                             DesignText(
                                 "내가 찾던 모든 모임",
-                                style: TextStyle.ds.heading.large32Bold,
-                                color: Color.ds.text.primary.basic,
+                                style: TextStyle.ds.title1.bold,
+                                color: Color.ds.text.accent.subtle,
                                 alignment: .center
                             )
 
                             VStack(spacing: LoginLayout.subtitleToDescriptionSpacing) {
                                 DesignText(
                                     "동네라서 가능한 모든 것",
-                                    style: TextStyle.ds.label.large16Medium,
-                                    color: Color.ds.text.primary.basic,
+                                    style: TextStyle.ds.headline.medium,
+                                    color: Color.ds.text.accent.subtle,
                                     alignment: .center
                                 )
 
                                 DesignText(
                                     "부담없이 만나는 원데이 모임부터",
-                                    style: TextStyle.ds.label.large16Medium,
-                                    color: Color.ds.text.primary.basic,
+                                    style: TextStyle.ds.headline.medium,
+                                    color: Color.ds.text.accent.subtle,
                                     alignment: .center
                                 )
                             }
@@ -86,13 +86,15 @@ public struct LoginView: View {
 
             if store.isLoading {
                 ProgressView()
-                    .tint(Color.ds.text.neutral.white)
+                    .tint(Color.ds.text.neutral.primary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                     .allowsHitTesting(false)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.ds.background.grayDarker.ignoresSafeArea())
+        .background(Color.ds.fill.neutral.subtle.ignoresSafeArea())
+        // 시안이 다크 전용이다. 이 화면이 떠 있는 동안만 창을 다크로 둔다.
+        .preferredColorScheme(.dark)
         .task {
             store.send(.onAppear)
         }
@@ -100,8 +102,8 @@ public struct LoginView: View {
 }
 
 private enum LoginLayout {
-    static let horizontalPadding: CGFloat = 16
-    static let buttonSpacing: CGFloat = 8
+    static let horizontalPadding = CGFloat.ds.layout.margin
+    static let buttonSpacing = CGFloat.ds.spacing.sm
     /// 상단 safe area 하단 ~ 로고 상단
     static let logoTopInset: CGFloat = 162
     /// 숏폼 하단 ~ 카카오 버튼 상단
@@ -114,7 +116,7 @@ private enum LoginLayout {
     static let logoToTitleSpacing: CGFloat = 52
     static let marqueeHeight: CGFloat = 172
 
-    static let titleToSubtitleSpacing: CGFloat = 8
+    static let titleToSubtitleSpacing = CGFloat.ds.spacing.sm
     static let subtitleToDescriptionSpacing: CGFloat = 2
 }
 
@@ -136,9 +138,6 @@ private enum LoginLayout {
             }
         }
     )
-    .onAppear {
-        _ = DesignSystemFontRegistration.registerIfNeeded()
-    }
 }
 
 #Preview("Login / Loading") {
@@ -162,7 +161,4 @@ private enum LoginLayout {
             }
         }
     )
-    .onAppear {
-        _ = DesignSystemFontRegistration.registerIfNeeded()
-    }
 }

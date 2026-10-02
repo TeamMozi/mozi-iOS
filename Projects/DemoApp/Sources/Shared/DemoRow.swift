@@ -13,7 +13,11 @@ struct DemoRow<Leading: View, Trailing: View>: View {
             trailing
         }
         .padding(.horizontal, CGFloat.ds.spacing.lg)
-        .frame(height: 52)
+        .frame(height: DemoRowLayout.height)
         .contentShape(Rectangle())
     }
+}
+
+private enum DemoRowLayout {
+    static let height: CGFloat = 52
 }

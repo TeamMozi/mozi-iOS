@@ -1,246 +1,137 @@
-@testable import SharedDesignSystem
-import SwiftUI
+import SharedDesignSystem
 import XCTest
 
 final class TypographyTests: XCTestCase {
-    func test_body_small14_regular_메트릭스() {
-        let style = TextStyle.ds.body.small14Regular
-        XCTAssertEqual(style.size, 14)
-        XCTAssertEqual(style.lineHeight, 24)
-        XCTAssertEqual(style.letterSpacingEm, 0)
-        XCTAssertEqual(style.fontName, "Pretendard-Regular")
+    func test_글자_스타일_21개_값이_Figma_표와_같다() {
+        for item in textStyleCases {
+            XCTAssertEqual(item.style.fontName, item.font, item.name)
+            XCTAssertEqual(item.style.size, item.size, item.name)
+            XCTAssertEqual(item.style.lineHeight, item.lineHeight, item.name)
+            XCTAssertEqual(item.style.letterSpacingEm, item.em, accuracy: 0.0001, item.name)
+        }
     }
 
-    func test_heading_large32_bold_메트릭스() {
-        let style = TextStyle.ds.heading.large32Bold
-        XCTAssertEqual(style.size, 32)
-        XCTAssertEqual(style.lineHeight, 40)
-        XCTAssertEqual(style.letterSpacingEm, -0.01, accuracy: 0.0001)
-        XCTAssertEqual(style.fontName, "Pretendard-Bold")
+    func test_자간과_줄_간격은_글자_크기와_줄_높이에서_나온다() {
+        let title = TextStyle.ds.title1.bold
+        XCTAssertEqual(title.letterSpacing, -0.56, accuracy: 0.0001)
+        XCTAssertEqual(title.additionalLineSpacing, 0.586, accuracy: 0.01)
+
+        let caption = TextStyle.ds.caption2.regular
+        XCTAssertEqual(caption.letterSpacing, -0.12, accuracy: 0.0001)
+        XCTAssertEqual(caption.additionalLineSpacing, 0)
     }
 
-    func test_button_sm14가_semibold() {
-        let style = TextStyle.ds.button.sm14Semibold
-        XCTAssertEqual(style.size, 14)
-        XCTAssertEqual(style.lineHeight, 14)
-        XCTAssertEqual(style.fontName, "Pretendard-SemiBold")
-    }
-
-    func test_label_자간_값() {
-        XCTAssertEqual(TextStyle.ds.label.small12Medium.letterSpacingEm, 0.02, accuracy: 0.0001)
-    }
-
-    func test_heading_title_전체_표() {
-        assertStyle(
-            TextStyle.ds.heading.large32Bold,
-            fontName: "Pretendard-Bold",
-            size: 32,
-            lineHeight: 40,
-            letterSpacingEm: -0.01
-        )
-        assertStyle(
-            TextStyle.ds.heading.large32Semibold,
-            fontName: "Pretendard-SemiBold",
-            size: 32,
-            lineHeight: 40,
-            letterSpacingEm: -0.01
-        )
-        assertStyle(
-            TextStyle.ds.heading.medium28Bold,
-            fontName: "Pretendard-Bold",
-            size: 28,
-            lineHeight: 36,
-            letterSpacingEm: -0.01
-        )
-        assertStyle(
-            TextStyle.ds.heading.medium28Semibold,
-            fontName: "Pretendard-SemiBold",
-            size: 28,
-            lineHeight: 36,
-            letterSpacingEm: -0.01
-        )
-
-        assertStyle(
-            TextStyle.ds.title.large24Bold,
-            fontName: "Pretendard-Bold",
-            size: 24,
-            lineHeight: 32,
-            letterSpacingEm: -0.01
-        )
-        assertStyle(
-            TextStyle.ds.title.large24Semibold,
-            fontName: "Pretendard-SemiBold",
-            size: 24,
-            lineHeight: 32,
-            letterSpacingEm: -0.01
-        )
-        assertStyle(
-            TextStyle.ds.title.medium22Bold,
-            fontName: "Pretendard-Bold",
-            size: 22,
-            lineHeight: 30,
-            letterSpacingEm: -0.01
-        )
-        assertStyle(
-            TextStyle.ds.title.medium22Semibold,
-            fontName: "Pretendard-SemiBold",
-            size: 22,
-            lineHeight: 30,
-            letterSpacingEm: -0.01
-        )
-        assertStyle(
-            TextStyle.ds.title.small20Bold,
-            fontName: "Pretendard-Bold",
-            size: 20,
-            lineHeight: 28,
-            letterSpacingEm: -0.01
-        )
-        assertStyle(
-            TextStyle.ds.title.small20Semibold,
-            fontName: "Pretendard-SemiBold",
-            size: 20,
-            lineHeight: 28,
-            letterSpacingEm: -0.01
-        )
-        assertStyle(
-            TextStyle.ds.title.xsmall18Bold,
-            fontName: "Pretendard-Bold",
-            size: 18,
-            lineHeight: 26,
-            letterSpacingEm: -0.01
-        )
-        assertStyle(
-            TextStyle.ds.title.xsmall18Semibold,
-            fontName: "Pretendard-SemiBold",
-            size: 18,
-            lineHeight: 26,
-            letterSpacingEm: -0.01
-        )
-    }
-
-    func test_body_label_button_전체_표() {
-        assertStyle(
-            TextStyle.ds.body.large18Semibold,
-            fontName: "Pretendard-SemiBold",
-            size: 18,
-            lineHeight: 30,
-            letterSpacingEm: 0
-        )
-        assertStyle(
-            TextStyle.ds.body.large18Regular,
-            fontName: "Pretendard-Regular",
-            size: 18,
-            lineHeight: 30,
-            letterSpacingEm: 0
-        )
-        assertStyle(
-            TextStyle.ds.body.medium16Semibold,
-            fontName: "Pretendard-SemiBold",
-            size: 16,
-            lineHeight: 28,
-            letterSpacingEm: 0
-        )
-        assertStyle(
-            TextStyle.ds.body.medium16Regular,
-            fontName: "Pretendard-Regular",
-            size: 16,
-            lineHeight: 28,
-            letterSpacingEm: 0
-        )
-        assertStyle(
-            TextStyle.ds.body.small14Semibold,
-            fontName: "Pretendard-SemiBold",
-            size: 14,
-            lineHeight: 24,
-            letterSpacingEm: 0
-        )
-        assertStyle(
-            TextStyle.ds.body.small14Regular,
-            fontName: "Pretendard-Regular",
-            size: 14,
-            lineHeight: 24,
-            letterSpacingEm: 0
-        )
-
-        assertStyle(
-            TextStyle.ds.label.large16Medium,
-            fontName: "Pretendard-Medium",
-            size: 16,
-            lineHeight: 20,
-            letterSpacingEm: 0.02
-        )
-        assertStyle(
-            TextStyle.ds.label.medium14Medium,
-            fontName: "Pretendard-Medium",
-            size: 14,
-            lineHeight: 20,
-            letterSpacingEm: 0.02
-        )
-        assertStyle(
-            TextStyle.ds.label.small12Medium,
-            fontName: "Pretendard-Medium",
-            size: 12,
-            lineHeight: 16,
-            letterSpacingEm: 0.02
-        )
-
-        assertStyle(
-            TextStyle.ds.button.sm14Semibold,
-            fontName: "Pretendard-SemiBold",
-            size: 14,
-            lineHeight: 14,
-            letterSpacingEm: 0
-        )
-        assertStyle(
-            TextStyle.ds.button.md16Semibold,
-            fontName: "Pretendard-SemiBold",
-            size: 16,
-            lineHeight: 16,
-            letterSpacingEm: 0
-        )
-        assertStyle(
-            TextStyle.ds.button.lg18Semibold,
-            fontName: "Pretendard-SemiBold",
-            size: 18,
-            lineHeight: 18,
-            letterSpacingEm: 0
-        )
-    }
-
-    func test_파생_spacing_헬퍼_값() {
-        let heading = TextStyle.ds.heading.large32Bold
-        XCTAssertEqual(heading.letterSpacing, 32 * -0.01, accuracy: 0.0001)
-        XCTAssertEqual(heading.additionalLineSpacing, 8)
-
-        let button = TextStyle.ds.button.sm14Semibold
-        XCTAssertEqual(button.letterSpacing, 0)
-        XCTAssertEqual(button.additionalLineSpacing, 0)
-
-        let label = TextStyle.ds.label.small12Medium
-        XCTAssertEqual(label.letterSpacing, 12 * 0.02, accuracy: 0.0001)
-        XCTAssertEqual(label.additionalLineSpacing, 4)
-    }
-
-    func test_공개_Font_ds_경로가_해석됨() {
-        XCTAssertNotNil(Font.ds.heading.large32Bold)
-        XCTAssertNotNil(Font.ds.title.xsmall18Semibold)
-        XCTAssertNotNil(Font.ds.body.small14Regular)
-        XCTAssertNotNil(Font.ds.label.medium14Medium)
-        XCTAssertNotNil(Font.ds.button.lg18Semibold)
-    }
-
-    private func assertStyle(
-        _ style: TextStyle,
-        fontName: String,
-        size: CGFloat,
-        lineHeight: CGFloat,
-        letterSpacingEm: CGFloat,
-        file: StaticString = #filePath,
-        line: UInt = #line
-    ) {
-        XCTAssertEqual(style.fontName, fontName, file: file, line: line)
-        XCTAssertEqual(style.size, size, file: file, line: line)
-        XCTAssertEqual(style.lineHeight, lineHeight, file: file, line: line)
-        XCTAssertEqual(style.letterSpacingEm, letterSpacingEm, accuracy: 0.0001, file: file, line: line)
+    /// Pretendard 기본 줄 높이는 글자 크기 × 1.193359375 다. 줄 높이와의 차이를 위아래로 반씩 나눈다.
+    func test_한_줄_상자_여백은_줄_높이와_글꼴_기본_줄_높이_차이의_절반이다() {
+        XCTAssertEqual(TextStyle.ds.body.regular.additionalLineSpacing, 4.906, accuracy: 0.01)
+        XCTAssertEqual(TextStyle.ds.body.regular.lineBoxVerticalPadding, 2.453, accuracy: 0.01)
+        XCTAssertEqual(TextStyle.ds.title1.bold.lineBoxVerticalPadding, 0.293, accuracy: 0.01)
+        XCTAssertEqual(TextStyle.ds.caption2.regular.lineBoxVerticalPadding, 0)
     }
 }
+
+/// 코드 이름, 스타일, 기대값. 자간은 Figma 백분율을 100 으로 나눈 값이다.
+private struct TextStyleCase {
+    let name: String
+    let style: TextStyle
+    let font: String
+    let size: CGFloat
+    let lineHeight: CGFloat
+    let em: CGFloat
+
+    init(_ name: String, _ style: TextStyle, font: String, size: CGFloat, lineHeight: CGFloat, em: CGFloat) {
+        self.name = name
+        self.style = style
+        self.font = font
+        self.size = size
+        self.lineHeight = lineHeight
+        self.em = em
+    }
+}
+
+private let textStyleCases: [TextStyleCase] = [
+    TextStyleCase(
+        "title1.bold", TextStyle.ds.title1.bold,
+        font: "Pretendard-Bold", size: 28, lineHeight: 34, em: -0.02
+    ),
+    TextStyleCase(
+        "title2.regular", TextStyle.ds.title2.regular,
+        font: "Pretendard-Regular", size: 22, lineHeight: 28, em: -0.02
+    ),
+    TextStyleCase(
+        "title2.semiBold", TextStyle.ds.title2.semiBold,
+        font: "Pretendard-SemiBold", size: 22, lineHeight: 28, em: -0.02
+    ),
+    TextStyleCase(
+        "title2.bold", TextStyle.ds.title2.bold,
+        font: "Pretendard-Bold", size: 22, lineHeight: 28, em: -0.02
+    ),
+    TextStyleCase(
+        "title3.regular", TextStyle.ds.title3.regular,
+        font: "Pretendard-Regular", size: 18, lineHeight: 24, em: -0.02
+    ),
+    TextStyleCase(
+        "title3.semiBold", TextStyle.ds.title3.semiBold,
+        font: "Pretendard-SemiBold", size: 18, lineHeight: 24, em: -0.02
+    ),
+    TextStyleCase(
+        "headline.regular", TextStyle.ds.headline.regular,
+        font: "Pretendard-Regular", size: 16, lineHeight: 22, em: -0.02
+    ),
+    TextStyleCase(
+        "headline.medium", TextStyle.ds.headline.medium,
+        font: "Pretendard-Medium", size: 16, lineHeight: 22, em: -0.02
+    ),
+    TextStyleCase(
+        "headline.semiBold", TextStyle.ds.headline.semiBold,
+        font: "Pretendard-SemiBold", size: 16, lineHeight: 22, em: -0.02
+    ),
+    TextStyleCase(
+        "body.regular", TextStyle.ds.body.regular,
+        font: "Pretendard-Regular", size: 16, lineHeight: 24, em: -0.01
+    ),
+    TextStyleCase(
+        "body.medium", TextStyle.ds.body.medium,
+        font: "Pretendard-Medium", size: 16, lineHeight: 24, em: -0.01
+    ),
+    TextStyleCase(
+        "body.semiBold", TextStyle.ds.body.semiBold,
+        font: "Pretendard-SemiBold", size: 16, lineHeight: 24, em: -0.01
+    ),
+    TextStyleCase(
+        "subtext.regular", TextStyle.ds.subtext.regular,
+        font: "Pretendard-Regular", size: 14, lineHeight: 20, em: -0.01
+    ),
+    TextStyleCase(
+        "subtext.medium", TextStyle.ds.subtext.medium,
+        font: "Pretendard-Medium", size: 14, lineHeight: 20, em: -0.01
+    ),
+    TextStyleCase(
+        "caption1.regular", TextStyle.ds.caption1.regular,
+        font: "Pretendard-Regular", size: 14, lineHeight: 18, em: -0.01
+    ),
+    TextStyleCase(
+        "caption1.medium", TextStyle.ds.caption1.medium,
+        font: "Pretendard-Medium", size: 14, lineHeight: 18, em: -0.01
+    ),
+    TextStyleCase(
+        "caption1.semiBold", TextStyle.ds.caption1.semiBold,
+        font: "Pretendard-SemiBold", size: 14, lineHeight: 18, em: -0.01
+    ),
+    TextStyleCase(
+        "caption1.bold", TextStyle.ds.caption1.bold,
+        font: "Pretendard-Bold", size: 14, lineHeight: 18, em: -0.01
+    ),
+    TextStyleCase(
+        "caption2.regular", TextStyle.ds.caption2.regular,
+        font: "Pretendard-Regular", size: 12, lineHeight: 14, em: -0.01
+    ),
+    TextStyleCase(
+        "caption2.medium", TextStyle.ds.caption2.medium,
+        font: "Pretendard-Medium", size: 12, lineHeight: 14, em: -0.01
+    ),
+    TextStyleCase(
+        "caption2.semiBold", TextStyle.ds.caption2.semiBold,
+        font: "Pretendard-SemiBold", size: 12, lineHeight: 14, em: -0.01
+    ),
+]

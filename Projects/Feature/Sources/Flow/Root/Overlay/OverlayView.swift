@@ -1,3 +1,4 @@
+import SharedDesignSystem
 import SwiftUI
 import ThirdParty
 
@@ -13,17 +14,19 @@ public struct OverlayView: View {
             if let toastMessage = store.toastMessage {
                 VStack {
                     Spacer()
-                    Text(toastMessage)
-                        .font(.body)
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 12)
-                        .background(Color.primary.opacity(0.9))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .padding(.bottom, 24)
-                        .onTapGesture {
-                            store.send(.dismissToast)
-                        }
+                    DesignText(
+                        toastMessage,
+                        style: TextStyle.ds.headline.regular,
+                        color: Color.ds.text.neutral.inverse
+                    )
+                    .padding(.horizontal, CGFloat.ds.spacing.lg)
+                    .padding(.vertical, CGFloat.ds.spacing.md)
+                    .background(Color.ds.fill.neutral.inverse)
+                    .clipShape(RoundedRectangle(cornerRadius: CGFloat.ds.radius._12))
+                    .padding(.bottom, CGFloat.ds.spacing.xl)
+                    .onTapGesture {
+                        store.send(.dismissToast)
+                    }
                 }
                 .transition(.move(edge: .bottom).combined(with: .opacity))
             }
@@ -55,7 +58,7 @@ public struct OverlayView: View {
             OverlayFeature()
         }
     )
-    .background(Color.black.opacity(0.2))
+    .background(Color.ds.overlay.dim._20)
 }
 
 #Preview("Overlay / Toast") {
@@ -68,7 +71,7 @@ public struct OverlayView: View {
             OverlayFeature()
         }
     )
-    .background(Color.black.opacity(0.2))
+    .background(Color.ds.overlay.dim._20)
 }
 
 #Preview("Overlay / Alert") {
@@ -81,5 +84,5 @@ public struct OverlayView: View {
             OverlayFeature()
         }
     )
-    .background(Color.black.opacity(0.2))
+    .background(Color.ds.overlay.dim._20)
 }

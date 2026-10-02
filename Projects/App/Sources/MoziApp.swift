@@ -14,7 +14,6 @@ struct MoziApp: App {
     var body: some Scene {
         WindowGroup {
             CompositionRoot.rootView(store: store)
-                .preferredColorScheme(.dark)
                 .onOpenURL { url in
                     if KakaoAuthRedirectHandler.handle(url: url) {
                         return

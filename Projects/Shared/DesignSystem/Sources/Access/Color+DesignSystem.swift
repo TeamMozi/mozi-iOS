@@ -4,209 +4,227 @@ public extension Color {
     static let ds = DesignSystemColors()
 }
 
+/// Figma 의미 색 63개와 Figma 밖 소셜 색 다섯. 의미 색은 기기 모드를 따라 바뀐다.
 public struct DesignSystemColors: Sendable {
-    public let button = ButtonColors()
     public let text = TextColors()
-    public let background = BackgroundColors()
+    public let fill = FillColors()
     public let border = BorderColors()
-    public let dim = DimColors()
+    public let button = ButtonColors()
+    public let overlay = OverlayColors()
     public let social = SocialColors()
-
-    public init() {}
-}
-
-public struct ButtonColors: Sendable {
-    public let primary = ButtonPrimaryColors()
-    public let secondary = ButtonSecondaryColors()
-    public let outlined = ButtonOutlinedColors()
-    public let text = ButtonTextColors()
-
-    public init() {}
-}
-
-public struct ButtonPrimaryColors: Sendable {
-    public let background = ButtonPrimaryBackgroundColors()
-    public let content = ButtonPrimaryContentColors()
-
-    public init() {}
-}
-
-public struct ButtonPrimaryBackgroundColors: Sendable {
-    public let `default` = SemanticColor.Button.Primary.background.default.color
-    public let pressed = SemanticColor.Button.Primary.background.pressed.color
-    public let disabled = SemanticColor.Button.Primary.background.disabled.color
-
-    public init() {}
-}
-
-public struct ButtonPrimaryContentColors: Sendable {
-    public let `default` = SemanticColor.Button.Primary.content.default.color
-    public let pressed = SemanticColor.Button.Primary.content.pressed.color
-    public let disabled = SemanticColor.Button.Primary.content.disabled.color
-
-    public init() {}
-}
-
-public struct ButtonSecondaryColors: Sendable {
-    public let background = ButtonSecondaryBackgroundColors()
-    public let content = ButtonSecondaryContentColors()
-
-    public init() {}
-}
-
-public struct ButtonSecondaryBackgroundColors: Sendable {
-    public let `default` = SemanticColor.Button.Secondary.background.default.color
-    public let pressed = SemanticColor.Button.Secondary.background.pressed.color
-    public let disabled = SemanticColor.Button.Secondary.background.disabled.color
-
-    public init() {}
-}
-
-public struct ButtonSecondaryContentColors: Sendable {
-    public let `default` = SemanticColor.Button.Secondary.content.default.color
-    public let pressed = SemanticColor.Button.Secondary.content.pressed.color
-    public let disabled = SemanticColor.Button.Secondary.content.disabled.color
-
-    public init() {}
-}
-
-public struct ButtonOutlinedColors: Sendable {
-    public let background = ButtonOutlinedBackgroundColors()
-    public let content = ButtonOutlinedContentColors()
-    public let border = ButtonOutlinedBorderColors()
-
-    public init() {}
-}
-
-public struct ButtonOutlinedBackgroundColors: Sendable {
-    public let `default` = SemanticColor.Button.Outlined.background.default.color
-    public let pressed = SemanticColor.Button.Outlined.background.pressed.color
-    public let disabled = SemanticColor.Button.Outlined.background.disabled.color
-
-    public init() {}
-}
-
-public struct ButtonOutlinedContentColors: Sendable {
-    public let `default` = SemanticColor.Button.Outlined.content.default.color
-    public let pressed = SemanticColor.Button.Outlined.content.pressed.color
-    public let disabled = SemanticColor.Button.Outlined.content.disabled.color
-
-    public init() {}
-}
-
-public struct ButtonOutlinedBorderColors: Sendable {
-    public let `default` = SemanticColor.Button.Outlined.border.default.color
-    public let pressed = SemanticColor.Button.Outlined.border.pressed.color
-    public let disabled = SemanticColor.Button.Outlined.border.disabled.color
-
-    public init() {}
-}
-
-public struct ButtonTextColors: Sendable {
-    public let background = ButtonTextBackgroundColors()
-    public let content = ButtonTextContentColors()
-
-    public init() {}
-}
-
-public struct ButtonTextBackgroundColors: Sendable {
-    public let `default` = SemanticColor.Button.Text.background.default.color
-    public let pressed = SemanticColor.Button.Text.background.pressed.color
-    public let disabled = SemanticColor.Button.Text.background.disabled.color
-
-    public init() {}
-}
-
-public struct ButtonTextContentColors: Sendable {
-    public let `default` = SemanticColor.Button.Text.content.default.color
-    public let pressed = SemanticColor.Button.Text.content.pressed.color
-    public let disabled = SemanticColor.Button.Text.content.disabled.color
 
     public init() {}
 }
 
 public struct TextColors: Sendable {
     public let neutral = TextNeutralColors()
-    public let primary = TextPrimaryColors()
-    public let secondary = TextSecondaryColors()
+    public let accent = TextAccentColors()
 
     public init() {}
 }
 
 public struct TextNeutralColors: Sendable {
-    public let black = SemanticColor.Text.Neutral.black.color
-    public let darker = SemanticColor.Text.Neutral.darker.color
-    public let dark = SemanticColor.Text.Neutral.dark.color
-    public let basic = SemanticColor.Text.Neutral.basic.color
-    public let light = SemanticColor.Text.Neutral.light.color
-    public let lighter = SemanticColor.Text.Neutral.lighter.color
-    public let white = SemanticColor.Text.Neutral.white.color
+    public let primary = SemanticColor.text.neutral.primary.color
+    public let secondary = SemanticColor.text.neutral.secondary.color
+    public let tertiary = SemanticColor.text.neutral.tertiary.color
+    public let subtle = SemanticColor.text.neutral.subtle.color
+    public let faint = SemanticColor.text.neutral.faint.color
+    public let inverse = SemanticColor.text.neutral.inverse.color
 
     public init() {}
 }
 
-public struct TextPrimaryColors: Sendable {
-    public let basic = SemanticColor.Text.Primary.basic.color
-    public let dark = SemanticColor.Text.Primary.dark.color
-    public let darker = SemanticColor.Text.Primary.darker.color
+public struct TextAccentColors: Sendable {
+    public let `default` = SemanticColor.text.accent.default.color
+    public let subtle = SemanticColor.text.accent.subtle.color
+    public let highlight = SemanticColor.text.accent.highlight.color
+    public let strong = SemanticColor.text.accent.strong.color
 
     public init() {}
 }
 
-public struct TextSecondaryColors: Sendable {
-    public let basic = SemanticColor.Text.Secondary.basic.color
-    public let darker = SemanticColor.Text.Secondary.darker.color
+public struct FillColors: Sendable {
+    public let neutral = FillNeutralColors()
+    public let accent = FillAccentColors()
 
     public init() {}
 }
 
-public struct BackgroundColors: Sendable {
-    public let black = SemanticColor.Background.black.color
-    public let grayDarker = SemanticColor.Background.grayDarker.color
-    public let grayDark = SemanticColor.Background.grayDark.color
+public struct FillNeutralColors: Sendable {
+    public let `default` = SemanticColor.fill.neutral.default.color
+    public let surface = SemanticColor.fill.neutral.surface.color
+    public let subtle = SemanticColor.fill.neutral.subtle.color
+    public let raised = SemanticColor.fill.neutral.raised.color
+    public let strong = SemanticColor.fill.neutral.strong.color
+    public let muted = SemanticColor.fill.neutral.muted.color
+    public let heavy = SemanticColor.fill.neutral.heavy.color
+    public let inverse = SemanticColor.fill.neutral.inverse.color
+
+    public init() {}
+}
+
+public struct FillAccentColors: Sendable {
+    public let `default` = SemanticColor.fill.accent.default.color
+    public let vivid = SemanticColor.fill.accent.vivid.color
+    public let muted = SemanticColor.fill.accent.muted.color
 
     public init() {}
 }
 
 public struct BorderColors: Sendable {
-    public let primary = BorderPrimaryColors()
     public let neutral = BorderNeutralColors()
-
-    public init() {}
-}
-
-public struct BorderPrimaryColors: Sendable {
-    public let basic = SemanticColor.Border.Primary.basic.color
-    public let dark = SemanticColor.Border.Primary.dark.color
-    public let darker = SemanticColor.Border.Primary.darker.color
+    public let accent = BorderAccentColors()
 
     public init() {}
 }
 
 public struct BorderNeutralColors: Sendable {
-    public let lighter = SemanticColor.Border.Neutral.lighter.color
-    public let light = SemanticColor.Border.Neutral.light.color
-    public let basic = SemanticColor.Border.Neutral.basic.color
-    public let dark = SemanticColor.Border.Neutral.dark.color
-    public let darker = SemanticColor.Border.Neutral.darker.color
+    public let _0 = SemanticColor.border.neutral._0.color
+    public let _10 = SemanticColor.border.neutral._10.color
+    public let _20 = SemanticColor.border.neutral._20.color
+    public let _30 = SemanticColor.border.neutral._30.color
+    public let _40 = SemanticColor.border.neutral._40.color
+    public let _50 = SemanticColor.border.neutral._50.color
+    public let inverse = SemanticColor.border.neutral.inverse.color
 
     public init() {}
 }
 
-public struct DimColors: Sendable {
-    public let light = SemanticColor.Dim.light.color
-    public let `default` = SemanticColor.Dim.default.color
-    public let heavy = SemanticColor.Dim.heavy.color
+public struct BorderAccentColors: Sendable {
+    public let basic = SemanticColor.border.accent.basic.color
+    public let dark = SemanticColor.border.accent.dark.color
+    public let darker = SemanticColor.border.accent.darker.color
 
     public init() {}
 }
 
+public struct ButtonColors: Sendable {
+    public let background = ButtonBackgroundColors()
+    public let label = ButtonLabelColors()
+
+    public init() {}
+}
+
+public struct ButtonBackgroundColors: Sendable {
+    public let main = ButtonBackgroundMainColors()
+    public let neutral = ButtonBackgroundNeutralColors()
+    public let ghost = ButtonBackgroundGhostColors()
+    public let icon = ButtonBackgroundIconColors()
+
+    public init() {}
+}
+
+public struct ButtonBackgroundMainColors: Sendable {
+    public let `default` = SemanticColor.button.background.main.default.color
+    public let pressed = SemanticColor.button.background.main.pressed.color
+    public let disabled = SemanticColor.button.background.main.disabled.color
+
+    public init() {}
+}
+
+public struct ButtonBackgroundNeutralColors: Sendable {
+    public let `default` = SemanticColor.button.background.neutral.default.color
+    public let pressed = SemanticColor.button.background.neutral.pressed.color
+    public let disabled = SemanticColor.button.background.neutral.disabled.color
+
+    public init() {}
+}
+
+public struct ButtonBackgroundGhostColors: Sendable {
+    public let `default` = SemanticColor.button.background.ghost.default.color
+    public let pressed = SemanticColor.button.background.ghost.pressed.color
+    public let disabled = SemanticColor.button.background.ghost.disabled.color
+
+    public init() {}
+}
+
+public struct ButtonBackgroundIconColors: Sendable {
+    public let `default` = SemanticColor.button.background.icon.default.color
+
+    public init() {}
+}
+
+public struct ButtonLabelColors: Sendable {
+    public let main = ButtonLabelMainColors()
+    public let neutral = ButtonLabelNeutralColors()
+    public let ghost = ButtonLabelGhostColors()
+    public let text = ButtonLabelTextColors()
+
+    public init() {}
+}
+
+public struct ButtonLabelMainColors: Sendable {
+    public let `default` = SemanticColor.button.label.main.default.color
+    public let pressed = SemanticColor.button.label.main.pressed.color
+    public let disabled = SemanticColor.button.label.main.disabled.color
+
+    public init() {}
+}
+
+public struct ButtonLabelNeutralColors: Sendable {
+    public let `default` = SemanticColor.button.label.neutral.default.color
+    public let pressed = SemanticColor.button.label.neutral.pressed.color
+    public let disabled = SemanticColor.button.label.neutral.disabled.color
+
+    public init() {}
+}
+
+public struct ButtonLabelGhostColors: Sendable {
+    public let `default` = SemanticColor.button.label.ghost.default.color
+    public let pressed = SemanticColor.button.label.ghost.pressed.color
+    public let disabled = SemanticColor.button.label.ghost.disabled.color
+
+    public init() {}
+}
+
+public struct ButtonLabelTextColors: Sendable {
+    public let accent = SemanticColor.button.label.text.accent.color
+    public let neutral = SemanticColor.button.label.text.neutral.color
+
+    public init() {}
+}
+
+public struct OverlayColors: Sendable {
+    public let dim = OverlayDimColors()
+    public let inverse = OverlayInverseColors()
+    public let gray = OverlayGrayColors()
+
+    public init() {}
+}
+
+public struct OverlayDimColors: Sendable {
+    public let _0 = SemanticColor.overlay.dim._0.color
+    public let _20 = SemanticColor.overlay.dim._20.color
+    public let _40 = SemanticColor.overlay.dim._40.color
+    public let _60 = SemanticColor.overlay.dim._60.color
+    public let _70 = SemanticColor.overlay.dim._70.color
+    public let _90 = SemanticColor.overlay.dim._90.color
+
+    public init() {}
+}
+
+public struct OverlayInverseColors: Sendable {
+    public let _10 = SemanticColor.overlay.inverse._10.color
+    public let _20 = SemanticColor.overlay.inverse._20.color
+    public let _40 = SemanticColor.overlay.inverse._40.color
+
+    public init() {}
+}
+
+public struct OverlayGrayColors: Sendable {
+    public let `default` = SemanticColor.overlay.gray.default.color
+    public let plain = SemanticColor.overlay.gray.plain.color
+
+    public init() {}
+}
+
+/// 카카오·애플 브랜드 지침 색. Figma 밖이고 모드와 상관없다.
 public struct SocialColors: Sendable {
-    public let kakao = SemanticColor.Social.kakao.color
-    public let kakaoContent = SemanticColor.Social.kakaoContent.color
-    public let appleBackground = SemanticColor.Social.appleBackground.color
-    public let appleBorder = SemanticColor.Social.appleBorder.color
-    public let appleContent = SemanticColor.Social.appleContent.color
+    public let kakao = SocialColor.kakao.color
+    public let kakaoContent = SocialColor.kakaoContent.color
+    public let appleBackground = SocialColor.appleBackground.color
+    public let appleBorder = SocialColor.appleBorder.color
+    public let appleContent = SocialColor.appleContent.color
 
     public init() {}
 }

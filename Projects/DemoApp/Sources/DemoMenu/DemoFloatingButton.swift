@@ -39,25 +39,28 @@ struct DemoFloatingButton: View {
     }
 
     private var label: some View {
-        VStack(spacing: 1) {
+        VStack(spacing: DemoFloatingButtonStyle.labelSpacing) {
             Image(systemName: "line.3.horizontal")
-                .font(.system(size: 16, weight: .semibold))
+                .font(TextStyle.ds.headline.semiBold.font)
             if let shortLabel {
                 DesignText(
                     shortLabel,
-                    style: TextStyle.ds.label.small12Medium,
-                    color: Color.ds.text.primary.basic,
+                    style: TextStyle.ds.caption2.medium,
+                    color: Color.ds.text.accent.subtle,
                     alignment: .center,
                     lineLimit: 1
                 )
             }
         }
-        .foregroundStyle(Color.ds.text.primary.basic)
+        .foregroundStyle(Color.ds.text.accent.subtle)
         .frame(width: DemoFloatingButtonLayout.diameter, height: DemoFloatingButtonLayout.diameter)
-        .background(Color.ds.background.grayDarker.opacity(0.85), in: Circle())
+        .background(
+            Color.ds.fill.neutral.subtle.opacity(DemoFloatingButtonStyle.backgroundOpacity),
+            in: Circle()
+        )
         .overlay {
             Circle()
-                .strokeBorder(Color.ds.border.primary.basic, lineWidth: CGFloat.ds.border.thin)
+                .strokeBorder(Color.ds.border.accent.basic, lineWidth: CGFloat.ds.border.thin)
         }
         .contentShape(Circle())
         .accessibilityElement(children: .ignore)
@@ -70,4 +73,9 @@ struct DemoFloatingButton: View {
     private static func sum(_ lhs: CGSize, _ rhs: CGSize) -> CGSize {
         CGSize(width: lhs.width + rhs.width, height: lhs.height + rhs.height)
     }
+}
+
+private enum DemoFloatingButtonStyle {
+    static let labelSpacing: CGFloat = 1
+    static let backgroundOpacity = 0.85
 }

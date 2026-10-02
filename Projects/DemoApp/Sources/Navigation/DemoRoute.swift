@@ -2,5 +2,5 @@
 enum DemoRoute: Hashable {
     case flow(DemoFlow)
     case screen(DemoScreen)
-    case gallery
+    case gallery(GalleryScreen)
 }

@@ -9,13 +9,17 @@
 - 첫 화면: 이번 빌드에서 바뀐 것 · 흐름 일곱 · 디자인 시스템 · 바닥 글(업로드 빌드만)
 - 흐름 일곱 중 로그인만 열린다. 나머지는 「준비 중」
 - 로그인 화면 상태 셋: 기본 / 불러오는 중 / 오류 안내
-- 디자인 시스템 모음 화면
-- 떠 있는 데모 버튼: 로그인 화면과 디자인 시스템 모음 화면. 끌어서 옮긴다
+- 디자인 시스템 칸: 색 · 글자 · 버튼 세 줄이 화면을 하나씩 연다. 화면마다 위의 전환으로 그 화면만 시스템·다크·라이트로 본다
+  - 색: 의미 색 63(Figma 묶음 17)
+  - 글자: 스타일 21개마다 이름, 수치 한 줄(크기 · 줄 높이 · 자간 % (pt) · 굵기), 여러 줄 견본. 견본 뒤 옅은 가로선이 줄 높이 간격이다
+  - 버튼: 공통 버튼 넷 · 소셜 둘
+- 기기 설정의 다크·라이트를 따른다. 로그인 화면만 다크로 뜬다
+- 떠 있는 데모 버튼: 로그인 화면과 디자인 시스템 화면 셋. 끌어서 옮긴다
 
 ## 의존
 - 허용: Feature, Domain, SharedDesignSystem, ThirdParty, ThirdPartyUI
 - 금지: Data, Core*, ThirdPartyCore
-- 시작할 때 폰트만 등록한다. `authClient` 는 화면 store 를 만들 때 가짜 응답으로 넣는다
+- `authClient` 는 화면 store 를 만들 때 가짜 응답으로 넣는다. 글꼴은 디자인 시스템이 처음 쓸 때 스스로 등록한다
 - 설정 파일은 본 앱 xcconfig 를 그대로 쓴다. Info.plist 에 서버 주소·카카오 키·URL scheme 이 없다
 
 ## 내부 규칙
@@ -29,7 +33,12 @@
   6. 연결: `Sources/Navigation/DemoRootView.swift` 의 `screenView(_:)` 에 감싸는 화면을 잇는다
   7. 테스트: `Tests/DemoCatalogTests.swift` 의 개수·이름을 고친다
 - 상태를 고르면 store 와 화면을 처음부터 다시 만든다
-- 디자인 토큰이 없는 목업 색은 `Sources/Shared/DemoPalette.swift` 에만 둔다
+- 디자인 시스템 화면을 더하는 작업은 첫 화면 줄 하나와 화면 파일 하나를 더한다
+  1. 줄: `Sources/Gallery/GalleryCatalog.swift` 의 `GalleryScreen` 에 케이스와 제목을 더한다. 첫 화면 「디자인 시스템」 칸은 이 순서대로 줄을 그린다
+  2. 화면: `Sources/Gallery/<부품>GalleryView.swift` 를 `GalleryPage` 로 감싸 만든다. 제목·모드 전환·바깥 여백은 `GalleryPage`, 구간 제목은 `GallerySection` 이 맡는다 (`Sources/Gallery/GalleryPage.swift`)
+  3. 연결: `Sources/Navigation/DemoRootView.swift` 의 `galleryView(_:)` 에 그 화면을 잇는다
+  4. 테스트: `Tests/GalleryCatalogTests.swift` 의 화면 순서를 고친다
+- 색·글자·간격은 `Color.ds` · `TextStyle.ds` · `CGFloat.ds` 만 쓴다. 맞는 토큰이 없는 치수는 그 파일 아래 `private enum *Layout` 상수로 둔다
 
 ## 빌드 정보
 - 업로드 때 fastlane 이 빌드 설정 `MOZI_BUILD_NOTE`(문구 UTF-8 → Base64)와 `MOZI_BUILD_HASH`(커밋 7자리)를 넘긴다
@@ -42,7 +51,9 @@
 - `Sources/Catalog/DemoCatalog.swift`
 - `Sources/Screens/Login/`
 - `Sources/DemoMenu/`
-- `Sources/Gallery/DesignSystemGalleryView.swift`
+- `Sources/Gallery/GalleryPage.swift`
+- `Sources/Gallery/GalleryCatalog.swift`
+- `Sources/Gallery/ColorGalleryView.swift` · `TypographyGalleryView.swift` · `ButtonGalleryView.swift`
 - `Sources/BuildInfo/DemoBuildInfo.swift`
 
 ## 명령
@@ -56,6 +67,7 @@ mise exec -- bundle exec fastlane beta app:demo note:"이번 빌드에서 볼 �
 - 목록: 흐름 일곱의 순서, 로그인만 열림, 상태 개수와 이름
 - 로그인 상태: 기본 1초 뒤 복귀, 불러오는 중 잠김, 오류 안내 토스트 다시 뜸
 - 데모 버튼 끌기 범위
+- 디자인 시스템 목록: 화면 셋의 순서(색 · 글자 · 버튼), 의미 색 묶음 17개의 순서와 칸 수(합 63), 칸 이름, 글자 스타일 21개, 글자 수치 줄, 모드 전환의 시스템은 덮어쓰지 않음
 
 ## 관련 문서
 - [ARCHITECTURE.md](../../docs/ARCHITECTURE.md)

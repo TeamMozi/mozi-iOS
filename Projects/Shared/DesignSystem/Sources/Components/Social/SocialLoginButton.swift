@@ -26,7 +26,7 @@ public struct SocialLoginButton: View {
     }
 
     private var labelContent: some View {
-        let textStyle = TextStyle.ds.button.lg18Semibold
+        let textStyle = TextStyle.ds.title3.semiBold
 
         return HStack(spacing: provider.contentGap) {
             providerIcon
@@ -100,7 +100,7 @@ private struct SocialLoginButtonChromeStyle: ButtonStyle {
 }
 
 private enum SocialLoginButtonMetrics {
-    static let height: CGFloat = SemanticNumber.ControlHeight.lg
-    static let cornerRadius: CGFloat = SemanticNumber.Radius.sm
-    static let borderWidth: CGFloat = SemanticNumber.Border.thin
+    static let height: CGFloat = CGFloat.ds.buttonHeight.controlLg
+    static let cornerRadius: CGFloat = CGFloat.ds.radius._8
+    static let borderWidth: CGFloat = CGFloat.ds.border.thin
 }

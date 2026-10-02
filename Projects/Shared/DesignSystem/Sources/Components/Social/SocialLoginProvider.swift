@@ -16,18 +16,18 @@ public enum SocialLoginProvider: Sendable {
     var background: TokenColor {
         switch self {
         case .kakao:
-            SemanticColor.Social.kakao
+            SocialColor.kakao
         case .apple:
-            SemanticColor.Social.appleBackground
+            SocialColor.appleBackground
         }
     }
 
     var content: TokenColor {
         switch self {
         case .kakao:
-            SemanticColor.Social.kakaoContent
+            SocialColor.kakaoContent
         case .apple:
-            SemanticColor.Social.appleContent
+            SocialColor.appleContent
         }
     }
 
@@ -36,7 +36,7 @@ public enum SocialLoginProvider: Sendable {
         case .kakao:
             nil
         case .apple:
-            SemanticColor.Social.appleBorder
+            SocialColor.appleBorder
         }
     }
 
