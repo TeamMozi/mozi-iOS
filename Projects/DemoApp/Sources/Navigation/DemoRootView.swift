@@ -32,8 +32,8 @@ struct DemoRootView: View {
             )
         case let .screen(screen):
             screenView(screen)
-        case .gallery:
-            DesignSystemGalleryView()
+        case let .gallery(screen):
+            galleryView(screen)
                 .demoMenu(
                     shortLabel: nil,
                     options: [],
@@ -49,6 +49,18 @@ struct DemoRootView: View {
         switch screen {
         case .login:
             LoginDemoScreen(onExit: backToList)
+        }
+    }
+
+    @ViewBuilder
+    private func galleryView(_ screen: GalleryScreen) -> some View {
+        switch screen {
+        case .color:
+            ColorGalleryView()
+        case .typography:
+            TypographyGalleryView()
+        case .button:
+            ButtonGalleryView()
         }
     }
 
