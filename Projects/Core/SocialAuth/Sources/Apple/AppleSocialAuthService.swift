@@ -6,6 +6,7 @@ import UIKit
 @MainActor
 public final class AppleSocialAuthService: NSObject, SocialAuthService {
     private var continuation: CheckedContinuation<String, Error>?
+    private var anchor: ASPresentationAnchor?
 
     override public init() {
         super.init()
@@ -19,6 +20,10 @@ public final class AppleSocialAuthService: NSObject, SocialAuthService {
         guard continuation == nil else {
             throw SocialAuthError.cancelled
         }
+        guard let anchor = Self.resolvePresentationAnchor() else {
+            throw SocialAuthError.failed
+        }
+        self.anchor = anchor
 
         return try await withCheckedThrowingContinuation { continuation in
             self.continuation = continuation
@@ -36,6 +41,7 @@ public final class AppleSocialAuthService: NSObject, SocialAuthService {
     private func finish(_ result: Result<String, Error>) {
         guard let continuation else { return }
         self.continuation = nil
+        self.anchor = nil
 
         switch result {
         case let .success(token):
@@ -45,7 +51,7 @@ public final class AppleSocialAuthService: NSObject, SocialAuthService {
         }
     }
 
-    private static func resolvePresentationAnchor() -> ASPresentationAnchor {
+    private static func resolvePresentationAnchor() -> ASPresentationAnchor? {
         let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
         if let keyWindow = scenes.flatMap(\.windows).first(where: \.isKeyWindow) {
             return keyWindow
@@ -53,7 +59,14 @@ public final class AppleSocialAuthService: NSObject, SocialAuthService {
         if let firstWindow = scenes.flatMap(\.windows).first {
             return firstWindow
         }
-        return ASPresentationAnchor()
+        return scenes.first.map { ASPresentationAnchor(windowScene: $0) }
+    }
+
+    private func currentAnchor() -> ASPresentationAnchor {
+        guard let anchor else {
+            preconditionFailure("performRequests 전에 anchor 를 정한다")
+        }
+        return anchor
     }
 }
 
@@ -99,12 +112,12 @@ extension AppleSocialAuthService: ASAuthorizationControllerPresentationContextPr
     ) -> ASPresentationAnchor {
         if Thread.isMainThread {
             return MainActor.assumeIsolated {
-                AppleSocialAuthService.resolvePresentationAnchor()
+                self.currentAnchor()
             }
         }
         return DispatchQueue.main.sync {
             MainActor.assumeIsolated {
-                AppleSocialAuthService.resolvePresentationAnchor()
+                self.currentAnchor()
             }
         }
     }
