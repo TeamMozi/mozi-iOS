@@ -3,8 +3,8 @@ import Foundation
 import ThirdParty
 
 /// 로그인 데모 상태별 가짜 `AuthClient`. 서버와 카카오 SDK 없이 LoginFeature 를 움직인다.
-enum LoginDemoAuthClient {
-    static func make(
+public enum LoginDemoAuthClient {
+    public static func make(
         for state: LoginDemoState,
         clock: any Clock<Duration> = ContinuousClock()
     ) -> AuthClient {

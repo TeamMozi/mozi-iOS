@@ -2,52 +2,52 @@ import SharedDesignSystem
 import SwiftUI
 
 /// 색 화면 한 칸. 이름은 `Color.ds` 뒤 경로이고, 칸 아래에는 `shortName` 을 적는다.
-struct GallerySwatch: Identifiable {
+public struct GallerySwatch: Identifiable, Sendable {
     let name: String
-    let color: Color
+    public let color: Color
 
     init(_ name: String, _ color: Color) {
         self.name = name
         self.color = color
     }
 
-    var id: String { name }
+    public var id: String { name }
 
     /// 칸 아래에 적는 이름. 묶음 경로를 뺀 마지막 낱말이고, 숫자 낱말 앞의 `_` 는 뗀다.
     /// `border.neutral._10` → `10`, `text.neutral.primary` → `primary`.
-    var shortName: String {
+    public var shortName: String {
         let last = name.split(separator: ".").last.map(String.init) ?? name
         return last.hasPrefix("_") ? String(last.dropFirst()) : last
     }
 }
 
 /// Figma 의미 색 묶음 하나. 제목은 Figma 경로다.
-struct GalleryColorGroup: Identifiable {
-    let title: String
-    let swatches: [GallerySwatch]
+public struct GalleryColorGroup: Identifiable, Sendable {
+    public let title: String
+    public let swatches: [GallerySwatch]
 
-    var id: String { title }
+    public var id: String { title }
 }
 
 /// 글자 화면 견본 하나. 이름은 `TextStyle.ds` 뒤 경로다.
-struct GalleryTextSample: Identifiable {
+public struct GalleryTextSample: Identifiable, Sendable {
     let name: String
-    let style: TextStyle
+    public let style: TextStyle
 
     init(_ name: String, _ style: TextStyle) {
         self.name = name
         self.style = style
     }
 
-    var id: String { name }
+    public var id: String { name }
 
     /// 견본 위에 적는 이름. 묶음 이름을 뺀 굵기 낱말이다. `title2.semiBold` → `semiBold`.
-    var shortName: String {
+    public var shortName: String {
         name.split(separator: ".").last.map(String.init) ?? name
     }
 
     /// `16 · 줄 24 · 자간 -1% (-0.16pt) · SemiBold` 꼴. 굵기는 글꼴 이름의 `-` 뒤다.
-    var metricsLabel: String {
+    public var metricsLabel: String {
         let size = Self.format(style.size)
         let lineHeight = Self.format(style.lineHeight)
         let percent = Self.format(style.letterSpacingEm * 100)
@@ -68,22 +68,22 @@ struct GalleryTextSample: Identifiable {
 }
 
 /// Figma 글자 스타일 묶음 하나. 제목은 Figma 표기다.
-struct GalleryTextGroup: Identifiable {
-    let title: String
-    let samples: [GalleryTextSample]
+public struct GalleryTextGroup: Identifiable, Sendable {
+    public let title: String
+    public let samples: [GalleryTextSample]
 
-    var id: String { title }
+    public var id: String { title }
 }
 
 /// 첫 화면 「디자인 시스템」 칸의 줄과 그 줄이 여는 화면. 칸에는 이 순서로 보인다.
-enum GalleryScreen: String, CaseIterable, Identifiable {
+public enum GalleryScreen: String, CaseIterable, Identifiable {
     case color
     case typography
     case button
 
-    var id: String { rawValue }
+    public var id: String { rawValue }
 
-    var title: String {
+    public var title: String {
         switch self {
         case .color: "색"
         case .typography: "글자"
@@ -93,11 +93,11 @@ enum GalleryScreen: String, CaseIterable, Identifiable {
 }
 
 /// 색 화면의 의미 색 63개와 글자 화면의 글자 스타일 21개(묶음 8개). 둘 다 Figma 순서다.
-enum GalleryCatalog {
+public enum GalleryCatalog {
     /// 글자 화면 견본. 가장 작은 글자에서도 폭 안에서 두 줄 넘게 넘어가는 길이다.
-    static let sampleText = "동네라서 가능한 모든 모임. 가까운 이웃과 취미를 나누고, 주말마다 새로운 모임을 열어 함께 시간을 보내요."
+    public static let sampleText = "동네라서 가능한 모든 모임. 가까운 이웃과 취미를 나누고, 주말마다 새로운 모임을 열어 함께 시간을 보내요."
 
-    static let colorGroups: [GalleryColorGroup] = [
+    public static let colorGroups: [GalleryColorGroup] = [
         GalleryColorGroup(
             title: "text/neutral",
             swatches: [
@@ -248,7 +248,7 @@ enum GalleryCatalog {
         ),
     ]
 
-    static let textGroups: [GalleryTextGroup] = [
+    public static let textGroups: [GalleryTextGroup] = [
         GalleryTextGroup(
             title: "Title1",
             samples: [

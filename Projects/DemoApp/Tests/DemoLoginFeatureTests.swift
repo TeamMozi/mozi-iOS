@@ -1,6 +1,6 @@
 import Domain
 import Feature
-@testable import MoziDemo
+@testable import MoziDemoKit
 import ThirdParty
 import XCTest
 
