@@ -1,5 +1,5 @@
 /// 로그인 화면 데모 상태 셋.
-enum LoginDemoState: String, CaseIterable, Hashable {
+public enum LoginDemoState: String, CaseIterable, Hashable, Sendable {
     case idle
     case loading
     case networkError
@@ -8,7 +8,7 @@ enum LoginDemoState: String, CaseIterable, Hashable {
     static let networkErrorMessage = "네트워크 연결을 확인해 주세요"
 
     /// 상태 시트의 줄 이름.
-    var title: String {
+    public var title: String {
         switch self {
         case .idle: "기본"
         case .loading: "불러오는 중"
@@ -17,7 +17,7 @@ enum LoginDemoState: String, CaseIterable, Hashable {
     }
 
     /// 데모 버튼에 적는 짧은 이름.
-    var shortTitle: String {
+    public var shortTitle: String {
         switch self {
         case .idle: "기본"
         case .loading: "로딩"

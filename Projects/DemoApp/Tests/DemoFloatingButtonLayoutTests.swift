@@ -1,5 +1,5 @@
 import CoreGraphics
-@testable import MoziDemo
+@testable import MoziDemoKit
 import XCTest
 
 final class DemoFloatingButtonLayoutTests: XCTestCase {

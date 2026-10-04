@@ -1,4 +1,4 @@
-@testable import MoziDemo
+@testable import MoziDemoKit
 import SwiftUI
 import XCTest
 

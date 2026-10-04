@@ -165,6 +165,8 @@ public enum ProjectFactory {
 
     /// App 타겟 생성. 이름·식별자·표시 이름·Info.plist·scheme 은 `AppDescription` 에서 온다.
     /// `includesTests` 면 `<targetName>Tests` 를 만들어 모든 scheme 의 테스트 동작에 넣는다.
+    /// `kitDependencies` 가 있으면 `Kit/**` 를 프레임워크 `<targetName>Kit` 으로 만든다.
+    /// 앱과 테스트가 Kit 에 의존하고, 테스트는 앱을 띄우지 않는다.
     public static func app(
         _ description: AppDescription,
         dependencies: [TargetDependency],
@@ -172,8 +174,24 @@ public enum ProjectFactory {
         resources: ResourceFileElements = ["Resources/**"],
         entitlements: Entitlements? = nil,
         includesTests: Bool = false,
-        testsDependencies: [TargetDependency] = []
+        testsDependencies: [TargetDependency] = [],
+        kitDependencies: [TargetDependency]? = nil
     ) -> Project {
+        let kitName = kitDependencies.map { _ in "\(description.targetName)Kit" }
+        let kitTarget = kitDependencies.map { kitDependencies in
+            Target.target(
+                name: "\(description.targetName)Kit",
+                destinations: ProjectEnvironment.destinations,
+                product: .framework,
+                bundleId: "\(description.releaseBundleID).kit",
+                deploymentTargets: .iOS(ProjectEnvironment.deploymentTarget),
+                sources: ["Kit/**"],
+                dependencies: kitDependencies,
+                settings: ProjectSettings.framework()
+            )
+        }
+        let kitDependency: [TargetDependency] = kitName.map { [.target(name: $0)] } ?? []
+
         let target = Target.target(
             name: description.targetName,
             destinations: ProjectEnvironment.destinations,
@@ -184,15 +202,18 @@ public enum ProjectFactory {
             sources: sources,
             resources: resources,
             entitlements: entitlements,
-            dependencies: dependencies,
+            dependencies: kitDependency + dependencies,
             settings: ProjectSettings.app(description)
         )
 
-        var targets = [target]
+        var targets = [target] + (kitTarget.map { [$0] } ?? [])
         var testsName: String?
 
         if includesTests {
             let name = "\(description.targetName)Tests"
+            let testedDependency: [TargetDependency] = kitDependency.isEmpty
+                ? [.target(name: description.targetName)]
+                : kitDependency
             targets.append(
                 Target.target(
                     name: name,
@@ -201,9 +222,7 @@ public enum ProjectFactory {
                     bundleId: "\(description.releaseBundleID).tests",
                     deploymentTargets: .iOS(ProjectEnvironment.deploymentTarget),
                     sources: ["Tests/**"],
-                    dependencies: [
-                        .target(name: description.targetName),
-                    ] + testsDependencies,
+                    dependencies: testedDependency + testsDependencies,
                     settings: ProjectSettings.unitTests()
                 )
             )

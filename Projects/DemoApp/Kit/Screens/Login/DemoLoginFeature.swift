@@ -3,13 +3,13 @@ import ThirdParty
 
 /// 로그인 화면 위에 토스트 층을 겹친다. 본 앱에서 RootFlowFeature 가 하던 토스트 연결만 가져온다.
 @Reducer
-struct DemoLoginFeature {
+public struct DemoLoginFeature {
     @ObservableState
-    struct State: Equatable {
-        var login: LoginFeature.State
-        var overlay: OverlayFeature.State
+    public struct State: Equatable {
+        public var login: LoginFeature.State
+        public var overlay: OverlayFeature.State
 
-        init(demoState: LoginDemoState) {
+        public init(demoState: LoginDemoState) {
             switch demoState {
             case .idle:
                 login = LoginFeature.State()
@@ -24,12 +24,14 @@ struct DemoLoginFeature {
         }
     }
 
-    enum Action: Equatable {
+    public enum Action: Equatable {
         case login(LoginFeature.Action)
         case overlay(OverlayFeature.Action)
     }
 
-    var body: some ReducerOf<Self> {
+    public init() {}
+
+    public var body: some ReducerOf<Self> {
         Scope(state: \.login, action: \.login) {
             LoginFeature()
         }
