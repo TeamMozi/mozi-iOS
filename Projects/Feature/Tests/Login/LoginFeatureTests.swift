@@ -25,10 +25,10 @@ final class LoginFeatureTests: XCTestCase {
         }
 
         await store.send(.kakaoLoginTapped) {
-            $0.isLoading = true
+            $0.screen = .loading
         }
         await store.receive(.loginResponse(.success(session))) {
-            $0.isLoading = false
+            $0.screen = .idle
         }
         await store.receive(.delegate(.loggedIn(session)))
     }
@@ -53,72 +53,48 @@ final class LoginFeatureTests: XCTestCase {
         }
 
         await store.send(.appleLoginTapped) {
-            $0.isLoading = true
+            $0.screen = .loading
         }
         await store.receive(.loginResponse(.success(session))) {
-            $0.isLoading = false
+            $0.screen = .idle
         }
         await store.receive(.delegate(.loggedIn(session)))
     }
 
-    func test_로그인_실패하면_toast_delegate() async {
-        let store = TestStore(
-            initialState: LoginFeature.State()
-        ) {
-            LoginFeature()
-        } withDependencies: {
-            $0.authClient.login = { _ in
-                throw AuthError.loginFailed
-            }
-        }
-
-        await store.send(.appleLoginTapped) {
-            $0.isLoading = true
-        }
-        await store.receive(.loginResponse(.failure(.loginFailed))) {
-            $0.isLoading = false
-        }
-        await store.receive(.delegate(.presentToast("로그인에 실패했어요")))
+    func test_로그인_실패하면_screen이_actionFailed() async {
+        await assertLoginFailure(.loginFailed, showsAlert: "로그인에 실패했어요")
     }
 
-    func test_네트워크_실패하면_toast_delegate() async {
-        let store = TestStore(
-            initialState: LoginFeature.State()
-        ) {
-            LoginFeature()
-        } withDependencies: {
-            $0.authClient.login = { _ in
-                throw AuthError.network
-            }
-        }
-
-        await store.send(.kakaoLoginTapped) {
-            $0.isLoading = true
-        }
-        await store.receive(.loginResponse(.failure(.network))) {
-            $0.isLoading = false
-        }
-        await store.receive(.delegate(.presentToast("네트워크 연결을 확인해 주세요")))
+    func test_네트워크_실패하면_screen이_actionFailed() async {
+        await assertLoginFailure(.network, showsAlert: "네트워크 연결을 확인해 주세요")
     }
 
-    func test_설정누락이면_alert_delegate() async {
+    func test_인증_실패하면_screen이_actionFailed() async {
+        await assertLoginFailure(.unauthorized, showsAlert: "로그인에 실패했어요")
+    }
+
+    func test_저장_실패하면_screen이_actionFailed() async {
+        await assertLoginFailure(.storage(message: "keychain"), showsAlert: "로그인 정보를 저장하지 못했어요.")
+    }
+
+    func test_알수없는_실패하면_screen이_actionFailed() async {
+        await assertLoginFailure(.unknown(message: "boom"), showsAlert: "알 수 없는 오류가 발생했어요.")
+    }
+
+    func test_설정누락이면_screen이_actionFailed() async {
+        await assertLoginFailure(.notConfigured(message: "missing-key"), showsAlert: "로그인 설정이 완료되지 않았어요.")
+    }
+
+    func test_실패_얼럿을_닫으면_screen이_idle로_돌아온다() async {
         let store = TestStore(
-            initialState: LoginFeature.State()
+            initialState: LoginFeature.State(screen: .actionFailed(message: "로그인에 실패했어요"))
         ) {
             LoginFeature()
-        } withDependencies: {
-            $0.authClient.login = { _ in
-                throw AuthError.notConfigured(message: "missing-key")
-            }
         }
 
-        await store.send(.kakaoLoginTapped) {
-            $0.isLoading = true
+        await store.send(.failureDismissed) {
+            $0.screen = .idle
         }
-        await store.receive(.loginResponse(.failure(.notConfigured(message: "missing-key")))) {
-            $0.isLoading = false
-        }
-        await store.receive(.delegate(.presentAlert("로그인 설정이 완료되지 않았어요.")))
     }
 
     func test_로그인_취소하면_피드백_없이_idle_복귀() async {
@@ -133,16 +109,16 @@ final class LoginFeatureTests: XCTestCase {
         }
 
         await store.send(.kakaoLoginTapped) {
-            $0.isLoading = true
+            $0.screen = .loading
         }
         await store.receive(.loginResponse(.failure(.cancelled))) {
-            $0.isLoading = false
+            $0.screen = .idle
         }
     }
 
     func test_로딩중_중복탭은_무시() async {
         let store = TestStore(
-            initialState: LoginFeature.State(isLoading: true)
+            initialState: LoginFeature.State(screen: .loading)
         ) {
             LoginFeature()
         } withDependencies: {
@@ -153,5 +129,33 @@ final class LoginFeatureTests: XCTestCase {
         }
 
         await store.send(.kakaoLoginTapped)
+    }
+
+    func test_불러오는_중일_때만_isLoading이_참() {
+        XCTAssertTrue(LoginFeature.State(screen: .loading).isLoading)
+        XCTAssertFalse(LoginFeature.State().isLoading)
+        XCTAssertFalse(LoginFeature.State(screen: .actionFailed(message: "로그인에 실패했어요")).isLoading)
+    }
+
+    private func assertLoginFailure(
+        _ error: AuthError,
+        showsAlert message: String
+    ) async {
+        let store = TestStore(
+            initialState: LoginFeature.State()
+        ) {
+            LoginFeature()
+        } withDependencies: {
+            $0.authClient.login = { _ in
+                throw error
+            }
+        }
+
+        await store.send(.kakaoLoginTapped) {
+            $0.screen = .loading
+        }
+        await store.receive(.loginResponse(.failure(error))) {
+            $0.screen = .actionFailed(message: message)
+        }
     }
 }
