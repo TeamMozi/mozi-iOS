@@ -1,4 +1,4 @@
-import Feature
+@testable import Feature
 import ThirdParty
 import XCTest
 
@@ -33,5 +33,12 @@ final class MainTabFeatureTests: XCTestCase {
 
     func test_탭이_다섯이다() {
         XCTAssertEqual(MainTabFeature.Tab.allCases.count, 5)
+    }
+
+    func test_탭마다_디자인_시스템_탭바_아이콘을_고른다() {
+        XCTAssertEqual(
+            MainTabFeature.Tab.allCases.map(\.tabBarIcon),
+            [.playStack, .search, .chat, .person, .plus]
+        )
     }
 }
