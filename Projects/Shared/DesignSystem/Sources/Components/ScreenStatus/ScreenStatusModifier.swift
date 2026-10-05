@@ -64,7 +64,8 @@ private struct ScreenStatusLoadFailedView: View {
             )
 
             if let onRetry {
-                DesignButton("다시 시도", variant: .secondary, size: .md, action: onRetry)
+                Button("다시 시도", action: onRetry)
+                    .buttonStyle(.neutral)
             }
         }
         .padding(.horizontal, CGFloat.ds.layout.margin)
