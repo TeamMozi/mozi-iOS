@@ -62,6 +62,8 @@ struct DemoRootView: View {
             TypographyGalleryView()
         case .button:
             ButtonGalleryView()
+        case .screenStatus:
+            ScreenStatusGalleryView()
         }
     }
 

@@ -1,10 +1,13 @@
+import Feature
+import SharedDesignSystem
+
 /// 로그인 화면 데모 상태 셋.
 public enum LoginDemoState: String, CaseIterable, Hashable, Sendable {
     case idle
     case loading
     case networkError
 
-    /// LoginFeature 가 `AuthError.network` 에 쓰는 문구와 같다. DemoLoginFeatureTests 가 둘이 같은지 본다.
+    /// LoginFeature 가 `AuthError.network` 에 쓰는 문구와 같다. LoginDemoTests 가 둘이 같은지 본다.
     static let networkErrorMessage = "네트워크 연결을 확인해 주세요"
 
     /// 상태 시트의 줄 이름.
@@ -22,6 +25,15 @@ public enum LoginDemoState: String, CaseIterable, Hashable, Sendable {
         case .idle: "기본"
         case .loading: "로딩"
         case .networkError: "오류"
+        }
+    }
+
+    /// 이 상태로 시작하는 로그인 화면 상태. 오류 안내는 얼럿이 떠 있는 채로 시작한다.
+    public var loginState: LoginFeature.State {
+        switch self {
+        case .idle: LoginFeature.State()
+        case .loading: LoginFeature.State(screen: .loading)
+        case .networkError: LoginFeature.State(screen: .actionFailed(message: Self.networkErrorMessage))
         }
     }
 }

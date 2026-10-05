@@ -80,6 +80,7 @@ public enum GalleryScreen: String, CaseIterable, Identifiable {
     case color
     case typography
     case button
+    case screenStatus
 
     public var id: String { rawValue }
 
@@ -88,6 +89,35 @@ public enum GalleryScreen: String, CaseIterable, Identifiable {
         case .color: "색"
         case .typography: "글자"
         case .button: "버튼"
+        case .screenStatus: "화면 상태"
+        }
+    }
+}
+
+/// 화면 상태 화면에서 고르는 네 상태. 실패 문구는 견본이다.
+public enum GalleryScreenStatusSample: String, CaseIterable, Identifiable {
+    case idle
+    case loading
+    case actionFailed
+    case loadFailed
+
+    public var id: String { rawValue }
+
+    public var title: String {
+        switch self {
+        case .idle: "대기"
+        case .loading: "불러오는 중"
+        case .actionFailed: "동작 실패"
+        case .loadFailed: "불러오기 실패"
+        }
+    }
+
+    public var status: ScreenStatus {
+        switch self {
+        case .idle: .idle
+        case .loading: .loading
+        case .actionFailed: .actionFailed(message: "저장하지 못했어요")
+        case .loadFailed: .loadFailed(message: "내용을 불러오지 못했어요")
         }
     }
 }

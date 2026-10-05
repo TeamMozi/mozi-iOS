@@ -8,7 +8,7 @@ struct LoginDemoScreen: View {
     let onExit: () -> Void
 
     @State private var demoState: LoginDemoState
-    @State private var store: StoreOf<DemoLoginFeature>
+    @State private var store: StoreOf<LoginFeature>
     @State private var generation = 0
 
     init(onExit: @escaping () -> Void) {
@@ -18,10 +18,7 @@ struct LoginDemoScreen: View {
     }
 
     var body: some View {
-        LoginView(store: store.scope(state: \.login, action: \.login))
-            .overlay {
-                OverlayView(store: store.scope(state: \.overlay, action: \.overlay))
-            }
+        LoginView(store: store)
             .id(generation)
             .demoMenu(
                 shortLabel: demoState.shortTitle,
@@ -40,9 +37,9 @@ struct LoginDemoScreen: View {
         generation += 1
     }
 
-    private static func makeStore(for state: LoginDemoState) -> StoreOf<DemoLoginFeature> {
-        Store(initialState: DemoLoginFeature.State(demoState: state)) {
-            DemoLoginFeature()
+    private static func makeStore(for state: LoginDemoState) -> StoreOf<LoginFeature> {
+        Store(initialState: state.loginState) {
+            LoginFeature()
         } withDependencies: {
             $0.authClient = LoginDemoAuthClient.make(for: state)
         }

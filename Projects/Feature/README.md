@@ -24,7 +24,7 @@
 - Scene 간 직접 참조 금지
 - 외부 요청은 delegate bubble-up
 - Feature 는 Domain `*Client` 만 사용
-- 전역 전환/딥링크/overlay 는 RootFlowFeature
+- 전역 전환/딥링크는 RootFlowFeature. 화면의 불러오는 중·오류는 그 화면 State 의 `screen` 이 들고 `.screenStatus` 로 띄운다
 - 탭 사이 이동은 MainTabFeature 만 한다. Scene 이 `selectedTab` 을 직접 바꾸지 않는다
 - 컨테이너는 화면을 그리지 않는다. 경로와 자식만 갖는다
 - 화면이나 상태를 더하는 작업은 데모 앱 목록에도 한 줄 더한다. 방법은 [DemoApp README](../DemoApp/README.md)

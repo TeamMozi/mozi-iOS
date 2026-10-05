@@ -1,15 +1,20 @@
 import Domain
 import Foundation
+import SharedDesignSystem
 import ThirdParty
 
 @Reducer
 public struct LoginFeature {
     @ObservableState
     public struct State: Equatable {
-        public var isLoading = false
+        public var screen: ScreenStatus = .idle
 
-        public init(isLoading: Bool = false) {
-            self.isLoading = isLoading
+        public var isLoading: Bool {
+            screen == .loading
+        }
+
+        public init(screen: ScreenStatus = .idle) {
+            self.screen = screen
         }
     }
 
@@ -18,12 +23,11 @@ public struct LoginFeature {
         case kakaoLoginTapped
         case appleLoginTapped
         case loginResponse(Result<AuthSession, AuthError>)
+        case failureDismissed
         case delegate(Delegate)
 
         public enum Delegate: Equatable {
             case loggedIn(AuthSession)
-            case presentToast(String)
-            case presentAlert(String)
         }
     }
 
@@ -44,16 +48,21 @@ public struct LoginFeature {
                 return login(state: &state, provider: .apple)
 
             case let .loginResponse(.success(session)):
-                state.isLoading = false
+                state.screen = .idle
                 return .send(.delegate(.loggedIn(session)))
 
             case let .loginResponse(.failure(error)):
-                state.isLoading = false
                 // 사용자 취소는 피드백 없이 idle 복귀한다.
                 if case .cancelled = error {
+                    state.screen = .idle
                     return .none
                 }
-                return .send(Self.presentationAction(for: error))
+                state.screen = .actionFailed(message: Self.errorMessage(for: error))
+                return .none
+
+            case .failureDismissed:
+                state.screen = .idle
+                return .none
 
             case .delegate:
                 return .none
@@ -69,7 +78,7 @@ public struct LoginFeature {
             return .none
         }
 
-        state.isLoading = true
+        state.screen = .loading
 
         return .run { [authClient] send in
             do {
@@ -80,16 +89,6 @@ public struct LoginFeature {
             } catch {
                 await send(.loginResponse(.failure(.unknown(message: error.localizedDescription))))
             }
-        }
-    }
-
-    private static func presentationAction(for error: AuthError) -> Action {
-        let message = errorMessage(for: error)
-        switch error {
-        case .notConfigured:
-            return .delegate(.presentAlert(message))
-        case .cancelled, .loginFailed, .network, .unauthorized, .storage, .unknown:
-            return .delegate(.presentToast(message))
         }
     }
 

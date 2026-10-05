@@ -2,7 +2,7 @@
 
 ## 책임
 - Figma 파일 `hnGl2AWCk8XCvrNK7MBkvq` 의 색·숫자·글자 스타일을 코드 토큰으로 연다
-- 공통 부품: `DesignButton`, `SocialLoginButton`, `DesignText`
+- 공통 부품: `DesignButton`, `SocialLoginButton`, `DesignText`, `ScreenStatus` · `.screenStatus`
 - 글꼴(Pretendard 네 굵기)과 에셋(로고·소셜 아이콘·로그인 숏폼 사진)
 
 ## 의존

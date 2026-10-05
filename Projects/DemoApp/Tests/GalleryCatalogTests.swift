@@ -127,8 +127,27 @@ final class GalleryCatalogTests: XCTestCase {
         XCTAssertEqual(metricsLabel(of: "caption2.regular"), "12 · 줄 14 · 자간 -1% (-0.12pt) · Regular")
     }
 
-    func test_디자인_시스템_칸은_색_글자_버튼_세_화면을_이_순서로_연다() {
-        XCTAssertEqual(GalleryScreen.allCases.map(\.title), ["색", "글자", "버튼"])
+    func test_디자인_시스템_칸은_색_글자_버튼_화면_상태_네_화면을_이_순서로_연다() {
+        XCTAssertEqual(GalleryScreen.allCases.map(\.title), ["색", "글자", "버튼", "화면 상태"])
+    }
+
+    func test_화면_상태_화면은_대기_불러오는_중_동작_실패_불러오기_실패를_이_순서로_고른다() {
+        XCTAssertEqual(
+            GalleryScreenStatusSample.allCases.map(\.title),
+            ["대기", "불러오는 중", "동작 실패", "불러오기 실패"]
+        )
+    }
+
+    func test_화면_상태_견본은_고른_칸에_맞는_상태를_띄운다() {
+        XCTAssertEqual(
+            GalleryScreenStatusSample.allCases.map(\.status),
+            [
+                .idle,
+                .loading,
+                .actionFailed(message: "저장하지 못했어요"),
+                .loadFailed(message: "내용을 불러오지 못했어요"),
+            ]
+        )
     }
 
     func test_모드_전환의_시스템은_기기_모드를_덮어쓰지_않는다() {
