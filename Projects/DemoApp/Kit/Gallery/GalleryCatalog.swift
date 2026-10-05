@@ -82,6 +82,7 @@ public enum GalleryScreen: String, CaseIterable, Identifiable {
     case button
     case screenStatus
     case input
+    case frameParts
 
     public var id: String { rawValue }
 
@@ -92,6 +93,7 @@ public enum GalleryScreen: String, CaseIterable, Identifiable {
         case .button: "버튼"
         case .screenStatus: "화면 상태"
         case .input: "입력"
+        case .frameParts: "헤더·탭바"
         }
     }
 }
