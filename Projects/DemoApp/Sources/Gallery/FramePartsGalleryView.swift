@@ -36,9 +36,14 @@ private struct FramePartsGalleryContent: View {
             }
             GallerySection("전체 화면 견본") {
                 ForEach(FrameSample.allCases) { sample in
-                    DesignButton(sample.title, variant: .secondary, size: .lg, isFullWidth: true) {
+                    Button {
                         openedSample = sample
+                    } label: {
+                        Text(sample.title)
+                            .frame(maxWidth: .infinity)
                     }
+                    .buttonStyle(.neutral)
+                    .controlSize(.large)
                 }
             }
         }
@@ -87,11 +92,21 @@ private struct BottomButtonAreaSampleView: View {
     }
 
     private func mainButton(_ title: String) -> some View {
-        DesignButton(title, variant: .primary, size: .lg, isFullWidth: true) {}
+        Button {} label: {
+            Text(title)
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.main)
+        .controlSize(.large)
     }
 
     private func subButton(_ title: String) -> some View {
-        DesignButton(title, variant: .secondary, size: .lg, isFullWidth: true) {}
+        Button {} label: {
+            Text(title)
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.neutral)
+        .controlSize(.large)
     }
 
     // Figma: `text/accent/default`, Caption Regular 14 에 「8명」 만 Medium.

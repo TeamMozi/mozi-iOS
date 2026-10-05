@@ -90,7 +90,12 @@ private struct BottomButtonAreaScreenSample: View {
         }
         .bottomButtonArea {
             BottomButtonArea(.single) {
-                DesignButton("신청하기", variant: .primary, size: .lg, isFullWidth: true) {}
+                Button {} label: {
+                    Text("신청하기")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.main)
+                .controlSize(.large)
             }
         }
     }
