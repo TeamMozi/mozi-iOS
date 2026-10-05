@@ -9,18 +9,15 @@ public struct RootFlowFeature {
         public var phase: Phase = .bootstrapping
         public var isRestoringSession = false
         public var pendingDeepLink: DeepLinkRoute?
-        public var overlay = OverlayFeature.State()
 
         public init(
             phase: Phase = .bootstrapping,
             isRestoringSession: Bool = false,
-            pendingDeepLink: DeepLinkRoute? = nil,
-            overlay: OverlayFeature.State = OverlayFeature.State()
+            pendingDeepLink: DeepLinkRoute? = nil
         ) {
             self.phase = phase
             self.isRestoringSession = isRestoringSession
             self.pendingDeepLink = pendingDeepLink
-            self.overlay = overlay
         }
 
         public enum Phase: Equatable {
@@ -76,7 +73,6 @@ public struct RootFlowFeature {
         case login(LoginFeature.Action)
         case onboarding(OnboardingFlowFeature.Action)
         case main(MainTabFeature.Action)
-        case overlay(OverlayFeature.Action)
     }
 
     @Dependency(\.authClient) var authClient
@@ -84,9 +80,6 @@ public struct RootFlowFeature {
     public init() {}
 
     public var body: some ReducerOf<Self> {
-        Scope(state: \.overlay, action: \.overlay) {
-            OverlayFeature()
-        }
         Reduce(core)
             .ifLet(\.login, action: \.login) {
                 LoginFeature()
@@ -123,17 +116,11 @@ public struct RootFlowFeature {
             applySession(&state, session: session)
             return .send(.flushPendingDeepLink)
 
-        case let .login(.delegate(.presentToast(message))):
-            return .send(.overlay(.showToast(message)))
-
-        case let .login(.delegate(.presentAlert(message))):
-            return .send(.overlay(.showAlert(message)))
-
         case .main(.delegate(.loggedOut)):
             state.phase = .login(LoginFeature.State())
             return .none
 
-        case .login, .onboarding, .main, .overlay:
+        case .login, .onboarding, .main:
             return .none
         }
     }

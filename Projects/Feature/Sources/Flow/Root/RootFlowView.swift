@@ -29,9 +29,6 @@ public struct RootFlowView: View {
                 }
             }
         }
-        .overlay {
-            OverlayView(store: store.scope(state: \.overlay, action: \.overlay))
-        }
         .task {
             store.send(.onAppear)
         }
@@ -107,64 +104,6 @@ public struct RootFlowView: View {
         } withDependencies: {
             $0.authClient.restoreSession = { nil }
             $0.authClient.logout = {}
-        }
-    )
-}
-
-#Preview("RootFlow / Main + Toast") {
-    RootFlowView(
-        store: Store(
-            initialState: RootFlowFeature.State(
-                phase: .main(MainTabFeature.State()),
-                overlay: OverlayFeature.State(
-                    toastMessage: "홈으로 이동했어요"
-                )
-            )
-        ) {
-            RootFlowFeature()
-        } withDependencies: {
-            $0.authClient.restoreSession = { nil }
-            $0.authClient.logout = {}
-        }
-    )
-}
-
-#Preview("RootFlow / Login + Toast") {
-    RootFlowView(
-        store: Store(
-            initialState: RootFlowFeature.State(
-                phase: .login(LoginFeature.State()),
-                overlay: OverlayFeature.State(
-                    toastMessage: "로그인에 실패했어요"
-                )
-            )
-        ) {
-            RootFlowFeature()
-        } withDependencies: {
-            $0.authClient.restoreSession = { nil }
-            $0.authClient.login = { _ in
-                throw AuthError.loginFailed
-            }
-        }
-    )
-}
-
-#Preview("RootFlow / Login + Alert") {
-    RootFlowView(
-        store: Store(
-            initialState: RootFlowFeature.State(
-                phase: .login(LoginFeature.State()),
-                overlay: OverlayFeature.State(
-                    alertMessage: "로그인 설정이 완료되지 않았어요."
-                )
-            )
-        ) {
-            RootFlowFeature()
-        } withDependencies: {
-            $0.authClient.restoreSession = { nil }
-            $0.authClient.login = { _ in
-                throw AuthError.notConfigured(message: "missing-key")
-            }
         }
     )
 }

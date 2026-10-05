@@ -83,18 +83,12 @@ public struct LoginView: View {
 
                 Spacer(minLength: 0)
             }
-
-            if store.isLoading {
-                ProgressView()
-                    .tint(Color.ds.text.neutral.primary)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                    .allowsHitTesting(false)
-            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.ds.fill.neutral.subtle.ignoresSafeArea())
         // 시안이 다크 전용이다. 이 화면이 떠 있는 동안만 창을 다크로 둔다.
         .preferredColorScheme(.dark)
+        .screenStatus(store.screen, onDismiss: { store.send(.failureDismissed) })
         .task {
             store.send(.onAppear)
         }
@@ -144,7 +138,7 @@ private enum LoginLayout {
     LoginView(
         store: Store(
             initialState: LoginFeature.State(
-                isLoading: true
+                screen: .loading
             )
         ) {
             LoginFeature()
