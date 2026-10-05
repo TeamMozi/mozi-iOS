@@ -127,8 +127,8 @@ final class GalleryCatalogTests: XCTestCase {
         XCTAssertEqual(metricsLabel(of: "caption2.regular"), "12 · 줄 14 · 자간 -1% (-0.12pt) · Regular")
     }
 
-    func test_디자인_시스템_칸은_색_글자_버튼_화면_상태_네_화면을_이_순서로_연다() {
-        XCTAssertEqual(GalleryScreen.allCases.map(\.title), ["색", "글자", "버튼", "화면 상태"])
+    func test_디자인_시스템_칸은_색_글자_버튼_화면_상태_입력_순서로_연다() {
+        XCTAssertEqual(GalleryScreen.allCases.map(\.title), ["색", "글자", "버튼", "화면 상태", "입력"])
     }
 
     func test_화면_상태_화면은_대기_불러오는_중_동작_실패_불러오기_실패를_이_순서로_고른다() {

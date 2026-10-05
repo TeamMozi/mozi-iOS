@@ -3,6 +3,7 @@
 ## 책임
 - Figma 파일 `hnGl2AWCk8XCvrNK7MBkvq` 의 색·숫자·글자 스타일을 코드 토큰으로 연다
 - 공통 부품: 버튼 여섯 계열(스타일 `.main`·`.neutral`·`.ghost`·`.textButton(_:)`·`.action(_:)`·`.shortcut(_:)`·`.pill` 과 화면 조각 `SocialLoginButton`), 아이콘 버튼 생성자 `Button(_:icon:)`, `DesignText`, `ScreenStatus` · `.screenStatus`
+- 입력 부품: `DesignTextField` · `DesignTextArea` · `DesignDropdownRow` · `DesignCheckbox` · `DesignToggle` · `DesignChip` · `DesignSearchField` · `DesignStatusMenu`
 - 글꼴(Pretendard 네 굵기)과 에셋(로고·소셜 아이콘·로그인 숏폼 사진)
 
 ## 의존
@@ -87,6 +88,15 @@ SocialLoginButton(.kakao) {
 - 버튼 글자는 높이가 고정이라 줄 간격 여백을 걸지 않는다
 - 토큰이 없는 값(아이콘 16, 여백 20, 액션 accent 의 원시 색 `color/primary/50`·`color/neutral/1300` 등)은 부품 파일 안 상수다
 - 글자는 `DesignText(_:style:)` 로 쓴다. `style.font` 만 꺼내면 줄 높이·자간이 빠진다
+- 입력 부품은 값과 선택을 들고 있지 않는다. 쓰는 쪽이 바인딩이나 지금 값과 「누르면 할 일」을 넘긴다. 오류·비활성 상태는 없다
+- 한 줄 `DesignTextField` 와 여러 줄·캡션 `DesignTextArea`(`.standard`·`.caption`)는 UIKit `UITextField`·`UITextView` 를 감싼다. 보이는 글자 하나를 1자로 세고 최대를 넘는 입력은 받지 않는다(붙여넣은 글은 뒤가 잘린다). 조합 중인 글자도 글자 수와 쓰는 쪽 값에 들어가지만, 조합 중에는 자르지 않고 조합이 끝나면 넘친 만큼 자른다
+- 최대보다 긴 값이 넘어오면 한 줄 칸은 받자마자 잘라 쓰는 쪽 값도 바꾸고, 여러 줄·캡션 칸은 그대로 두고 「55/50」으로 보이며 지우기만 받는다. 「현재/최대」는 여러 줄·캡션 칸만 그린다
+- 입력 중 테두리는 칸이 키보드를 가진 동안 켜진다
+- 드롭다운 줄 칸(`DesignDropdownCell`)은 지금 값·메뉴 항목·`onSelect` 를 받는다. 누르면 칸 안의 iOS 기본 `Menu` 가 뜨고 지금 값에 체크가 붙는다. 메뉴가 떠 있어도 입력 중 테두리는 켜지지 않는다
+- 체크박스 `.check`·`.order(Int)`·`.vote`, 칩 `.outlined`·`.filled`(닫기 아이콘 켜고 끔)·`.pill`(편집 중), 검색 칸 `.glass`(`glassEffect`)·`.flat`(지우기 버튼), 상태 드롭다운은 iOS 기본 `Menu` 와 표시용 `DesignRecruitStatus` 셋(Domain 타입과 다르다)
+- 체크박스·토글은 VoiceOver 이름(`title`)을 받고 화면에는 그리지 않는다
+- 원시 색은 부품 안에서만 쓴다: 토글 켜짐 green, 상태 「모집 마감」·필수 `*` red, 체크박스·칩 채움형의 neutral·primary 원시 색, 번호 체크박스 해제 바탕 알파 `overlay/gray/70`. Figma 에 의미 색이 생기면 옮긴다
+- 포커스: 쓰는 화면이 칸에 `.focused($focus, equals:)` 를 건다. 감싼 UIKit 칸과 양방향으로 이어진다(테스트 `DesignTextInputFocusTests`)
 
 ## 글꼴
 - `TextStyle.font` 가 처음 불릴 때 Tuist 생성 `SharedDesignSystemFontFamily.registerAllCustomFonts()` 를 한 번 부른다
@@ -293,6 +303,9 @@ Figma 아이콘 이름과 코드 경로. 아이콘 경로는 `Image.ds.icon.<종
 - 의미 색의 공개 `Color` 가 다크·라이트·정해지지 않은 trait 에서 맞는 값을 낸다
 - 호스트 앱 없는 테스트에서 `TextStyle` 글자가 Pretendard 로 그려진다
 - 버튼: `.controlSize` 크기 대응(기본 sm·md·lg, 액션 s·m), 계열·상태(기본·눌림·비활성)별 색과 불투명도, 소셜 버튼 문구·색·치수
+- 입력 칸·체크박스·칩·검색 칸·상태 드롭다운의 상태별 색과 치수
+- 글자 수 규칙(빈 값, 정확히 최대, 최대+1, 이모지 묶음, 조합 중, 붙여넣기, 긴 값에서 지우기·더하기)과 UIKit 칸의 조합 뒤 자르기
+- UIKit 칸과 포커스의 양방향 연결
 
 ## 명령
 ```bash

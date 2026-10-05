@@ -1,5 +1,6 @@
 import CoreGraphics
 import SwiftUI
+import UIKit
 
 public struct TextStyle: Sendable, Equatable {
     public let fontName: String
@@ -23,6 +24,12 @@ public struct TextStyle: Sendable, Equatable {
     public var font: Font {
         _ = Self.registerFontsOnce
         return Font.custom(fontName, size: size)
+    }
+
+    /// UIKit 글자 칸이 쓰는 글꼴. `font` 처럼 처음 불릴 때 디자인 시스템 글꼴을 등록한다.
+    var uiFont: UIFont {
+        _ = Self.registerFontsOnce
+        return UIFont(name: fontName, size: size) ?? .systemFont(ofSize: size)
     }
 
     public var letterSpacing: CGFloat {
