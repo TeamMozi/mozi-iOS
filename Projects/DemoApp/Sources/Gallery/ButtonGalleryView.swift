@@ -154,10 +154,14 @@ struct ButtonGalleryView: View {
     private var loginSection: some View {
         GallerySection("login") {
             VStack(alignment: .leading, spacing: CGFloat.ds.spacing.xl) {
-                ButtonSampleRow(name: "kakao · apple", metrics: "높이 48 · 모서리 8 · 간격 8 · 너비 채움") {
+                ButtonSampleRow(name: "kakao · apple", metrics: "높이 48 · 모서리 8 · 간격 8 · 너비 채움 · 활성 / 비활성") {
                     VStack(spacing: CGFloat.ds.spacing.sm) {
                         SocialLoginButton(.kakao) {}
                         SocialLoginButton(.apple) {}
+                        SocialLoginButton(.kakao) {}
+                            .disabled(true)
+                        SocialLoginButton(.apple) {}
+                            .disabled(true)
                     }
                 }
             }
