@@ -149,7 +149,7 @@ struct SemanticOverlayDimColors: Sendable {
     let _20 = ThemedColor(dark: AlphaColor.overlay.dark._20, light: AlphaColor.overlay.light._20)
     let _40 = ThemedColor(dark: AlphaColor.overlay.dark._40, light: AlphaColor.overlay.light._40)
     let _60 = ThemedColor(dark: AlphaColor.overlay.dark._60, light: AlphaColor.overlay.light._60)
-    let _70 = ThemedColor(dark: AlphaColor.overlay.dark._70, light: AlphaColor.overlay.light._70)
+    let _70 = ThemedColor(dark: AlphaColor.overlay.dark._70, light: AlphaColor.overlay.light._80)
     let _90 = ThemedColor(dark: AlphaColor.overlay.dark._90, light: AlphaColor.overlay.light._90)
 }
 
