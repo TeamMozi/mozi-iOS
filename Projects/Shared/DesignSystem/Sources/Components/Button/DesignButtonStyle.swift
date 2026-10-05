@@ -1,167 +1,124 @@
-import CoreGraphics
 import SwiftUI
 
-enum DesignButtonInteractionState: Sendable {
-    case `default`
-    case pressed
-    case disabled
+/// 기본 버튼 계열 셋. Figma Buttons 의 `Style=main·neutral·ghost`.
+enum DesignButtonKind: Equatable, Sendable {
+    case main
+    case neutral
+    case ghost
 }
 
-/// 버튼 한 상태의 색과 테두리. 색은 다크·라이트 쌍이다.
-struct DesignButtonResolvedStyle: Equatable, Sendable {
-    let background: ThemedColor
-    let content: ThemedColor
-    let border: ThemedColor?
-    let borderWidth: CGFloat
+/// 기본 버튼 겉모양. Figma `button/background/*`·`button/label/*` 색을 쓴다.
+/// 크기는 `.controlSize`, 비활성은 `.disabled()`, 너비 채우기는 내용에 `.frame(maxWidth: .infinity)` 로 정한다.
+/// 아이콘은 `Button(_:icon:)` 로 넘기면 글자 왼쪽에 놓인다.
+public struct DesignButtonStyle: ButtonStyle {
+    let kind: DesignButtonKind
+
+    public func makeBody(configuration: Configuration) -> some View {
+        DesignButtonBody(configuration: configuration, kind: kind)
+    }
 }
 
-/// 버튼 모양 넷을 Figma 버튼 묶음 색으로 옮긴다.
-/// primary → main, secondary → neutral, outlined → ghost, text → text.
+public extension ButtonStyle where Self == DesignButtonStyle {
+    /// 노랑 바탕 버튼. Figma `Style=main`.
+    static var main: Self {
+        DesignButtonStyle(kind: .main)
+    }
+
+    /// 회색 바탕 버튼. Figma `Style=neutral`.
+    static var neutral: Self {
+        DesignButtonStyle(kind: .neutral)
+    }
+
+    /// 화면 바탕과 같은 색 위 노랑 글자 버튼. 테두리가 없다. Figma `Style=ghost`.
+    static var ghost: Self {
+        DesignButtonStyle(kind: .ghost)
+    }
+}
+
+/// 기본 버튼 한 계열·한 상태의 색. 눌림을 색으로 보이므로 불투명도는 늘 1 이다.
 enum DesignButtonStyleResolver {
-    static func resolve(
-        variant: DesignButtonVariant,
-        state: DesignButtonInteractionState
-    ) -> DesignButtonResolvedStyle {
-        switch variant {
-        case .primary:
-            resolvePrimary(state: state)
-        case .secondary:
-            resolveSecondary(state: state)
-        case .outlined:
-            resolveOutlined(state: state)
-        case .text:
-            resolveText(state: state)
+    static func palette(kind: DesignButtonKind, state: DesignButtonState) -> DesignButtonPalette {
+        switch kind {
+        case .main:
+            mainPalette(state: state)
+        case .neutral:
+            neutralPalette(state: state)
+        case .ghost:
+            ghostPalette(state: state)
         }
     }
 
-    private static func resolvePrimary(state: DesignButtonInteractionState) -> DesignButtonResolvedStyle {
+    private static func mainPalette(state: DesignButtonState) -> DesignButtonPalette {
         let background = SemanticColor.button.background.main
         let label = SemanticColor.button.label.main
         switch state {
         case .default:
-            return filled(background: background.default, content: label.default)
+            return DesignButtonPalette(background: background.default, content: label.default, opacity: 1)
         case .pressed:
-            return filled(background: background.pressed, content: label.pressed)
+            return DesignButtonPalette(background: background.pressed, content: label.pressed, opacity: 1)
         case .disabled:
-            return filled(background: background.disabled, content: label.disabled)
+            return DesignButtonPalette(background: background.disabled, content: label.disabled, opacity: 1)
         }
     }
 
-    private static func resolveSecondary(state: DesignButtonInteractionState) -> DesignButtonResolvedStyle {
+    private static func neutralPalette(state: DesignButtonState) -> DesignButtonPalette {
         let background = SemanticColor.button.background.neutral
         let label = SemanticColor.button.label.neutral
         switch state {
         case .default:
-            return filled(background: background.default, content: label.default)
+            return DesignButtonPalette(background: background.default, content: label.default, opacity: 1)
         case .pressed:
-            return filled(background: background.pressed, content: label.pressed)
+            return DesignButtonPalette(background: background.pressed, content: label.pressed, opacity: 1)
         case .disabled:
-            return filled(background: background.disabled, content: label.disabled)
+            return DesignButtonPalette(background: background.disabled, content: label.disabled, opacity: 1)
         }
     }
 
-    // ghost 묶음에는 테두리 색이 없다. 전과 같은 모양을 지키려고 테두리는 글자 색을 따른다.
-    private static func resolveOutlined(state: DesignButtonInteractionState) -> DesignButtonResolvedStyle {
+    private static func ghostPalette(state: DesignButtonState) -> DesignButtonPalette {
         let background = SemanticColor.button.background.ghost
         let label = SemanticColor.button.label.ghost
         switch state {
         case .default:
-            return outlined(background: background.default, content: label.default)
+            return DesignButtonPalette(background: background.default, content: label.default, opacity: 1)
         case .pressed:
-            return outlined(background: background.pressed, content: label.pressed)
+            return DesignButtonPalette(background: background.pressed, content: label.pressed, opacity: 1)
         case .disabled:
-            return outlined(background: background.disabled, content: label.disabled)
+            return DesignButtonPalette(background: background.disabled, content: label.disabled, opacity: 1)
         }
-    }
-
-    // text 묶음에는 글자 색만 있다. 바탕은 투명한 `overlay.dim._0` 이다.
-    private static func resolveText(state: DesignButtonInteractionState) -> DesignButtonResolvedStyle {
-        let clear = SemanticColor.overlay.dim._0
-        let label = SemanticColor.button.label.text
-        switch state {
-        case .default, .pressed:
-            return filled(background: clear, content: label.accent)
-        case .disabled:
-            return filled(background: clear, content: label.neutral)
-        }
-    }
-
-    private static func filled(background: ThemedColor, content: ThemedColor) -> DesignButtonResolvedStyle {
-        DesignButtonResolvedStyle(background: background, content: content, border: nil, borderWidth: 0)
-    }
-
-    private static func outlined(background: ThemedColor, content: ThemedColor) -> DesignButtonResolvedStyle {
-        DesignButtonResolvedStyle(
-            background: background,
-            content: content,
-            border: content,
-            borderWidth: CGFloat.ds.border.thin
-        )
     }
 }
 
-enum DesignButtonInteractionStateResolver {
-    static func resolve(isEnabled: Bool, isPressed: Bool) -> DesignButtonInteractionState {
-        if !isEnabled {
-            return .disabled
-        }
-        return isPressed ? .pressed : .default
-    }
-}
-
-struct DesignButtonChromeStyle: ButtonStyle {
-    let variant: DesignButtonVariant
-    let size: DesignButtonSize
-    let isFullWidth: Bool
-
-    func makeBody(configuration: Configuration) -> some View {
-        // 중첩 content 가 `@Environment(\.isEnabled)` 를 읽어
-        // 부모 `.disabled` 와 `DesignButton(isEnabled:)` 모두 disabled 토큰을 선택한다.
-        ChromeContent(
-            configuration: configuration,
-            variant: variant,
-            size: size,
-            isFullWidth: isFullWidth
-        )
-    }
-}
-
-private struct ChromeContent: View {
-    let configuration: ButtonStyle.Configuration
-    let variant: DesignButtonVariant
-    let size: DesignButtonSize
-    let isFullWidth: Bool
+/// 환경 값(비활성·크기)은 스타일 구조체가 아니라 이 View 에서 읽어야 부모에 건 수식어를 따른다.
+private struct DesignButtonBody: View {
+    let configuration: ButtonStyleConfiguration
+    let kind: DesignButtonKind
 
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.controlSize) private var controlSize
 
     var body: some View {
-        let style = DesignButtonStyleResolver.resolve(
-            variant: variant,
-            state: DesignButtonInteractionStateResolver.resolve(
-                isEnabled: isEnabled,
-                isPressed: configuration.isPressed
-            )
+        let size = DesignButtonSize(controlSize)
+        let palette = DesignButtonStyleResolver.palette(
+            kind: kind,
+            state: DesignButtonState(isEnabled: isEnabled, isPressed: configuration.isPressed)
         )
+        let shape = RoundedRectangle(cornerRadius: size.cornerRadius, style: .continuous)
 
-        // 레이아웃 ownership:
-        // label → horizontal padding → expand/height → chrome.
-        // padding 이 maxWidth 확장보다 앞서야 full-width 버튼이 parent-width + padding 을 요청하지 않는다.
+        // 순서: 글자 → 좌우 여백 → 높이 → 바탕. 너비 채우기는 내용의 maxWidth 가 여백 안에서 늘어난다.
         configuration.label
-            .foregroundStyle(style.content.color)
-            .padding(.horizontal, size.horizontalPadding)
-            .frame(
-                maxWidth: isFullWidth ? .infinity : nil,
-                minHeight: size.height,
-                maxHeight: size.height
+            .labelStyle(
+                DesignButtonLabelStyle(
+                    iconSize: size.iconSize,
+                    spacing: size.iconSpacing,
+                    placement: .leading
+                )
             )
-            .background(style.background.color)
-            .clipShape(RoundedRectangle(cornerRadius: size.cornerRadius, style: .continuous))
-            .overlay {
-                if let border = style.border {
-                    RoundedRectangle(cornerRadius: size.cornerRadius, style: .continuous)
-                        .strokeBorder(border.color, lineWidth: style.borderWidth)
-                }
-            }
-            .contentShape(RoundedRectangle(cornerRadius: size.cornerRadius, style: .continuous))
+            .designButtonText(size.textStyle)
+            .foregroundStyle(palette.content.color)
+            .padding(.horizontal, size.horizontalPadding)
+            .frame(height: size.height)
+            .designButtonBackground(palette.background, in: shape)
+            .contentShape(shape)
+            .opacity(palette.opacity)
     }
 }
