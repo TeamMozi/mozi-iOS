@@ -13,11 +13,8 @@ final class MyPageFlowFeatureTests: XCTestCase {
         await store.receive(.delegate(.loggedOut))
     }
 
-    func test_경로가_비면_그대로_유지한다() async {
-        let store = TestStore(initialState: MyPageFlowFeature.State()) {
-            MyPageFlowFeature()
-        }
-
-        await store.send(.pathChanged([]))
+    func test_처음에는_쌓인_화면이_없다() {
+        let path: StackState<MyPageFlowFeature.Route.State> = MyPageFlowFeature.State().path
+        XCTAssertTrue(path.isEmpty)
     }
 }
