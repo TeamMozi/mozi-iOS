@@ -7,16 +7,17 @@ import ThirdParty
 @Reducer
 public struct CreateFlowFeature {
     /// 생성(root) 위로 쌓이는 화면. 아직 없다
-    public enum Route: Hashable {}
+    @Reducer
+    public enum Route {}
 
     @ObservableState
     public struct State: Equatable {
         public var placeholder: PlaceholderFeature.State
-        public var path: [Route]
+        public var path = StackState<Route.State>()
 
         public init(
             placeholder: PlaceholderFeature.State = PlaceholderFeature.State(title: "Create"),
-            path: [Route] = []
+            path: StackState<Route.State> = StackState<Route.State>()
         ) {
             self.placeholder = placeholder
             self.path = path
@@ -24,7 +25,7 @@ public struct CreateFlowFeature {
     }
 
     public enum Action: Equatable {
-        case pathChanged([Route])
+        case path(StackActionOf<Route>)
         case placeholder(PlaceholderFeature.Action)
     }
 
@@ -35,16 +36,16 @@ public struct CreateFlowFeature {
             PlaceholderFeature()
         }
         Reduce(core)
+            .forEach(\.path, action: \.path)
     }
 
     private func core(state: inout State, action: Action) -> Effect<Action> {
         switch action {
-        case let .pathChanged(path):
-            state.path = path
-            return .none
-
-        case .placeholder:
+        case .path, .placeholder:
             return .none
         }
     }
 }
+
+extension CreateFlowFeature.Route.State: Equatable {}
+extension CreateFlowFeature.Route.Action: Equatable {}
