@@ -1,11 +1,25 @@
-import CoreGraphics
+import SwiftUI
 
-public enum DesignButtonSize: Sendable {
+/// 기본 버튼 크기 셋. `.controlSize` 를 Figma Buttons 의 sm·md·lg 로 옮긴다.
+enum DesignButtonSize: Equatable, Sendable {
     case sm
     case md
     case lg
 
-    public var height: CGFloat {
+    init(_ controlSize: ControlSize) {
+        switch controlSize {
+        case .mini, .small:
+            self = .sm
+        case .regular:
+            self = .md
+        case .large, .extraLarge:
+            self = .lg
+        @unknown default:
+            self = .md
+        }
+    }
+
+    var height: CGFloat {
         switch self {
         case .sm:
             CGFloat.ds.buttonHeight.controlSm
@@ -16,18 +30,18 @@ public enum DesignButtonSize: Sendable {
         }
     }
 
-    public var horizontalPadding: CGFloat {
+    var horizontalPadding: CGFloat {
         switch self {
         case .sm:
-            12
+            CGFloat.ds.spacing.md
         case .md:
-            16
+            CGFloat.ds.spacing.lg
         case .lg:
-            20
+            Self.largeHorizontalPadding
         }
     }
 
-    public var cornerRadius: CGFloat {
+    var cornerRadius: CGFloat {
         switch self {
         case .sm, .md:
             CGFloat.ds.radius._4
@@ -36,29 +50,28 @@ public enum DesignButtonSize: Sendable {
         }
     }
 
-    public var iconSize: CGFloat {
+    var iconSize: CGFloat {
         switch self {
         case .sm:
-            14
+            CGFloat.ds.iconSize._14
         case .md:
-            16
+            Self.mediumIconSize
         case .lg:
-            18
+            CGFloat.ds.iconSize._18
         }
     }
 
-    public var textStyle: TextStyle {
-        switch self {
-        case .sm:
-            TextStyle.ds.caption1.semiBold
-        case .md:
-            TextStyle.ds.headline.semiBold
-        case .lg:
-            TextStyle.ds.title3.semiBold
-        }
-    }
-
-    public var contentGap: CGFloat {
+    /// 아이콘과 글자 사이. 세 크기가 같다.
+    var iconSpacing: CGFloat {
         CGFloat.ds.spacing.sm
     }
+
+    /// 글자는 세 크기 모두 `Headline/SemiBold` 다.
+    var textStyle: TextStyle {
+        TextStyle.ds.headline.semiBold
+    }
+
+    // Figma 에 맞는 변수가 없는 값.
+    private static let largeHorizontalPadding: CGFloat = 20
+    private static let mediumIconSize: CGFloat = 16
 }

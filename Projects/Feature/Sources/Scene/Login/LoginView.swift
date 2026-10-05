@@ -69,12 +69,12 @@ public struct LoginView: View {
                     .frame(height: LoginLayout.marqueeToButtonsSpacing)
 
                 VStack(spacing: LoginLayout.buttonSpacing) {
-                    SocialLoginButton(provider: .kakao) {
+                    SocialLoginButton(.kakao) {
                         store.send(.kakaoLoginTapped)
                     }
                     .disabled(store.isLoading)
 
-                    SocialLoginButton(provider: .apple) {
+                    SocialLoginButton(.apple) {
                         store.send(.appleLoginTapped)
                     }
                     .disabled(store.isLoading)
