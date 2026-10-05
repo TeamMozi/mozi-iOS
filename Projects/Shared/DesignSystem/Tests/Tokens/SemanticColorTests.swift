@@ -33,13 +33,12 @@ final class SemanticColorTests: XCTestCase {
     }
 
     @MainActor
-    func test_소셜_색_다섯은_두_모드에서_같은_브랜드_색이다() {
+    func test_소셜_색_넷은_두_모드에서_같은_색이다() {
         let cases: [(Color, UInt32)] = [
             (Color.ds.social.kakao, 0xFEE500FF),
-            (Color.ds.social.kakaoContent, 0x000000FF),
+            (Color.ds.social.kakaoContent, 0x0E0E11FF),
             (Color.ds.social.appleBackground, 0xFFFFFFFF),
-            (Color.ds.social.appleBorder, 0x000000FF),
-            (Color.ds.social.appleContent, 0x000000FF),
+            (Color.ds.social.appleContent, 0x0E0E11FF),
         ]
         for (color, expected) in cases {
             XCTAssertEqual(rgba(UIColor(color), in: .dark), expected)
@@ -463,7 +462,7 @@ private let semanticCases: [SemanticCase] = [
         SemanticColor.overlay.dim._70,
         Color.ds.overlay.dim._70,
         dark: 0x000000B2,
-        light: 0xFAFAFAB2
+        light: 0xFAFAFACC
     ),
     SemanticCase(
         "overlay/dim/90",
