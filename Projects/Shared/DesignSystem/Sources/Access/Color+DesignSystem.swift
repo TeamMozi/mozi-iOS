@@ -4,7 +4,7 @@ public extension Color {
     static let ds = DesignSystemColors()
 }
 
-/// Figma 의미 색 63개와 Figma 밖 소셜 색 다섯. 의미 색은 기기 모드를 따라 바뀐다.
+/// Figma 의미 색 63개와 소셜 로그인 색 넷. 의미 색은 기기 모드를 따라 바뀐다.
 public struct DesignSystemColors: Sendable {
     public let text = TextColors()
     public let fill = FillColors()
@@ -218,12 +218,11 @@ public struct OverlayGrayColors: Sendable {
     public init() {}
 }
 
-/// 카카오·애플 브랜드 지침 색. Figma 밖이고 모드와 상관없다.
+/// 소셜 로그인 색 넷. 모드와 상관없다.
 public struct SocialColors: Sendable {
     public let kakao = SocialColor.kakao.color
     public let kakaoContent = SocialColor.kakaoContent.color
     public let appleBackground = SocialColor.appleBackground.color
-    public let appleBorder = SocialColor.appleBorder.color
     public let appleContent = SocialColor.appleContent.color
 
     public init() {}

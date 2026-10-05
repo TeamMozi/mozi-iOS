@@ -1,5 +1,6 @@
 import CoreGraphics
 
+/// 소셜 로그인 제공자 둘. 문구·로고·색은 Figma login 그대로 고정이다.
 public enum SocialLoginProvider: Sendable {
     case kakao
     case apple
@@ -7,9 +8,9 @@ public enum SocialLoginProvider: Sendable {
     public var title: String {
         switch self {
         case .kakao:
-            "카카오로 시작하기"
+            "카카오로 로그인"
         case .apple:
-            "Apple로 로그인"
+            "애플로 로그인"
         }
     }
 
@@ -31,22 +32,7 @@ public enum SocialLoginProvider: Sendable {
         }
     }
 
-    var border: TokenColor? {
-        switch self {
-        case .kakao:
-            nil
-        case .apple:
-            SocialColor.appleBorder
-        }
-    }
-
-    var contentGap: CGFloat {
-        switch self {
-        case .kakao, .apple:
-            12
-        }
-    }
-
+    /// 로고 크기. 카카오 18×18, 애플 15×18.
     var iconSize: CGSize {
         switch self {
         case .kakao:
