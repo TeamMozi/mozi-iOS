@@ -66,6 +66,8 @@ struct DemoRootView: View {
             ScreenStatusGalleryView()
         case .input:
             InputGalleryView()
+        case .frameParts:
+            FramePartsGalleryView()
         }
     }
 

@@ -1,5 +1,6 @@
 import CoreSocialAuth
 import Feature
+import SharedDesignSystem
 import SwiftUI
 import ThirdParty
 
@@ -8,6 +9,7 @@ struct MoziApp: App {
     private let store: StoreOf<RootFeature>
 
     init() {
+        DesignNavigationBar.applyBackIndicator()
         store = CompositionRoot.makeRootStore()
     }
 

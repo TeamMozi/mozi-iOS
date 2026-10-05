@@ -2,8 +2,9 @@
 
 ## 책임
 - Figma 파일 `hnGl2AWCk8XCvrNK7MBkvq` 의 색·숫자·글자 스타일을 코드 토큰으로 연다
-- 공통 부품: 버튼 여섯 계열(스타일 `.main`·`.neutral`·`.ghost`·`.textButton(_:)`·`.action(_:)`·`.shortcut(_:)`·`.pill` 과 화면 조각 `SocialLoginButton`), 아이콘 버튼 생성자 `Button(_:icon:)`, `DesignText`, `ScreenStatus` · `.screenStatus`
+- 공통 부품: 버튼 여섯 계열(스타일 `.main`·`.neutral`·`.ghost`·`.textButton(_:)`·`.action(_:)`·`.shortcut(_:)`·`.pill` 과 화면 조각 `SocialLoginButton`), 아이콘 버튼 생성자 `Button(_:icon:)`, `DesignText`, `ScreenStatus` · `.screenStatus`, 하단 버튼 영역 `BottomButtonArea`
 - 입력 부품: `DesignTextField` · `DesignTextArea` · `DesignDropdownRow` · `DesignCheckbox` · `DesignToggle` · `DesignChip` · `DesignSearchField` · `DesignStatusMenu`
+- 헤더·탭바 꾸밈: 탭바 아이콘 `TabBarIcon`, 툴바 제목·아이콘 `DesignToolbarTitle`·`DesignToolbarIcon`, 헤더 배경 `.designHeaderBackground(_:)`, 뒤로 가기 그림 `DesignNavigationBar.applyBackIndicator()`, 시트 딤 `.designSheet(item:detents:content:)`
 - 글꼴(Pretendard 네 굵기)과 에셋(로고·소셜 아이콘·로그인 숏폼 사진)
 
 ## 의존
@@ -97,6 +98,14 @@ SocialLoginButton(.kakao) {
 - 체크박스·토글은 VoiceOver 이름(`title`)을 받고 화면에는 그리지 않는다
 - 원시 색은 부품 안에서만 쓴다: 토글 켜짐 green, 상태 「모집 마감」·필수 `*` red, 체크박스·칩 채움형의 neutral·primary 원시 색, 번호 체크박스 해제 바탕 알파 `overlay/gray/70`. Figma 에 의미 색이 생기면 옮긴다
 - 포커스: 쓰는 화면이 칸에 `.focused($focus, equals:)` 를 건다. 감싼 UIKit 칸과 양방향으로 이어진다(테스트 `DesignTextInputFocusTests`)
+- 탭바·헤더·바텀시트 헤더는 iOS 26 시스템 부품(`TabView`, `NavigationStack` + `.toolbar`, `.sheet` 안 `NavigationStack` + `.toolbar`)이다. 디자인 시스템은 꾸밈만 준다
+  - 탭 아이콘: `.tabItem { TabBarIcon.search.image(isSelected:colorScheme:) }`. 선택은 채움, 나머지는 선, 「+」 는 늘 채움 + `text/accent/default`. 색을 입힌 원본 그림이라 탭바에 `.tint` 를 걸지 않는다
+  - 툴바: 제목 `DesignToolbarTitle`(Medium 16), 아이콘 `DesignToolbarIcon`(24) 둘 다 `text/neutral/primary`. 오른쪽 버튼 둘은 `ToolbarItem` 둘 + `ToolbarSpacer(.fixed)`, 왼쪽 정렬 제목은 `.topBarLeading` + `.sharedBackgroundVisibility(.hidden)` + `.fixedSize()`
+  - 헤더 배경: `.transparent`(시스템 기본, 스크롤하면 가장자리 효과) · `.filled`(`fill/neutral/default`)
+  - 뒤로 가기: 시스템 버튼에 그림만 `chevron.left`. 앱·데모 앱 시작에서 `DesignNavigationBar.applyBackIndicator()` 를 한 번 부른다
+  - 바텀시트: `.designSheet(item:detents:content:)`(또는 `isPresented:`)로 띄운다. 시스템 딤을 끄고 뒤 화면 전체를 `overlay/gray/default` 로 덮으며, 딤을 누르면 닫힌다. 딤 짙기는 시트 위치를 따른다(자리 잡으면 다 짙고, 가장 작은 높이 아래로 끌어내린 만큼 옅어진다). 몸통은 `fill/neutral/default`. 높이는 쓰는 화면이 `detents` 로 작은 것부터 넘긴다(`.large` 가 없으면 마지막을 가장 큰 높이로 본다)
+- 하단 버튼 영역 `BottomButtonArea(_:showsTopBorder:caption:buttons:)`: 배치 `.single` · `.split5To5` · `.split3To7`(오른쪽 240 고정). 여백 위 12(3:7 은 16)·좌우 16, 간격 12, 바탕 `fill/neutral/default`, 위쪽 1pt 선 `border/neutral/10` 은 켜고 끈다. 아래 여백은 안전 영역이다. 버튼과 윗줄은 쓰는 화면이 넣는다
+  - 화면에 붙일 때는 `.bottomButtonArea { BottomButtonArea(...) { ... } }`. 탭바를 숨기고, 키보드가 올라와도 버튼 줄은 키보드 뒤에 남는다. 본문은 그대로 키보드를 피한다
 
 ## 글꼴
 - `TextStyle.font` 가 처음 불릴 때 Tuist 생성 `SharedDesignSystemFontFamily.registerAllCustomFonts()` 를 한 번 부른다
@@ -296,7 +305,7 @@ Figma 아이콘 이름과 코드 경로. 아이콘 경로는 `Image.ds.icon.<종
 - `Sources/Tokens/Primitive/PrimitiveColor.swift` · `AlphaColor.swift`
 - `Sources/Tokens/Semantic/SemanticColor.swift` · `SocialColor.swift`
 - `Sources/Foundation/TokenColor.swift` · `ThemedColor.swift`
-- `Sources/Components/`
+- `Sources/Components/` · 헤더·탭바·하단 버튼 영역은 `Sources/Components/Frame/`
 
 ## 테스트 포인트
 - 원시 색 34 · 알파 색 20 · 의미 색 63 쌍 · 숫자 · 글자 스타일 21 값이 Figma 표와 같다
@@ -306,6 +315,7 @@ Figma 아이콘 이름과 코드 경로. 아이콘 경로는 `Image.ds.icon.<종
 - 입력 칸·체크박스·칩·검색 칸·상태 드롭다운의 상태별 색과 치수
 - 글자 수 규칙(빈 값, 정확히 최대, 최대+1, 이모지 묶음, 조합 중, 붙여넣기, 긴 값에서 지우기·더하기)과 UIKit 칸의 조합 뒤 자르기
 - UIKit 칸과 포커스의 양방향 연결
+- 탭 아이콘의 모양(선택·「+」)·색·크기 28, 툴바 제목·아이콘 값, 헤더 배경, 뒤로 가기 그림 24, 하단 버튼 영역의 배치별 너비·여백·높이
 
 ## 명령
 ```bash
