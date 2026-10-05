@@ -2,10 +2,13 @@ import MoziDemoKit
 import SwiftUI
 
 /// 데모 앱 최상위. 첫 화면 → 흐름 → 화면 순서로 쌓고, 「목록으로 돌아가기」는 첫 화면까지 비운다.
+///
+/// 자기 NavigationStack 을 가진 화면(`DemoScreen.presentsFullScreen`)은 쌓지 않고 전체 화면으로 덮어 띄운다.
 struct DemoRootView: View {
     let buildInfo: DemoBuildInfo
 
     @State private var path: [DemoRoute] = []
+    @State private var coveredScreen: DemoScreen?
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -18,6 +21,9 @@ struct DemoRootView: View {
                     .toolbar(.hidden, for: .navigationBar)
             }
         }
+        .fullScreenCover(item: $coveredScreen) { screen in
+            screenView(screen)
+        }
     }
 
     @ViewBuilder
@@ -27,9 +33,7 @@ struct DemoRootView: View {
             DemoFlowView(
                 flow: flow,
                 onBack: goBack,
-                onOpen: { screen in
-                    path.append(.screen(screen))
-                }
+                onOpen: openScreen
             )
         case let .screen(screen):
             screenView(screen)
@@ -50,6 +54,8 @@ struct DemoRootView: View {
         switch screen {
         case .login:
             LoginDemoScreen(onExit: backToList)
+        case .tabNavigation:
+            TabNavigationDemoScreen(onExit: backToList)
         }
     }
 
@@ -71,12 +77,22 @@ struct DemoRootView: View {
         }
     }
 
+    // 최상위 NavigationStack 안에 Flow 의 NavigationStack 이 겹치면 뒤로 가기가 꼬인다
+    private func openScreen(_ screen: DemoScreen) {
+        if screen.presentsFullScreen {
+            coveredScreen = screen
+        } else {
+            path.append(.screen(screen))
+        }
+    }
+
     private func goBack() {
         guard !path.isEmpty else { return }
         path.removeLast()
     }
 
     private func backToList() {
+        coveredScreen = nil
         path.removeAll()
     }
 }
