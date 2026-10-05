@@ -7,16 +7,17 @@ import ThirdParty
 @Reducer
 public struct OnboardingFlowFeature {
     /// 온보딩(root) 위로 쌓이는 화면. 아직 없다
-    public enum Route: Hashable {}
+    @Reducer
+    public enum Route {}
 
     @ObservableState
     public struct State: Equatable {
         public var onboarding: OnboardingPlaceholderFeature.State
-        public var path: [Route]
+        public var path = StackState<Route.State>()
 
         public init(
             onboarding: OnboardingPlaceholderFeature.State = OnboardingPlaceholderFeature.State(),
-            path: [Route] = []
+            path: StackState<Route.State> = StackState<Route.State>()
         ) {
             self.onboarding = onboarding
             self.path = path
@@ -24,8 +25,14 @@ public struct OnboardingFlowFeature {
     }
 
     public enum Action: Equatable {
-        case pathChanged([Route])
+        case path(StackActionOf<Route>)
         case onboarding(OnboardingPlaceholderFeature.Action)
+        case delegate(Delegate)
+
+        public enum Delegate: Equatable {
+            /// 온보딩 끝. RootFlow 가 메인으로 넘긴다
+            case finished
+        }
     }
 
     public init() {}
@@ -35,16 +42,19 @@ public struct OnboardingFlowFeature {
             OnboardingPlaceholderFeature()
         }
         Reduce(core)
+            .forEach(\.path, action: \.path)
     }
 
     private func core(state: inout State, action: Action) -> Effect<Action> {
         switch action {
-        case let .pathChanged(path):
-            state.path = path
-            return .none
+        case .onboarding(.delegate(.finished)):
+            return .send(.delegate(.finished))
 
-        case .onboarding:
+        case .path, .onboarding, .delegate:
             return .none
         }
     }
 }
+
+extension OnboardingFlowFeature.Route.State: Equatable {}
+extension OnboardingFlowFeature.Route.Action: Equatable {}
