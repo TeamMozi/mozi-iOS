@@ -231,25 +231,54 @@ private extension DesignButtonFamilyTests {
     }
 
     /// 화면 밖 창에 올린 뒤 버튼 특성을 가진 접근성 요소의 라벨을 모은다.
+    /// 요소가 하나라도 생길 때까지 0.05초 간격으로 다시 보고, 2초가 넘으면 그때까지 모은 결과를 돌려준다.
     @MainActor
     func buttonAccessibilityLabels(_ view: some View) -> [String?] {
+        if let failure = Self.applicationAccessibilityFailure {
+            XCTFail(failure)
+        }
         let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 200, height: 100))
         let host = UIHostingController(rootView: view.dynamicTypeSize(.large))
         window.rootViewController = host
         window.makeKeyAndVisible()
         host.view.frame = window.bounds
         host.view.layoutIfNeeded()
-        RunLoop.main.run(until: Date().addingTimeInterval(0.3))
         defer {
             window.isHidden = true
             window.rootViewController = nil
         }
-        var elements: [NSObject] = []
-        collectAccessibilityElements(host.view, into: &elements, depth: 0)
-        return elements
-            .filter { $0.accessibilityTraits.contains(.button) }
-            .map(\.accessibilityLabel)
+        let deadline = Date().addingTimeInterval(2)
+        var labels: [String?] = []
+        repeat {
+            RunLoop.main.run(until: Date().addingTimeInterval(0.05))
+            var elements: [NSObject] = []
+            collectAccessibilityElements(host.view, into: &elements, depth: 0)
+            labels = elements
+                .filter { $0.accessibilityTraits.contains(.button) }
+                .map(\.accessibilityLabel)
+        } while labels.isEmpty && Date() < deadline
+        return labels
     }
+
+    /// 호스트 앱 없는 테스트는 새 시뮬레이터에서 앱 접근성이 꺼져 있어 SwiftUI 가 접근성 트리를 만들지 않는다.
+    /// 그래서 공개 API 가 없는 libAccessibility 의 함수로 테스트 프로세스에서 한 번 켠다. 실패하면 이유를 돌려준다.
+    static let applicationAccessibilityFailure: String? = {
+        typealias SetEnabled = @convention(c) (Bool) -> Void
+        typealias IsEnabled = @convention(c) () -> Bool
+        let path = "/usr/lib/libAccessibility.dylib"
+        guard let handle = dlopen(path, RTLD_NOW) else {
+            return "\(path) 를 열지 못해 앱 접근성을 켤 수 없다"
+        }
+        guard let setSymbol = dlsym(handle, "_AXSApplicationAccessibilitySetEnabled"),
+              let getSymbol = dlsym(handle, "_AXSApplicationAccessibilityEnabled") else {
+            return "_AXSApplicationAccessibilitySetEnabled / _AXSApplicationAccessibilityEnabled 를 찾지 못했다"
+        }
+        unsafeBitCast(setSymbol, to: SetEnabled.self)(true)
+        guard unsafeBitCast(getSymbol, to: IsEnabled.self)() else {
+            return "_AXSApplicationAccessibilitySetEnabled(true) 뒤에도 앱 접근성이 꺼져 있다"
+        }
+        return nil
+    }()
 
     @MainActor
     func collectAccessibilityElements(_ object: NSObject, into found: inout [NSObject], depth: Int) {
