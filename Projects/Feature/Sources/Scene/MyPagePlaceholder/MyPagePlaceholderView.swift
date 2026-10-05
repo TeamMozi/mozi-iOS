@@ -32,15 +32,15 @@ public struct MyPagePlaceholderView: View {
                 )
             }
 
-            DesignButton(
-                "로그아웃",
-                variant: .outlined,
-                size: .lg,
-                isEnabled: store.isLoggingOut == false,
-                isFullWidth: true
-            ) {
+            Button {
                 store.send(.logoutTapped)
+            } label: {
+                Text("로그아웃")
+                    .frame(maxWidth: .infinity)
             }
+            .buttonStyle(.ghost)
+            .controlSize(.large)
+            .disabled(store.isLoggingOut)
             .padding(.horizontal, CGFloat.ds.layout.margin)
             .padding(.bottom, CGFloat.ds.spacing.xl)
         }
