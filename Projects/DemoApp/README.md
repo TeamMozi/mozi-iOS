@@ -9,11 +9,12 @@
 - 첫 화면: 이번 빌드에서 바뀐 것 · 흐름 일곱 · 디자인 시스템 · 바닥 글(업로드 빌드만)
 - 흐름 일곱 중 로그인만 열린다. 나머지는 「준비 중」
 - 로그인 화면 상태 셋: 기본 / 불러오는 중 / 오류 안내
-- 디자인 시스템 칸: 색 · 글자 · 버튼 · 화면 상태 · 입력 다섯 줄이 화면을 하나씩 연다. 화면마다 위의 전환으로 그 화면만 시스템·다크·라이트로 본다. 시스템 얼럿은 이 전환을 따르지 않고 기기 모드를 따른다
+- 디자인 시스템 칸: 색 · 글자 · 버튼 · 화면 상태 · 입력 · 헤더·탭바 여섯 줄이 화면을 하나씩 연다. 화면마다 위의 전환으로 그 화면만 시스템·다크·라이트로 본다. 시스템 얼럿은 이 전환을 따르지 않고 기기 모드를 따른다
   - 색: 의미 색 63(Figma 묶음 17)
   - 글자: 스타일 21개마다 이름, 수치 한 줄(크기 · 줄 높이 · 자간 % (pt) · 굵기), 여러 줄 견본. 견본 뒤 옅은 가로선이 줄 높이 간격이다
   - 버튼: 버튼 여섯 계열(기본 · 글자 · 액션 · Shortcut · 알약 · 소셜)을 기본 줄과 비활성 줄로 늘어놓는다. 기본 버튼은 sm·md·lg, 아이콘, 너비 채움 예를 보인다. 눌림은 눌러서 본다
   - 입력: 한 줄 · 여러 줄 · 캡션 · 드롭다운 줄 · 체크박스 세 꼴 · 토글 · 칩 세 꼴 · 검색 칸 두 꼴 · 상태 드롭다운을 시안 상태별로 늘어놓는다. 글자 입력과 글자 수 끊기, 체크, 토글, 칩 닫기와 편집 중, 상태 메뉴, 드롭다운 메뉴가 실제로 동작한다
+  - 헤더·탭바: 하단 버튼 영역 다섯(Figma 변형 순서). 헤더 · 탭바 · 바텀시트는 버튼을 누르면 고른 모드로 전체 화면 견본이 뜬다. 헤더는 변형 다섯(투명 · 채움 · 글자 버튼 · 오른쪽 버튼 둘 · 왼쪽 정렬 제목), 바텀시트는 기본 · 왼쪽 정렬 제목 × large · medium, 탭바는 탭 안에서 하단 버튼 영역이 있는 화면을 연다
 - 기기 설정의 다크·라이트를 따른다. 로그인 화면만 다크로 뜬다
 - 떠 있는 데모 버튼: 로그인 화면과 디자인 시스템 화면 다섯. 끌어서 옮긴다
 
@@ -56,7 +57,8 @@
 - `Sources/DemoMenu/` · `Kit/DemoMenu/DemoFloatingButtonLayout.swift`
 - `Sources/Gallery/GalleryPage.swift`
 - `Kit/Gallery/GalleryCatalog.swift` · `Kit/Gallery/GalleryAppearance.swift`
-- `Sources/Gallery/ColorGalleryView.swift` · `TypographyGalleryView.swift` · `ButtonGalleryView.swift` · `InputGalleryView.swift`
+- `Sources/Gallery/ColorGalleryView.swift` · `TypographyGalleryView.swift` · `ButtonGalleryView.swift` · `InputGalleryView.swift` · `FramePartsGalleryView.swift`
+- `Sources/Gallery/FrameParts/` (헤더·탭바 전체 화면 견본) · `Kit/Gallery/FramePartsCatalog.swift`
 - `Kit/BuildInfo/DemoBuildInfo.swift`
 
 ## 명령
@@ -70,7 +72,8 @@ mise exec -- bundle exec fastlane beta app:demo note:"이번 빌드에서 볼 �
 - 목록: 흐름 일곱의 순서, 로그인만 열림, 상태 개수와 이름
 - 로그인 상태: 기본 1초 뒤 복귀, 불러오는 중 잠김, 오류 안내 얼럿 다시 뜸
 - 데모 버튼 끌기 범위
-- 디자인 시스템 목록: 화면 다섯의 순서(색 · 글자 · 버튼 · 화면 상태 · 입력), 의미 색 묶음 17개의 순서와 칸 수(합 63), 칸 이름, 글자 스타일 21개, 글자 수치 줄, 모드 전환의 시스템은 덮어쓰지 않음
+- 디자인 시스템 목록: 화면 여섯의 순서(색 · 글자 · 버튼 · 화면 상태 · 입력 · 헤더·탭바), 의미 색 묶음 17개의 순서와 칸 수(합 63), 칸 이름, 글자 스타일 21개, 글자 수치 줄, 모드 전환의 시스템은 덮어쓰지 않음
+- 헤더·탭바 견본: 하단 버튼 영역 다섯의 이름·배치·위쪽 선, 전체 화면 견본 셋, 헤더 변형 다섯과 배경, 바텀시트 넷의 제목·높이·제목 자리
 
 ## 관련 문서
 - [ARCHITECTURE.md](../../docs/ARCHITECTURE.md)

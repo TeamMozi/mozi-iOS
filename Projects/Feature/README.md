@@ -32,7 +32,7 @@
 ## 주요 진입점
 - `RootFeature`, `RootView`
 - `RootFlowFeature`, `RootFlowView`
-- `Flow/MainTab` — 탭 열거형, 탭 선택, `TabView`
+- `Flow/MainTab` — 탭 열거형, 탭 선택, `TabView`. 탭바 아이콘은 디자인 시스템 `TabBarIcon`(`MainTabFeature.Tab.tabBarIcon`)
 - `Flow/Onboarding`, `Flow/Shortform`, `Flow/Search`, `Flow/Chat`, `Flow/MyPage`, `Flow/Create`
 - `Scene/Login`
 - `Scene/OnboardingPlaceholder`
@@ -43,7 +43,7 @@
 - restore 분기: nil → login / profileCompleted false → onboarding / true → main
 - LoginFeature 성공/실패/취소/중복 탭 방지
 - 로그아웃 복귀 네 칸: MyPagePlaceholder → MyPageFlow → MainTab → RootFlow → login
-- MainTab 탭 선택과 기본 탭(`shortform`)
+- MainTab 탭 선택과 기본 탭(`shortform`), 탭마다 탭바 아이콘(`playStack` · `search` · `chat` · `person` · `plus`)
 - 딥링크 파싱 (`mozi://home`, https home, unknown)
 
 ## 관련 문서
