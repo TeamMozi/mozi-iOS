@@ -40,6 +40,8 @@ public struct MainTabFeature {
 
     public enum Action: Equatable {
         case tabSelected(Tab)
+        /// 메인에서 받은 딥링크. RootFlow 가 넘긴다. 딥링크 종류를 더하면 여기서 처리한다
+        case openDeepLink(DeepLinkRoute)
         case shortform(ShortformFlowFeature.Action)
         case search(SearchFlowFeature.Action)
         case chat(ChatFlowFeature.Action)
@@ -79,6 +81,15 @@ public struct MainTabFeature {
         case let .tabSelected(tab):
             state.selectedTab = tab
             return .none
+
+        case let .openDeepLink(route):
+            switch route {
+            case .home:
+                // 첫 탭이 숏폼이다. 숏폼으로 돌아가 쌓인 화면을 모두 비운다
+                state.selectedTab = .shortform
+                state.shortform.path.removeAll()
+                return .none
+            }
 
         case .myPage(.delegate(.loggedOut)):
             return .send(.delegate(.loggedOut))
