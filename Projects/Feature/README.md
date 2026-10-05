@@ -7,11 +7,12 @@
 ## 현재 상태
 - Root + RootFlow + Flow 컨테이너 일곱 (Onboarding, MainTab, 탭 다섯)
 - 탭 다섯: `shortform` / `search` / `chat` / `myPage` / `create`
-- Scene: Login / OnboardingPlaceholder / MyPagePlaceholder / Placeholder
+- Scene: Login / OnboardingPlaceholder / MyPagePlaceholder / Placeholder / NavigationSample
 - 탭 넷은 Placeholder 를 나눠 쓰고 표시 글자를 밖에서 받는다. 마이 탭만 전용 화면을 쓴다
-- 탭 컨테이너의 `Route` 는 케이스가 0개다. 쌓일 화면이 생기면 케이스를 더한다
+- Flow 여섯(Onboarding, 탭 다섯)은 `@Reducer enum Route` 와 `StackState<Route.State>` 로 화면을 쌓는다. 숏폼 `Route` 에만 견본 화면(`sample`) 한 칸이 있고 나머지 다섯은 비어 있다
 - restore 기반 로그인 게이트
-- 딥링크: `mozi://home` (main 진입 후 처리, 라우팅은 미구현)
+- 딥링크: `mozi://home`. 메인에서 받으면 MainTab `openDeepLink` 가 숏폼 탭을 고르고 숏폼의 쌓인 화면을 비운다. 로그인·온보딩 중에는 보관했다가 메인에 들어갈 때 처리한다
+- 온보딩 자리표시 화면의 「끝내기」가 온보딩 Flow `delegate(.finished)` 로 RootFlow 에 올라가 메인으로 넘긴다. 서버에는 알리지 않아 앱을 다시 켜면 온보딩으로 돌아온다
 
 ## 의존
 - 허용: Domain, SharedUtils, SharedDesignSystem, SharedLogger, ThirdParty, ThirdPartyUI
@@ -27,6 +28,9 @@
 - 전역 전환/딥링크는 RootFlowFeature. 화면의 불러오는 중·오류는 그 화면 State 의 `screen` 이 들고 `.screenStatus` 로 띄운다
 - 탭 사이 이동은 MainTabFeature 만 한다. Scene 이 `selectedTab` 을 직접 바꾸지 않는다
 - 컨테이너는 화면을 그리지 않는다. 경로와 자식만 갖는다
+- Flow 는 `@Reducer enum Route` · `var path = StackState<Route.State>()` · `case path(StackActionOf<Route>)` · `.forEach(\.path, action: \.path)` 로 화면을 쌓는다. View 는 `NavigationStack(path: $store.scope(state: \.path, action: \.path))` 로 그린다
+- 화면은 다음 화면을 직접 열지 않는다. delegate 로 올리고 Flow 가 `path` 에 더한다. 화면을 더할 때는 자기 탭 `Route` 에 case 하나와 delegate 처리만 더한다
+- `Route.State`·`Route.Action` 은 Flow 파일 아래 `extension <Flow>.Route.State: Equatable {}` 와 `extension <Flow>.Route.Action: Equatable {}` 로 Equatable 을 맞춘다. 케이스가 없는 `Route` 의 목적지는 `{ _ in EmptyView() }` 로 둔다 (빈 `switch` 는 컴파일되지 않는다)
 - 화면이나 상태를 더하는 작업은 데모 앱 목록에도 한 줄 더한다. 방법은 [DemoApp README](../DemoApp/README.md)
 
 ## 주요 진입점
@@ -35,9 +39,10 @@
 - `Flow/MainTab` — 탭 열거형, 탭 선택, `TabView`. 탭바 아이콘은 디자인 시스템 `TabBarIcon`(`MainTabFeature.Tab.tabBarIcon`)
 - `Flow/Onboarding`, `Flow/Shortform`, `Flow/Search`, `Flow/Chat`, `Flow/MyPage`, `Flow/Create`
 - `Scene/Login`
-- `Scene/OnboardingPlaceholder`
+- `Scene/OnboardingPlaceholder` — 「끝내기」가 온보딩을 끝내고 메인으로 넘긴다
 - `Scene/MyPagePlaceholder` — 임시 로그아웃이 여기 하나뿐이다
 - `Scene/Placeholder`
+- `Scene/NavigationSample` — 숏폼 탭 견본(제목과 「다음」). 본 앱에서는 쌓지 않는다. 세로 피드 화면이 숏폼을 채울 때 데모 「탭 안 이동」과 함께 지운다
 
 ## 테스트 포인트
 - restore 분기: nil → login / profileCompleted false → onboarding / true → main
@@ -45,6 +50,9 @@
 - 로그아웃 복귀 네 칸: MyPagePlaceholder → MyPageFlow → MainTab → RootFlow → login
 - MainTab 탭 선택과 기본 탭(`shortform`), 탭마다 탭바 아이콘(`playStack` · `search` · `chat` · `person` · `plus`)
 - 딥링크 파싱 (`mozi://home`, https home, unknown)
+- 숏폼 쌓기: 견본 「다음」으로 하나 더 쌓이고, 뒤로 가기로 하나씩 빠진다
+- 딥링크 `.home`: 메인의 RootFlow → MainTab `openDeepLink` → 숏폼 탭 선택과 쌓인 화면 비우기
+- 온보딩 「끝내기」: OnboardingPlaceholder → OnboardingFlow → RootFlow → main, 보관한 딥링크 처리
 
 ## 관련 문서
 - [ARCHITECTURE.md](../../docs/ARCHITECTURE.md)
