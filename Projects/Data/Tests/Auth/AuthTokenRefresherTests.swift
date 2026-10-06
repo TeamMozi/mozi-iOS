@@ -143,7 +143,7 @@ final class AuthTokenRefresherTests: XCTestCase {
     }
 
     private func makeSUT(local: AuthLocalDatasource, network: FakeNetworkClient) -> AuthTokenRefresher {
-        // refresh는 plain only. authed 순환을 피하기 위해 plain을 재사용한다.
+        // refresh 검증에는 authed 조립 순환이 필요 없으므로 같은 가짜를 두 자리에 넣는다.
         let remote = AuthRemoteDatasource(
             plainClient: network,
             authedClient: network
