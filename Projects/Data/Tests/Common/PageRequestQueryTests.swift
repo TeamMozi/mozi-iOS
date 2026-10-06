@@ -15,14 +15,14 @@ final class PageRequestQueryTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_첫_쪽_요청은_page_0_size_20_쿼리가_된다() {
+    func test_첫_페이지_요청은_page_0_size_20_쿼리가_된다() {
         XCTAssertEqual(
             PageRequest.first.queryItems,
             [URLQueryItem(name: "page", value: "0"), URLQueryItem(name: "size", value: "20")]
         )
     }
 
-    func test_쪽_쿼리는_펼친_꼴로_요청_주소에_붙는다() async throws {
+    func test_페이지_쿼리는_펼친_꼴로_요청_주소에_붙는다() async throws {
         AuthURLProtocolStub.requestHandler = { _ in
             .init(
                 statusCode: 200,

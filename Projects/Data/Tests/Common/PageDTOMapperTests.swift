@@ -3,7 +3,7 @@ import Domain
 import XCTest
 
 final class PageDTOMapperTests: XCTestCase {
-    func test_중간_쪽이면_next가_다음_쪽_번호와_같은_크기() {
+    func test_중간_페이지면_next가_다음_페이지_번호와_같은_크기() {
         let dto = PageResponseDTO(
             content: [TestItemDTO(id: 1, kind: "photo"), TestItemDTO(id: 2, kind: "video")],
             number: 1,
@@ -22,7 +22,7 @@ final class PageDTOMapperTests: XCTestCase {
         )
     }
 
-    func test_마지막_쪽이면_next가_nil() {
+    func test_마지막_페이지면_next가_nil() {
         let dto = PageResponseDTO(
             content: [TestItemDTO(id: 9, kind: "photo")],
             number: 4,
@@ -54,7 +54,7 @@ final class PageDTOMapperTests: XCTestCase {
         XCTAssertEqual(page.next, PageRequest(page: 1, size: 20))
     }
 
-    func test_빈_쪽이어도_last가_false면_next를_만든다() {
+    func test_빈_페이지여도_last가_false면_next를_만든다() {
         let dto = PageResponseDTO<TestItemDTO>(content: [], number: 3, size: 20, last: false)
 
         let page = PageDTOMapper.domain(from: dto, item: TestItemMapper.domain(from:))

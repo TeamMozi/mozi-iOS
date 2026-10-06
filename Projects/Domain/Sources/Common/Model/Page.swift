@@ -1,6 +1,6 @@
 import Foundation
 
-/// 쪽 번호 방식 목록의 한 쪽. `next` 가 nil 이면 마지막 쪽이다.
+/// 페이지 번호 방식 목록의 한 페이지. `next` 가 nil 이면 마지막 페이지다.
 public struct Page<Item> {
     public var items: [Item]
     public var next: PageRequest?

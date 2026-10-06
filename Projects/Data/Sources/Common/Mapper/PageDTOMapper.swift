@@ -15,7 +15,7 @@ enum PageDTOMapper {
                 items.append(try item(element))
             } catch {
                 Logger.shared.warning(
-                    "쪽 \(dto.number) 의 \(index)번 항목 변환 실패: \(error)",
+                    "페이지 \(dto.number) 의 \(index)번 항목 변환 실패: \(error)",
                     category: .network
                 )
             }
