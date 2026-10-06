@@ -16,7 +16,7 @@
 - Feature 단일 모듈, 기능 분리는 폴더
 - Scene 내부 flat (`*Feature`, `*View`)
 - Domain 포트는 `*Client`
-- Data 구현은 `*RepositoryImpl` + `*ClientFactory` + `*SessionAssembly`
+- Data 구현은 `*RepositoryImpl` + `*ClientFactory`. 조립체는 `AuthSessionAssembly` 하나를 같이 쓴다
 - 구현 조립은 Data, 등록과 주입은 App 과 DemoApp 만
 - Core 모듈은 설정 `*Configuration` 하나와 factory `<모듈>Factory` 하나로만 만든다. factory 는 정적 함수만 가진 `enum` 이고 설정을 `make…(config:)` 로 받는다. 변수·파라미터 이름은 `config`
 - Core 모듈의 프로토콜 구현 타입은 `internal`. 값 타입·도우미(`HTTPMethod`, `NetworkJSONCoding`, `SocialAuthServices` 등)는 공개
