@@ -22,7 +22,7 @@ Mozi 작업 시 에이전트 진입점.
 1. Feature 는 단일 모듈이다. 기능은 폴더로 나눈다
 2. Scene 간 직접 참조를 금지한다. `delegate` 로 상위에 올린다
 3. Feature 의 데이터 접근은 Domain `*Client` 만 쓴다
-4. `*Client` 구현 조립은 Data 의 `*ClientFactory` 가 하고, 등록과 주입은 App 과 DemoApp 만 한다
+4. `*Client` 구현 조립은 Data 의 `*ClientFactory` 가 하고, 등록과 주입은 App 과 DemoApp 만 한다. Core 모듈은 프로토콜을 구현하는 타입을 숨기고, `*Configuration` 과 `<모듈>Factory` 로만 만들게 한다
 5. 금지 의존: `Feature → Data / Core* / ThirdPartyCore`, `Domain → Data / Core* / Feature`, `Data → Feature`, `Core/* → Domain / Data / Feature / App`, `DemoApp → Data / Core* / ThirdPartyCore`
 6. `AppShell`, `AppRuntime`, `AppEnvironment`, `AppConstants` 와 UseCase 층을 만들지 않는다
 
