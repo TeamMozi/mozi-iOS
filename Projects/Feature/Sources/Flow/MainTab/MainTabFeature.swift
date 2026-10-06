@@ -74,6 +74,7 @@ public struct MainTabFeature {
             CreateFlowFeature()
         }
         Reduce(core)
+            .logged(as: Self.self, children: ["shortform", "search", "chat", "myPage", "create"])
     }
 
     private func core(state: inout State, action: Action) -> Effect<Action> {

@@ -83,6 +83,7 @@ public struct MyPagePlaceholderFeature {
                 return .none
             }
         }
+        .logged(as: Self.self, children: [])
     }
 
     private static func errorMessage(for error: AuthError) -> String {

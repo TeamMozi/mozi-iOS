@@ -68,6 +68,7 @@ public struct LoginFeature {
                 return .none
             }
         }
+        .logged(as: Self.self, children: [])
     }
 
     private func login(

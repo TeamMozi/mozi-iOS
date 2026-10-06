@@ -42,5 +42,6 @@ public struct NavigationSampleFeature {
                 return .none
             }
         }
+        .logged(as: Self.self, children: [])
     }
 }
