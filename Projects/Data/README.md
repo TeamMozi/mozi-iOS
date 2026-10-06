@@ -17,6 +17,7 @@
 - `Data/<Name>/{Factory,Mapper,DTO,Datasource,Repository,Service}`
 - `*RepositoryImpl`
 - `*ClientFactory` + `*SessionAssembly`
+- 여러 기능이 같이 쓰는 응답 꼴·변환·쿼리는 `Data/Common/{DTO,Mapper,Endpoint}` (`PageResponseDTO`, `PageDTOMapper`, `PageRequest.queryItems`)
 
 ## 의존
 - 허용: Domain, Core/*, SharedLogger, SharedUtils

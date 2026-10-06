@@ -9,6 +9,7 @@
 
 ## 이후 패턴
 - `Domain/<Name>/{Model,Client,Error}`
+- 여러 기능이 같이 쓰는 모델은 `Domain/Common/Model` (`Page`, `PageRequest`)
 
 ## 의존
 - 허용: SharedUtils, ThirdParty

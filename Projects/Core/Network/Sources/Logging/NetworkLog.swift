@@ -43,6 +43,36 @@ enum NetworkLog {
         Logger.shared.error("✕ \(target) \(error.localizedDescription)", category: .network)
     }
 
+    static func uploadRequest(url: URL) {
+        Logger.shared.info(uploadRequestMessage(url: url), category: .network)
+    }
+
+    static func uploadResponse(statusCode: Int, url: URL, durationMs: Int) {
+        let message = uploadResponseMessage(statusCode: statusCode, url: url, durationMs: durationMs)
+        if (200...299).contains(statusCode) {
+            Logger.shared.info(message, category: .network)
+        } else {
+            Logger.shared.warning(message, category: .network)
+        }
+    }
+
+    static func uploadNonHTTPResponse(url: URL) {
+        Logger.shared.error(uploadNonHTTPResponseMessage(url: url), category: .network)
+    }
+
+    /// 업로드 로그는 바디와 주소 쿼리(서명 토큰)를 남기지 않는다.
+    static func uploadRequestMessage(url: URL) -> String {
+        "↑ PUT \(sanitizedURLString(url))"
+    }
+
+    static func uploadResponseMessage(statusCode: Int, url: URL, durationMs: Int) -> String {
+        "← \(statusCode) \(sanitizedURLString(url)) (\(durationMs)ms)"
+    }
+
+    static func uploadNonHTTPResponseMessage(url: URL) -> String {
+        "✕ PUT \(sanitizedURLString(url)) 응답이 HTTP 가 아님"
+    }
+
     static func sanitizedURLString(_ url: URL?) -> String {
         guard let url else { return "nil" }
         guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
