@@ -32,6 +32,7 @@
 - 화면은 다음 화면을 직접 열지 않는다. delegate 로 올리고 Flow 가 `path` 에 더한다. 화면을 더할 때는 자기 탭 `Route` 에 case 하나와 delegate 처리만 더한다
 - `Route.State`·`Route.Action` 은 Flow 파일 아래 `extension <Flow>.Route.State: Equatable {}` 와 `extension <Flow>.Route.Action: Equatable {}` 로 Equatable 을 맞춘다. 케이스가 없는 `Route` 의 목적지는 `{ _ in EmptyView() }` 로 둔다 (빈 `switch` 는 컴파일되지 않는다)
 - 화면이나 상태를 더하는 작업은 데모 앱 목록에도 한 줄 더한다. 방법은 [DemoApp README](../DemoApp/README.md)
+- 컨테이너와 화면 리듀서는 body 끝에 `.logged(as: Self.self, children: [...])` 를 붙이고, 자식 Scope·ifLet 의 액션 이름을 `children` 에 넘긴다. 자식이 없으면 `children: []`. 붙인 곳은 `Tests/Log/FeatureLogAttachmentTests` 표에도 더한다
 
 ## 주요 진입점
 - `RootFeature`, `RootView`
