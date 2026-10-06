@@ -13,7 +13,7 @@ actor FakeNetworkClient: NetworkClient {
     }
 
     enum Response: Sendable {
-        /// 디코딩 요청은 이 바이트를 `NetworkJSONCoding.makeDecoder()` 로 해석한다. 바디 없는 요청은 무시한다.
+        /// 디코딩 요청은 이 바이트를 `NetworkJSONCoding.makeDecoder()` 로 해석하고, 실패하면 실제처럼 `NetworkError.decodingFailed` 를 던진다. 바디 없는 요청은 무시한다.
         case json(Data)
         case failure(any Error)
     }
@@ -32,7 +32,11 @@ actor FakeNetworkClient: NetworkClient {
 
     func request<T: Decodable & Sendable>(_ endpoint: some APIEndpoint) async throws -> T {
         let data = try record(endpoint)
-        return try NetworkJSONCoding.makeDecoder().decode(T.self, from: data)
+        do {
+            return try NetworkJSONCoding.makeDecoder().decode(T.self, from: data)
+        } catch {
+            throw NetworkError.decodingFailed
+        }
     }
 
     func request(_ endpoint: some APIEndpoint) async throws {
