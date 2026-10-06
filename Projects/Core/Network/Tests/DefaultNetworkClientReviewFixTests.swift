@@ -1,4 +1,4 @@
-import CoreNetwork
+@testable import CoreNetwork
 import XCTest
 
 final class DefaultNetworkClientReviewFixTests: XCTestCase {

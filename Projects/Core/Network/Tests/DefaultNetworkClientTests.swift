@@ -1,4 +1,4 @@
-import CoreNetwork
+@testable import CoreNetwork
 import XCTest
 
 final class DefaultNetworkClientTests: XCTestCase {
@@ -237,6 +237,28 @@ final class DefaultNetworkClientTests: XCTestCase {
             XCTFail("expected unauthorized")
         } catch let error as NetworkError {
             XCTAssertEqual(error, .unauthorized)
+        } catch {
+            XCTFail("unexpected \(error)")
+        }
+    }
+
+    func test_망_오류면_transport() async throws {
+        URLProtocolStub.requestHandler = { _ in
+            throw URLError(.notConnectedToInternet)
+        }
+        let baseURL = try XCTUnwrap(URL(string: "https://api.example.invalid"))
+        let client = DefaultNetworkClient.plain(
+            configuration: NetworkConfiguration(baseURL: baseURL),
+            session: TestSessionFactory.make()
+        )
+
+        do {
+            try await client.request(TestEndpoint(path: "/api/auth/logout", method: .post))
+            XCTFail("expected transport")
+        } catch let error as NetworkError {
+            guard case .transport = error else {
+                return XCTFail("unexpected \(error)")
+            }
         } catch {
             XCTFail("unexpected \(error)")
         }
