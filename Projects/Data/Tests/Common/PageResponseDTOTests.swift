@@ -72,4 +72,25 @@ final class PageResponseDTOTests: XCTestCase {
             }
         }
     }
+
+    func test_number가_Int_max면_decodingFailed() async throws {
+        let body = Data(#"{"content":[],"number":9223372036854775807,"size":20,"last":false}"#.utf8)
+        let baseURL = try XCTUnwrap(URL(string: "https://api.example.invalid"))
+        AuthURLProtocolStub.requestHandler = { _ in
+            .init(statusCode: 200, headers: [:], data: body)
+        }
+        let client = DefaultNetworkClient.plain(
+            configuration: NetworkConfiguration(baseURL: baseURL),
+            session: AuthTestSessionFactory.make()
+        )
+
+        do {
+            let _: PageResponseDTO<TestItemDTO> = try await client.request(PageTestEndpoint())
+            XCTFail("number Int.max should fail")
+        } catch let error as NetworkError {
+            XCTAssertEqual(error, .decodingFailed)
+        } catch {
+            XCTFail("unexpected \(error)")
+        }
+    }
 }
