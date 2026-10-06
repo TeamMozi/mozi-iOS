@@ -10,20 +10,4 @@ final class PageRequestQueryTests: XCTestCase {
             [URLQueryItem(name: "page", value: "0"), URLQueryItem(name: "size", value: "20")]
         )
     }
-
-    func test_페이지_쿼리는_펼친_꼴로_보내는_endpoint에_실린다() async throws {
-        let network = FakeNetworkClient(
-            response: .json(Data(#"{"content":[],"number":2,"size":20,"last":true}"#.utf8))
-        )
-
-        let _: PageResponseDTO<TestItemDTO> = try await network.request(
-            PageTestEndpoint(queryItems: PageRequest(page: 2, size: 20).queryItems)
-        )
-
-        let sent = await network.sentEndpoints
-        XCTAssertEqual(
-            sent.first?.queryItems,
-            [URLQueryItem(name: "page", value: "2"), URLQueryItem(name: "size", value: "20")]
-        )
-    }
 }

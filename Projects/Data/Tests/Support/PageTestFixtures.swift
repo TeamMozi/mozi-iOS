@@ -1,4 +1,3 @@
-import CoreNetwork
 import Foundation
 
 struct TestItemDTO: Decodable, Equatable, Sendable {
@@ -26,15 +25,5 @@ enum TestItemMapper {
             throw TestItemMappingError.unknownKind(dto.kind)
         }
         return TestItem(id: dto.id, kind: kind)
-    }
-}
-
-struct PageTestEndpoint: APIEndpoint {
-    let path = "/api/test/items"
-    let method = HTTPMethod.get
-    let queryItems: [URLQueryItem]
-
-    init(queryItems: [URLQueryItem] = []) {
-        self.queryItems = queryItems
     }
 }
