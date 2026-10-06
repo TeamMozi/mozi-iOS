@@ -1,14 +1,14 @@
 import Foundation
 
 /// 업로드 주소 전용 업로더. 토큰 공급자·재발급기를 갖지 않아 `Authorization` 이 붙을 길이 없다.
-public struct DefaultUploader: Uploading {
+struct DefaultUploader: Uploading {
     private let session: URLSession
 
-    public init(session: URLSession = .shared) {
+    init(session: URLSession = .shared) {
         self.session = session
     }
 
-    public func upload(
+    func upload(
         _ data: Data,
         to url: URL,
         contentType: String,

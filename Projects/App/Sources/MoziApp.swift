@@ -10,14 +10,15 @@ struct MoziApp: App {
 
     init() {
         DesignNavigationBar.applyBackIndicator()
-        store = CompositionRoot.makeRootStore()
+        let infra = InfraContainer.make()
+        store = CompositionRoot.makeRootStore(infra: infra)
     }
 
     var body: some Scene {
         WindowGroup {
             CompositionRoot.rootView(store: store)
                 .onOpenURL { url in
-                    if KakaoAuthRedirectHandler.handle(url: url) {
+                    if SocialAuthRedirectHandler.handle(url: url) {
                         return
                     }
                     store.send(.rootFlow(.deepLinkReceived(url)))

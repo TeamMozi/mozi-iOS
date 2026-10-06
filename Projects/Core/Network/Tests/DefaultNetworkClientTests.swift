@@ -1,4 +1,4 @@
-import CoreNetwork
+@testable import CoreNetwork
 import XCTest
 
 final class DefaultNetworkClientTests: XCTestCase {
@@ -36,6 +36,22 @@ final class DefaultNetworkClientTests: XCTestCase {
 
         let response: OkPayload = try await client.request(endpoint)
         XCTAssertEqual(response, OkPayload(ok: true))
+    }
+
+    func test_쿼리_항목이_둘_이상이면_넣은_순서대로_앰퍼샌드로_이어_붙인다() async throws {
+        URLProtocolStub.requestHandler = { request in
+            XCTAssertEqual(request.url?.query, "page=2&size=20")
+            return .init(statusCode: 204, headers: [:], data: Data())
+        }
+        let baseURL = try XCTUnwrap(URL(string: "https://api.example.invalid"))
+        let client = DefaultNetworkClient.plain(
+            configuration: NetworkConfiguration(baseURL: baseURL),
+            session: TestSessionFactory.make()
+        )
+
+        try await client.request(
+            TestEndpoint(queryItems: [.init(name: "page", value: "2"), .init(name: "size", value: "20")])
+        )
     }
 
     func test_void_요청은_2xx면_성공하고_바디를_무시() async throws {
@@ -237,6 +253,28 @@ final class DefaultNetworkClientTests: XCTestCase {
             XCTFail("expected unauthorized")
         } catch let error as NetworkError {
             XCTAssertEqual(error, .unauthorized)
+        } catch {
+            XCTFail("unexpected \(error)")
+        }
+    }
+
+    func test_망_오류면_transport() async throws {
+        URLProtocolStub.requestHandler = { _ in
+            throw URLError(.notConnectedToInternet)
+        }
+        let baseURL = try XCTUnwrap(URL(string: "https://api.example.invalid"))
+        let client = DefaultNetworkClient.plain(
+            configuration: NetworkConfiguration(baseURL: baseURL),
+            session: TestSessionFactory.make()
+        )
+
+        do {
+            try await client.request(TestEndpoint(path: "/api/auth/logout", method: .post))
+            XCTFail("expected transport")
+        } catch let error as NetworkError {
+            guard case .transport = error else {
+                return XCTFail("unexpected \(error)")
+            }
         } catch {
             XCTFail("unexpected \(error)")
         }

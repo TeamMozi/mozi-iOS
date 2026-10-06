@@ -1,6 +1,6 @@
 import Foundation
 
-public actor DefaultNetworkClient: NetworkClient {
+actor DefaultNetworkClient: NetworkClient {
     private let configuration: NetworkConfiguration
     private let session: URLSession
     private let tokenProvider: (any TokenProviding)?
@@ -20,7 +20,7 @@ public actor DefaultNetworkClient: NetworkClient {
         self.tokenRefresher = tokenRefresher
     }
 
-    public static func plain(
+    static func plain(
         configuration: NetworkConfiguration,
         session: URLSession = .shared
     ) -> DefaultNetworkClient {
@@ -32,7 +32,7 @@ public actor DefaultNetworkClient: NetworkClient {
         )
     }
 
-    public static func authed(
+    static func authed(
         configuration: NetworkConfiguration,
         tokenProvider: any TokenProviding,
         tokenRefresher: any TokenRefreshing,
@@ -46,7 +46,7 @@ public actor DefaultNetworkClient: NetworkClient {
         )
     }
 
-    public func request<T: Decodable & Sendable>(_ endpoint: some APIEndpoint) async throws -> T {
+    func request<T: Decodable & Sendable>(_ endpoint: some APIEndpoint) async throws -> T {
         let data = try await perform(endpoint)
         do {
             return try configuration.jsonDecoder.decode(T.self, from: data)
@@ -56,7 +56,7 @@ public actor DefaultNetworkClient: NetworkClient {
         }
     }
 
-    public func request(_ endpoint: some APIEndpoint) async throws {
+    func request(_ endpoint: some APIEndpoint) async throws {
         _ = try await perform(endpoint)
     }
 

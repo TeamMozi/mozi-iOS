@@ -5,26 +5,13 @@ import Foundation
 import XCTest
 
 final class AuthTokenRefresherTests: XCTestCase {
-    override func setUp() async throws {
-        AuthURLProtocolStub.reset()
-    }
-
-    override func tearDown() async throws {
-        AuthURLProtocolStub.reset()
-    }
-
     func test_refresh_성공_시_새_refreshToken으로_교체_저장() async throws {
         let local = makeLocal()
         try await local.save(existingSession)
-        AuthURLProtocolStub.requestHandler = { request in
-            XCTAssertEqual(request.url?.path, "/api/auth/refresh")
-            return .init(
-                statusCode: 200,
-                headers: [:],
-                data: Data(#"{"accessToken":"a2","refreshToken":"r2","userId":1}"#.utf8)
-            )
-        }
-        let sut = try makeSUT(local: local)
+        let network = FakeNetworkClient(
+            response: .json(Data(#"{"accessToken":"a2","refreshToken":"r2","userId":1}"#.utf8))
+        )
+        let sut = makeSUT(local: local, network: network)
 
         try await sut.refresh()
 
@@ -39,20 +26,15 @@ final class AuthTokenRefresherTests: XCTestCase {
                 userID: "1"
             )
         )
-        XCTAssertEqual(AuthURLProtocolStub.requests.count, 1)
+        let sent = await network.sentEndpoints
+        XCTAssertEqual(sent.map(\.path), ["/api/auth/refresh"])
     }
 
-    func test_refresh_401이면_세션_삭제_후_unauthorized() async throws {
+    func test_refresh가_unauthorized면_세션_삭제_후_unauthorized() async throws {
         let local = makeLocal()
         try await local.save(existingSession)
-        AuthURLProtocolStub.requestHandler = { _ in
-            .init(
-                statusCode: 401,
-                headers: [:],
-                data: Data(#"{"message":"expired"}"#.utf8)
-            )
-        }
-        let sut = try makeSUT(local: local)
+        let network = FakeNetworkClient(response: .failure(NetworkError.unauthorized))
+        let sut = makeSUT(local: local, network: network)
 
         do {
             try await sut.refresh()
@@ -70,10 +52,8 @@ final class AuthTokenRefresherTests: XCTestCase {
     func test_refresh_네트워크_실패면_세션_유지_후_network() async throws {
         let local = makeLocal()
         try await local.save(existingSession)
-        AuthURLProtocolStub.requestHandler = { _ in
-            throw NSError(domain: NSURLErrorDomain, code: NSURLErrorTimedOut)
-        }
-        let sut = try makeSUT(local: local)
+        let network = FakeNetworkClient(response: .failure(NetworkError.transport(message: "timed out")))
+        let sut = makeSUT(local: local, network: network)
 
         do {
             try await sut.refresh()
@@ -89,11 +69,8 @@ final class AuthTokenRefresherTests: XCTestCase {
     }
 
     func test_세션_없으면_unauthorized_이고_네트워크_호출_없음() async throws {
-        AuthURLProtocolStub.requestHandler = { _ in
-            XCTFail("refresh without session must not call network")
-            return .init(statusCode: 500, headers: [:], data: Data())
-        }
-        let sut = try makeSUT(local: makeLocal())
+        let network = FakeNetworkClient()
+        let sut = makeSUT(local: makeLocal(), network: network)
 
         do {
             try await sut.refresh()
@@ -104,20 +81,15 @@ final class AuthTokenRefresherTests: XCTestCase {
             XCTFail("unexpected \(error)")
         }
 
-        XCTAssertTrue(AuthURLProtocolStub.requests.isEmpty)
+        let sent = await network.sentEndpoints
+        XCTAssertTrue(sent.isEmpty)
     }
 
-    func test_refresh_400이면_세션_유지_후_unknown() async throws {
+    func test_refresh가_badRequest면_세션_유지_후_unknown() async throws {
         let local = makeLocal()
         try await local.save(existingSession)
-        AuthURLProtocolStub.requestHandler = { _ in
-            .init(
-                statusCode: 400,
-                headers: [:],
-                data: Data(#"{"message":"bad request"}"#.utf8)
-            )
-        }
-        let sut = try makeSUT(local: local)
+        let network = FakeNetworkClient(response: .failure(NetworkError.badRequest(message: "bad request")))
+        let sut = makeSUT(local: local, network: network)
 
         do {
             try await sut.refresh()
@@ -138,7 +110,8 @@ final class AuthTokenRefresherTests: XCTestCase {
         let local = AuthLocalDatasource(
             keychain: FailingKeychainStorage(failingOperations: [.get])
         )
-        let sut = try makeSUT(local: local)
+        let network = FakeNetworkClient()
+        let sut = makeSUT(local: local, network: network)
 
         do {
             try await sut.refresh()
@@ -150,6 +123,9 @@ final class AuthTokenRefresherTests: XCTestCase {
         } catch {
             XCTFail("unexpected \(error)")
         }
+
+        let sent = await network.sentEndpoints
+        XCTAssertTrue(sent.isEmpty)
     }
 
     private var existingSession: AuthSessionStorageDTO {
@@ -166,17 +142,11 @@ final class AuthTokenRefresherTests: XCTestCase {
         AuthLocalDatasource(keychain: InMemoryKeychainStorage())
     }
 
-    private func makeSUT(local: AuthLocalDatasource) throws -> AuthTokenRefresher {
-        let baseURL = try XCTUnwrap(URL(string: "https://api.example.invalid"))
-        let configuration = NetworkConfiguration(baseURL: baseURL)
-        let plainClient = DefaultNetworkClient.plain(
-            configuration: configuration,
-            session: AuthTestSessionFactory.make()
-        )
-        // refresh는 plain only. authed 순환을 피하기 위해 plain을 재사용한다.
+    private func makeSUT(local: AuthLocalDatasource, network: FakeNetworkClient) -> AuthTokenRefresher {
+        // refresh 검증에는 authed 조립 순환이 필요 없으므로 같은 가짜를 두 자리에 넣는다.
         let remote = AuthRemoteDatasource(
-            plainClient: plainClient,
-            authedClient: plainClient
+            plainClient: network,
+            authedClient: network
         )
         return AuthTokenRefresher(remote: remote, local: local)
     }

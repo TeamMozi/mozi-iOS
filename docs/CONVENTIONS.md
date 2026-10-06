@@ -18,6 +18,10 @@
 - Domain 포트는 `*Client`
 - Data 구현은 `*RepositoryImpl` + `*ClientFactory` + `*SessionAssembly`
 - 구현 조립은 Data, 등록과 주입은 App 과 DemoApp 만
+- Core 모듈은 설정 `*Configuration` 하나와 factory `<모듈>Factory` 하나로만 만든다. factory 는 정적 함수만 가진 `enum` 이고 설정을 `make…(config:)` 로 받는다. 변수·파라미터 이름은 `config`
+- Core 모듈의 프로토콜 구현 타입은 `internal`. 값 타입·도우미(`HTTPMethod`, `NetworkJSONCoding`, `SocialAuthServices` 등)는 공개
+- Core 모듈 폴더는 `Sources/Config/`(설정, `<모듈>Bootstrap`, 복귀 URL 처리기)와 `Sources/Factory/`. `<모듈>Bootstrap.run(config:)` 은 외부 SDK 가 있는 모듈만
+- Core 설정과 factory 호출은 App `InfraContainer.make()` 만. Network 만 예외로 App 은 `networkConfig` 만 넘기고 Data 가 `NetworkFactory` 를 부른다
 - Feature 는 Domain `*Client` 만 사용
 - Scene 통신은 delegate bubble-up
 - SharedUtils 는 pure Foundation / App metadata 만. UI·I/O·Domain 금지
@@ -61,6 +65,8 @@ TODO:
 - 예:
   - `test_홈_커스텀스킴이면_홈으로_파싱`
   - `test_인증_401이면_한_번만_refresh_후_재시도`
+- Core 모듈 테스트가 숨긴 구현 타입을 쓰면 `@testable import Core<모듈>`
+- Data 테스트는 Network 구체 타입과 실제 URL 요청을 쓰지 않는다. `Tests/Support/FakeNetworkClient.swift` 로 보낸 endpoint 와 오류 변환만 본다. 주소 조립과 상태 코드 → `NetworkError` 변환은 CoreNetwork 테스트가 맡는다
 
 ### 4. Scheme
 

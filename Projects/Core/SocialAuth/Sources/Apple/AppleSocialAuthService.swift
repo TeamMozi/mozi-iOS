@@ -4,15 +4,15 @@ import UIKit
 
 /// Sign in with Apple 로 identity token 을 반환한다.
 @MainActor
-public final class AppleSocialAuthService: NSObject, SocialAuthService {
+final class AppleSocialAuthService: NSObject, SocialAuthService {
     private var continuation: CheckedContinuation<String, Error>?
     private var anchor: ASPresentationAnchor?
 
-    override public init() {
+    override init() {
         super.init()
     }
 
-    public nonisolated func login() async throws -> String {
+    nonisolated func login() async throws -> String {
         try await loginOnMainActor()
     }
 
@@ -71,7 +71,7 @@ public final class AppleSocialAuthService: NSObject, SocialAuthService {
 }
 
 extension AppleSocialAuthService: ASAuthorizationControllerDelegate {
-    public nonisolated func authorizationController(
+    nonisolated func authorizationController(
         controller: ASAuthorizationController,
         didCompleteWithAuthorization authorization: ASAuthorization
     ) {
@@ -92,7 +92,7 @@ extension AppleSocialAuthService: ASAuthorizationControllerDelegate {
         }
     }
 
-    public nonisolated func authorizationController(
+    nonisolated func authorizationController(
         controller: ASAuthorizationController,
         didCompleteWithError error: Error
     ) {
@@ -107,7 +107,7 @@ extension AppleSocialAuthService: ASAuthorizationControllerDelegate {
 }
 
 extension AppleSocialAuthService: ASAuthorizationControllerPresentationContextProviding {
-    public nonisolated func presentationAnchor(
+    nonisolated func presentationAnchor(
         for controller: ASAuthorizationController
     ) -> ASPresentationAnchor {
         if Thread.isMainThread {

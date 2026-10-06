@@ -13,11 +13,10 @@ public struct AuthSessionAssembly: Sendable {
 
     public static func make(
         keychain: any KeychainStorage,
-        baseURL: URL,
+        networkConfig: NetworkConfiguration,
         socialAuthServices: SocialAuthServices
     ) -> AuthSessionAssembly {
-        let configuration = NetworkConfiguration(baseURL: baseURL)
-        let plainClient = DefaultNetworkClient.plain(configuration: configuration)
+        let plainClient = NetworkFactory.makePlain(config: networkConfig)
         let local = AuthLocalDatasource(keychain: keychain)
 
         // 재발급은 평문 경로로만 나간다. 인증 자리에 평문을 넣어 순환 의존을 끊는다.
@@ -26,8 +25,8 @@ public struct AuthSessionAssembly: Sendable {
             authedClient: plainClient
         )
         let tokenRefresher = AuthTokenRefresher(remote: refreshRemote, local: local)
-        let authedClient = DefaultNetworkClient.authed(
-            configuration: configuration,
+        let authedClient = NetworkFactory.makeAuthed(
+            config: networkConfig,
             tokenProvider: local,
             tokenRefresher: tokenRefresher
         )
