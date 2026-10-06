@@ -16,7 +16,7 @@ public final class Logger: @unchecked Sendable {
 
     public func debug(
         _ message: @autoclosure () -> String,
-        category: LogCategory = .general,
+        category: LogCategory = .app,
         file: String = #fileID,
         function: String = #function,
         line: Int = #line
@@ -31,7 +31,7 @@ public final class Logger: @unchecked Sendable {
 
     public func info(
         _ message: @autoclosure () -> String,
-        category: LogCategory = .general,
+        category: LogCategory = .app,
         file: String = #fileID,
         function: String = #function,
         line: Int = #line
@@ -46,7 +46,7 @@ public final class Logger: @unchecked Sendable {
 
     public func warning(
         _ message: @autoclosure () -> String,
-        category: LogCategory = .general,
+        category: LogCategory = .app,
         file: String = #fileID,
         function: String = #function,
         line: Int = #line
@@ -61,7 +61,7 @@ public final class Logger: @unchecked Sendable {
 
     public func error(
         _ message: @autoclosure () -> String,
-        category: LogCategory = .general,
+        category: LogCategory = .app,
         file: String = #fileID,
         function: String = #function,
         line: Int = #line
