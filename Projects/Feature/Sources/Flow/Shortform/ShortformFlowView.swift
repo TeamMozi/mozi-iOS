@@ -9,25 +9,15 @@ public struct ShortformFlowView: View {
     }
 
     public var body: some View {
-        NavigationStack(path: pathBinding) {
+        // 숏폼 화면 스택은 ShortformFlowFeature 의 path 가 소유한다. 뒤로 가기는 `.path(.popFrom)` 으로 들어온다
+        NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
             PlaceholderView(store: store.scope(state: \.placeholder, action: \.placeholder))
-                .navigationDestination(for: ShortformFlowFeature.Route.self) { route in
-                    destination(route)
-                }
+        } destination: { routeStore in
+            switch routeStore.case {
+            case let .sample(sampleStore):
+                NavigationSampleView(store: sampleStore)
+            }
         }
-    }
-
-    // Route 에 케이스가 없어 이 목적지는 만들어질 수 없다. 쌓일 화면이 생기면 switch 로 바꾼다
-    private func destination(_: ShortformFlowFeature.Route) -> some View {
-        EmptyView()
-    }
-
-    // 숏폼 목적지 스택은 ShortformFlowFeature 가 소유하고, NavigationStack 이 그 path 를 그대로 민다
-    private var pathBinding: Binding<[ShortformFlowFeature.Route]> {
-        Binding(
-            get: { store.path },
-            set: { store.send(.pathChanged($0)) }
-        )
     }
 }
 
@@ -38,5 +28,23 @@ public struct ShortformFlowView: View {
         store: Store(initialState: ShortformFlowFeature.State()) {
             ShortformFlowFeature()
         }
+    )
+}
+
+#Preview("ShortformFlow / 견본 2장") {
+    ShortformFlowView(
+        store: Store(initialState: twoSamplesState()) {
+            ShortformFlowFeature()
+        }
+    )
+}
+
+// #Preview 안에서는 @Reducer 가 만든 `Route.State.sample` 을 찾지 못해 밖에서 만든다
+private func twoSamplesState() -> ShortformFlowFeature.State {
+    ShortformFlowFeature.State(
+        path: StackState([
+            .sample(NavigationSampleFeature.State(number: 1)),
+            .sample(NavigationSampleFeature.State(number: 2)),
+        ])
     )
 }

@@ -7,16 +7,17 @@ import ThirdParty
 @Reducer
 public struct MyPageFlowFeature {
     /// 마이페이지(root) 위로 쌓이는 화면. 아직 없다
-    public enum Route: Hashable {}
+    @Reducer
+    public enum Route {}
 
     @ObservableState
     public struct State: Equatable {
         public var myPage: MyPagePlaceholderFeature.State
-        public var path: [Route]
+        public var path = StackState<Route.State>()
 
         public init(
             myPage: MyPagePlaceholderFeature.State = MyPagePlaceholderFeature.State(),
-            path: [Route] = []
+            path: StackState<Route.State> = StackState<Route.State>()
         ) {
             self.myPage = myPage
             self.path = path
@@ -24,7 +25,7 @@ public struct MyPageFlowFeature {
     }
 
     public enum Action: Equatable {
-        case pathChanged([Route])
+        case path(StackActionOf<Route>)
         case myPage(MyPagePlaceholderFeature.Action)
         case delegate(Delegate)
 
@@ -41,19 +42,19 @@ public struct MyPageFlowFeature {
             MyPagePlaceholderFeature()
         }
         Reduce(core)
+            .forEach(\.path, action: \.path)
     }
 
     private func core(state: inout State, action: Action) -> Effect<Action> {
         switch action {
-        case let .pathChanged(path):
-            state.path = path
-            return .none
-
         case .myPage(.delegate(.loggedOut)):
             return .send(.delegate(.loggedOut))
 
-        case .myPage, .delegate:
+        case .path, .myPage, .delegate:
             return .none
         }
     }
 }
+
+extension MyPageFlowFeature.Route.State: Equatable {}
+extension MyPageFlowFeature.Route.Action: Equatable {}

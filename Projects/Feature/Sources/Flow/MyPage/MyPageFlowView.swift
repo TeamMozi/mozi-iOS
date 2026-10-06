@@ -9,25 +9,13 @@ public struct MyPageFlowView: View {
     }
 
     public var body: some View {
-        NavigationStack(path: pathBinding) {
+        // 마이 화면 스택은 MyPageFlowFeature 의 path 가 소유한다
+        NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
             MyPagePlaceholderView(store: store.scope(state: \.myPage, action: \.myPage))
-                .navigationDestination(for: MyPageFlowFeature.Route.self) { route in
-                    destination(route)
-                }
+        } destination: { _ in
+            // Route 에 케이스가 없어 이 목적지는 만들어지지 않는다. 쌓일 화면이 생기면 `switch routeStore.case` 로 바꾼다
+            EmptyView()
         }
-    }
-
-    // Route 에 케이스가 없어 이 목적지는 만들어질 수 없다. 쌓일 화면이 생기면 switch 로 바꾼다
-    private func destination(_: MyPageFlowFeature.Route) -> some View {
-        EmptyView()
-    }
-
-    // 마이 목적지 스택은 MyPageFlowFeature 가 소유하고, NavigationStack 이 그 path 를 그대로 민다
-    private var pathBinding: Binding<[MyPageFlowFeature.Route]> {
-        Binding(
-            get: { store.path },
-            set: { store.send(.pathChanged($0)) }
-        )
     }
 }
 

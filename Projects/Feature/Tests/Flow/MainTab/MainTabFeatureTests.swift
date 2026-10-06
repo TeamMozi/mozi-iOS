@@ -31,6 +31,27 @@ final class MainTabFeatureTests: XCTestCase {
         await store.receive(.delegate(.loggedOut))
     }
 
+    func test_홈_딥링크는_숏폼_탭을_고르고_숏폼의_쌓인_화면을_비운다() async {
+        let store = TestStore(
+            initialState: MainTabFeature.State(
+                selectedTab: .chat,
+                shortform: ShortformFlowFeature.State(
+                    path: StackState([
+                        .sample(NavigationSampleFeature.State(number: 1)),
+                        .sample(NavigationSampleFeature.State(number: 2)),
+                    ])
+                )
+            )
+        ) {
+            MainTabFeature()
+        }
+
+        await store.send(.openDeepLink(.home)) {
+            $0.selectedTab = .shortform
+            $0.shortform.path.removeAll()
+        }
+    }
+
     func test_탭이_다섯이다() {
         XCTAssertEqual(MainTabFeature.Tab.allCases.count, 5)
     }

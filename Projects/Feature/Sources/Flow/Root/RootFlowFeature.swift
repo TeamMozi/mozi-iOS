@@ -116,6 +116,11 @@ public struct RootFlowFeature {
             applySession(&state, session: session)
             return .send(.flushPendingDeepLink)
 
+        case .onboarding(.delegate(.finished)):
+            // 서버에는 알리지 않는다. 앱을 다시 켜면 restore 가 온보딩으로 되돌린다
+            state.phase = .main(MainTabFeature.State())
+            return .send(.flushPendingDeepLink)
+
         case .main(.delegate(.loggedOut)):
             state.phase = .login(LoginFeature.State())
             return .none
@@ -180,9 +185,7 @@ public struct RootFlowFeature {
             state.pendingDeepLink = route
             return .none
         case .main:
-            // placeholder 골격: home 딥링크는 현재 main scene 유지
-            _ = route
-            return .none
+            return .send(.main(.openDeepLink(route)))
         }
     }
 

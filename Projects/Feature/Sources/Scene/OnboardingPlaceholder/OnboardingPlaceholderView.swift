@@ -28,6 +28,18 @@ public struct OnboardingPlaceholderView: View {
             )
 
             Spacer()
+
+            // 서버에 알리지 않는 임시 출구다. 앱을 다시 켜면 restore 가 온보딩으로 되돌린다
+            Button {
+                store.send(.finishTapped)
+            } label: {
+                Text("끝내기")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.main)
+            .controlSize(.large)
+            .padding(.horizontal, CGFloat.ds.layout.margin)
+            .padding(.bottom, CGFloat.ds.spacing.xl)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.ds.fill.neutral.default.ignoresSafeArea())
