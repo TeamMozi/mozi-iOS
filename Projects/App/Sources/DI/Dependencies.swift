@@ -1,4 +1,3 @@
-import CoreSocialAuth
 import Data
 import Domain
 import ThirdParty
@@ -7,16 +6,12 @@ enum Dependencies {
     @MainActor
     static func register(
         _ values: inout DependencyValues,
-        infra: InfraContainer,
-        socialConfig: SocialAuthConfiguration
+        infra: InfraContainer
     ) {
-        let socialAuthServices = SocialAuthServiceFactory().make(
-            configuration: socialConfig
-        )
         let authSession = AuthSessionAssembly.make(
             keychain: infra.keychain,
-            baseURL: infra.configuration.baseURL,
-            socialAuthServices: socialAuthServices
+            networkConfig: infra.networkConfig,
+            socialAuthServices: infra.socialAuthServices
         )
         values.authClient = AuthClientFactory.make(session: authSession)
     }

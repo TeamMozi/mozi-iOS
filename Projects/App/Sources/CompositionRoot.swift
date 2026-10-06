@@ -4,8 +4,8 @@ import ThirdParty
 
 enum CompositionRoot {
     @MainActor
-    static func makeRootStore() -> StoreOf<RootFeature> {
-        AppBootstrap.run()
+    static func makeRootStore(infra: InfraContainer) -> StoreOf<RootFeature> {
+        AppBootstrap.run(infra)
         return Store(initialState: RootFeature.State()) {
             RootFeature()
         }
