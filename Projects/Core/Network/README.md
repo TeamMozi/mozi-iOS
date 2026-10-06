@@ -12,7 +12,7 @@
 - service-specific domain flow 금지
 - authed 요청의 401 refresh 는 single-flight
 - refresh 성공 후 generation 이 바뀌었으면 중복 refresh 없이 재시도
-- 업로드는 `DefaultUploader` 가 맡는다. 받은 주소 그대로 `PUT`, `Authorization`·refresh 없음, 실패는 `UploadError`(`NetworkError` 아님), 로그에 바디·주소 쿼리 없음
+- 업로드는 `DefaultUploader` 가 맡는다. 받은 주소 그대로 `PUT`, 리디렉션을 따라가지 않음(3xx 는 `rejected`), `Authorization`·refresh 없음, 실패는 `UploadError`(`NetworkError` 아님), 로그에 바디·주소 쿼리 없음
 
 ## 주요 진입점
 - `DefaultNetworkClient`
