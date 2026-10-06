@@ -6,27 +6,13 @@ import Foundation
 import XCTest
 
 final class AuthClientFactoryTests: XCTestCase {
-    override func setUp() async throws {
-        AuthURLProtocolStub.reset()
-    }
-
-    override func tearDown() async throws {
-        AuthURLProtocolStub.reset()
-    }
-
     func test_factory가_restore_logout_currentSession을_repository에_연결() async throws {
         let local = makeLocal()
         try await local.save(existingStoredSession)
-        let probe = CredentialProbe()
-        AuthURLProtocolStub.requestHandler = { request in
-            if request.url?.path == "/api/auth/logout" {
-                return .init(statusCode: 200, headers: [:], data: Data())
-            }
-            XCTFail("unexpected network call: \(request.url?.absoluteString ?? "nil")")
-            return .init(statusCode: 500, headers: [:], data: Data())
-        }
-
-        let sut = AuthClientFactory.make(session: try makeAssembly(local: local, probe: probe))
+        let network = FakeNetworkClient(response: .json(Data()))
+        let sut = AuthClientFactory.make(
+            session: makeAssembly(local: local, network: network, probe: CredentialProbe())
+        )
 
         let restored = try await sut.restoreSession()
         let current = await sut.currentSession()
@@ -36,27 +22,27 @@ final class AuthClientFactoryTests: XCTestCase {
         XCTAssertEqual(restored, existingSession)
         XCTAssertEqual(current, existingSession)
         XCTAssertNil(afterLogout)
-        XCTAssertEqual(AuthURLProtocolStub.requests.count, 1)
-        XCTAssertEqual(AuthURLProtocolStub.requests.first?.url?.path, "/api/auth/logout")
+        let sent = await network.sentEndpoints
+        XCTAssertEqual(sent.map(\.path), ["/api/auth/logout"])
+        XCTAssertEqual(sent.first?.method, .post)
     }
 
     func test_factory_login_kakao가_자격증명_클로저_후_repository_login을_호출() async throws {
         let local = makeLocal()
         let probe = CredentialProbe()
-        stubLoginSuccess()
-
-        let sut = AuthClientFactory.make(session: try makeAssembly(local: local, probe: probe))
+        let network = FakeNetworkClient(response: .json(loginSuccessJSON))
+        let sut = AuthClientFactory.make(session: makeAssembly(local: local, network: network, probe: probe))
 
         let session = try await sut.login(.kakao)
         let providers = await probe.providers
         let stored = try await local.load()
+        let sent = await network.sentEndpoints
 
         XCTAssertEqual(session, expectedLoginSession)
         XCTAssertEqual(stored, expectedStoredSession)
         XCTAssertEqual(providers, [.kakao])
-        XCTAssertEqual(AuthURLProtocolStub.requests.count, 1)
-        XCTAssertEqual(AuthURLProtocolStub.requests.first?.url?.path, "/api/auth/login/kakao")
-        let body = try XCTUnwrap(AuthURLProtocolStub.requests.first?.httpBody)
+        XCTAssertEqual(sent.map(\.path), ["/api/auth/login/kakao"])
+        let body = try XCTUnwrap(sent.first?.body)
         let bodyString = try XCTUnwrap(String(bytes: body, encoding: .utf8))
         XCTAssertTrue(bodyString.contains("credential"))
     }
@@ -64,25 +50,38 @@ final class AuthClientFactoryTests: XCTestCase {
     func test_factory_login_apple이_자격증명_클로저_후_repository_login을_호출() async throws {
         let local = makeLocal()
         let probe = CredentialProbe()
-        stubLoginSuccess()
-
-        let sut = AuthClientFactory.make(session: try makeAssembly(local: local, probe: probe))
+        let network = FakeNetworkClient(response: .json(loginSuccessJSON))
+        let sut = AuthClientFactory.make(session: makeAssembly(local: local, network: network, probe: probe))
 
         let session = try await sut.login(.apple)
         let providers = await probe.providers
         let stored = try await local.load()
+        let sent = await network.sentEndpoints
 
         XCTAssertEqual(session, expectedLoginSession)
         XCTAssertEqual(stored, expectedStoredSession)
         XCTAssertEqual(providers, [.apple])
-        XCTAssertEqual(AuthURLProtocolStub.requests.count, 1)
-        XCTAssertEqual(AuthURLProtocolStub.requests.first?.url?.path, "/api/auth/login/apple")
-        let body = try XCTUnwrap(AuthURLProtocolStub.requests.first?.httpBody)
+        XCTAssertEqual(sent.map(\.path), ["/api/auth/login/apple"])
+        let body = try XCTUnwrap(sent.first?.body)
         let bodyString = try XCTUnwrap(String(bytes: body, encoding: .utf8))
         XCTAssertTrue(bodyString.contains("credential"))
     }
 
     // MARK: - Helpers
+
+    private var loginSuccessJSON: Data {
+        Data(
+            """
+            {
+              "accessToken":"a1",
+              "refreshToken":"r1",
+              "userId":1,
+              "isNewUser":false,
+              "profileCompleted":true
+            }
+            """.utf8
+        )
+    }
 
     private var expectedLoginSession: AuthSession {
         AuthSession(
@@ -124,43 +123,18 @@ final class AuthClientFactoryTests: XCTestCase {
         )
     }
 
-    private func stubLoginSuccess() {
-        AuthURLProtocolStub.requestHandler = { _ in
-            .init(
-                statusCode: 200,
-                headers: [:],
-                data: Data(
-                    """
-                    {
-                      "accessToken":"a1",
-                      "refreshToken":"r1",
-                      "userId":1,
-                      "isNewUser":false,
-                      "profileCompleted":true
-                    }
-                    """.utf8
-                )
-            )
-        }
-    }
-
     private func makeLocal() -> AuthLocalDatasource {
         AuthLocalDatasource(keychain: InMemoryKeychainStorage())
     }
 
     private func makeAssembly(
         local: AuthLocalDatasource,
+        network: FakeNetworkClient,
         probe: CredentialProbe
-    ) throws -> AuthSessionAssembly {
-        let baseURL = try XCTUnwrap(URL(string: "https://api.example.invalid"))
-        let configuration = NetworkConfiguration(baseURL: baseURL)
-        let plainClient = DefaultNetworkClient.plain(
-            configuration: configuration,
-            session: AuthTestSessionFactory.make()
-        )
-        return AuthSessionAssembly(
-            plainClient: plainClient,
-            authedClient: plainClient,
+    ) -> AuthSessionAssembly {
+        AuthSessionAssembly(
+            plainClient: network,
+            authedClient: network,
             local: local,
             socialAuthServices: SocialAuthServices(
                 kakao: ProbingSocialAuthService(provider: .kakao, probe: probe),
