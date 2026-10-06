@@ -2,11 +2,11 @@ import CoreNetwork
 import CoreStorage
 import Foundation
 
-public struct AuthLocalDatasource: TokenProviding {
+struct AuthLocalDatasource: TokenProviding {
     private let keychain: any KeychainStorage
     private let sessionKey: String
 
-    public init(keychain: any KeychainStorage, sessionKey: String = "auth.session") {
+    init(keychain: any KeychainStorage, sessionKey: String = "auth.session") {
         self.keychain = keychain
         self.sessionKey = sessionKey
     }
@@ -23,7 +23,7 @@ public struct AuthLocalDatasource: TokenProviding {
         try await keychain.delete(forKey: sessionKey)
     }
 
-    public func accessToken() async throws -> String? {
+    func accessToken() async throws -> String? {
         try await load()?.accessToken
     }
 }
