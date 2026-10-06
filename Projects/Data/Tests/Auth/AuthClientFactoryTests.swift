@@ -135,6 +135,7 @@ final class AuthClientFactoryTests: XCTestCase {
         AuthSessionAssembly(
             plainClient: network,
             authedClient: network,
+            uploader: FakeUploader(),
             local: local,
             socialAuthServices: SocialAuthServices(
                 kakao: ProbingSocialAuthService(provider: .kakao, probe: probe),
