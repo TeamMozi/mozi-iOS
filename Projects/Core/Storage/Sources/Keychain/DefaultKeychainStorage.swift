@@ -1,17 +1,16 @@
 import Foundation
 import Security
-import SharedUtils
 
-public actor DefaultKeychainStorage: KeychainStorage {
-    private let service: String
+actor DefaultKeychainStorage: KeychainStorage {
+    let service: String
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
 
-    public init(service: String = AppInfo.bundleID) {
+    init(service: String) {
         self.service = service
     }
 
-    public func save(_ value: some Codable & Sendable, forKey key: String) async throws {
+    func save(_ value: some Codable & Sendable, forKey key: String) async throws {
         let data: Data
         do {
             data = try encoder.encode(value)
@@ -49,7 +48,7 @@ public actor DefaultKeychainStorage: KeychainStorage {
         }
     }
 
-    public func get<T: Codable & Sendable>(forKey key: String) async throws -> T? {
+    func get<T: Codable & Sendable>(forKey key: String) async throws -> T? {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
@@ -81,7 +80,7 @@ public actor DefaultKeychainStorage: KeychainStorage {
         }
     }
 
-    public func delete(forKey key: String) async throws {
+    func delete(forKey key: String) async throws {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
@@ -94,7 +93,7 @@ public actor DefaultKeychainStorage: KeychainStorage {
         }
     }
 
-    public func deleteAll() async throws {
+    func deleteAll() async throws {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,

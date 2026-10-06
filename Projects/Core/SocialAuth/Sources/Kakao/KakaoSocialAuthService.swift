@@ -2,10 +2,8 @@ import Foundation
 import ThirdPartyCore
 
 /// 카카오 SDK 로그인 후 access token 문자열을 반환한다.
-public struct KakaoSocialAuthService: SocialAuthService {
-    public init() {}
-
-    public func login() async throws -> String {
+struct KakaoSocialAuthService: SocialAuthService {
+    func login() async throws -> String {
         try await withCheckedThrowingContinuation { continuation in
             Task { @MainActor in
                 let handler: (OAuthToken?, Error?) -> Void = { token, error in
