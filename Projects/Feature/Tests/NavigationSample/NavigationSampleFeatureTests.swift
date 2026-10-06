@@ -4,7 +4,7 @@ import XCTest
 
 @MainActor
 final class NavigationSampleFeatureTests: XCTestCase {
-    func test_다음을_누르면_delegate_nextRequested() async {
+    func test_다음을_누르면_다음_화면을_위로_요청한다() async {
         let store = TestStore(initialState: NavigationSampleFeature.State(number: 1)) {
             NavigationSampleFeature()
         }
