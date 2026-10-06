@@ -31,6 +31,32 @@ final class UploadProgressDelegateTests: XCTestCase {
     func test_보낸_바이트가_전체를_넘으면_진행률은_1() {
         XCTAssertEqual(UploadProgressDelegate.fraction(sent: 300, expected: 200), 1)
     }
+
+    func test_리디렉션은_따라가지_않는다() async throws {
+        let delegate = UploadProgressDelegate(onProgress: { _ in })
+        let session = URLSession(configuration: .ephemeral)
+        defer { session.invalidateAndCancel() }
+        let url = try XCTUnwrap(URL(string: "https://storage.example.invalid/upload"))
+        let redirectURL = try XCTUnwrap(URL(string: "https://other.example.invalid/x"))
+        let task = session.dataTask(with: url)
+        let response = try XCTUnwrap(
+            HTTPURLResponse(
+                url: url,
+                statusCode: 303,
+                httpVersion: nil,
+                headerFields: ["Location": redirectURL.absoluteString]
+            )
+        )
+
+        let next = await delegate.urlSession(
+            session,
+            task: task,
+            willPerformHTTPRedirection: response,
+            newRequest: URLRequest(url: redirectURL)
+        )
+
+        XCTAssertNil(next)
+    }
 }
 
 private final class ProgressRecorder: @unchecked Sendable {
