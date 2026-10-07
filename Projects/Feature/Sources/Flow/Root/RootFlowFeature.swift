@@ -90,6 +90,7 @@ public struct RootFlowFeature {
             .ifLet(\.mainTab, action: \.main) {
                 MainTabFeature()
             }
+            .logged(as: Self.self, children: ["login", "onboarding", "main"])
     }
 
     private func core(state: inout State, action: Action) -> Effect<Action> {

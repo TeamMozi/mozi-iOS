@@ -1,8 +1,8 @@
 public enum LogCategory: String, Sendable {
-    case ui = "UI"
+    case app = "App"
     case network = "Network"
     case storage = "Storage"
     case auth = "Auth"
-    case cache = "Cache"
-    case general = "General"
+    case feature = "Feature"
+    case data = "Data"
 }

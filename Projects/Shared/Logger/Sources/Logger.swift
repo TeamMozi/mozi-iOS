@@ -14,9 +14,11 @@ public final class Logger: @unchecked Sendable {
         self.subsystem = subsystem
     }
 
+    /// `includeCallSite` 가 false 면 `[갈래] [파일:줄] 함수 -` 앞부분 없이 메시지만 남긴다.
     public func debug(
         _ message: @autoclosure () -> String,
-        category: LogCategory = .general,
+        category: LogCategory = .app,
+        includeCallSite: Bool = true,
         file: String = #fileID,
         function: String = #function,
         line: Int = #line
@@ -25,13 +27,15 @@ public final class Logger: @unchecked Sendable {
             message(),
             level: .debug,
             category: category,
+            includeCallSite: includeCallSite,
             site: CallSite(file: file, function: function, line: line)
         )
     }
 
     public func info(
         _ message: @autoclosure () -> String,
-        category: LogCategory = .general,
+        category: LogCategory = .app,
+        includeCallSite: Bool = true,
         file: String = #fileID,
         function: String = #function,
         line: Int = #line
@@ -40,13 +44,15 @@ public final class Logger: @unchecked Sendable {
             message(),
             level: .info,
             category: category,
+            includeCallSite: includeCallSite,
             site: CallSite(file: file, function: function, line: line)
         )
     }
 
     public func warning(
         _ message: @autoclosure () -> String,
-        category: LogCategory = .general,
+        category: LogCategory = .app,
+        includeCallSite: Bool = true,
         file: String = #fileID,
         function: String = #function,
         line: Int = #line
@@ -55,13 +61,15 @@ public final class Logger: @unchecked Sendable {
             message(),
             level: .warning,
             category: category,
+            includeCallSite: includeCallSite,
             site: CallSite(file: file, function: function, line: line)
         )
     }
 
     public func error(
         _ message: @autoclosure () -> String,
-        category: LogCategory = .general,
+        category: LogCategory = .app,
+        includeCallSite: Bool = true,
         file: String = #fileID,
         function: String = #function,
         line: Int = #line
@@ -70,6 +78,7 @@ public final class Logger: @unchecked Sendable {
             message(),
             level: .error,
             category: category,
+            includeCallSite: includeCallSite,
             site: CallSite(file: file, function: function, line: line)
         )
     }
@@ -78,12 +87,17 @@ public final class Logger: @unchecked Sendable {
         _ message: String,
         level: LogLevel,
         category: LogCategory,
+        includeCallSite: Bool,
         site: CallSite
     ) {
         #if DEBUG
-        let fileName = site.file.split(separator: "/").last.map(String.init) ?? site.file
-        let composed =
-            "[\(category.rawValue)] [\(fileName):\(site.line)] \(site.function) - \(message)"
+        let composed: String
+        if includeCallSite {
+            let fileName = site.file.split(separator: "/").last.map(String.init) ?? site.file
+            composed = "[\(category.rawValue)] [\(fileName):\(site.line)] \(site.function) - \(message)"
+        } else {
+            composed = message
+        }
         let logger = osLogger(for: category)
         logger.log(level: level.osLogType, "\(composed, privacy: .public)")
         #endif

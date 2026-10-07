@@ -37,6 +37,7 @@ public struct CreateFlowFeature {
         }
         Reduce(core)
             .forEach(\.path, action: \.path)
+            .logged(as: Self.self, children: ["placeholder"])
     }
 
     private func core(state: inout State, action: Action) -> Effect<Action> {

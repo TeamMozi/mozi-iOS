@@ -17,7 +17,7 @@
 - 밖에서는 `SocialAuthConfiguration` 과 `SocialAuthFactory` 로만 만든다. `KakaoSocialAuthService`·`AppleSocialAuthService`·`NotConfiguredSocialAuthService` 는 `internal`
 - 설정·`SocialAuthBootstrap`·`SocialAuthRedirectHandler` 는 `Sources/Config/`, factory 는 `Sources/Factory/`
 - factory 가 만든 서비스는 생성 시점에 SDK 를 부르지 않는다. App 은 factory 를 먼저, `SocialAuthBootstrap.run(config:)` 을 뒤에 부른다
-- 카카오 키가 없거나 비면 Bootstrap 은 SDK 초기화를 건너뛰고(로그 category `.general`), factory 는 카카오 자리에 `notConfigured` 를 던지는 서비스를 넣는다
+- 카카오 키가 없거나 비면 Bootstrap 은 SDK 초기화를 건너뛰고(로그 category `.app`), factory 는 카카오 자리에 `notConfigured` 를 던지는 서비스를 넣는다
 - 카카오 키 Debug 검사(`preconditionFailure`)는 App `InfraContainer.make()` 가 한다
 
 ## 주요 진입점

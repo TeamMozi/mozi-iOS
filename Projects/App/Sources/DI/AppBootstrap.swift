@@ -12,6 +12,6 @@ enum AppBootstrap {
             Dependencies.register(&$0, infra: infra)
         }
 
-        Logger.shared.info("App bootstrap completed", category: .general)
+        Logger.shared.info("App bootstrap completed", category: .app)
     }
 }

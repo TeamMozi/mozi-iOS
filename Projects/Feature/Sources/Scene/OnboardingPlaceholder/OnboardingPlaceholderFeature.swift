@@ -31,5 +31,6 @@ public struct OnboardingPlaceholderFeature {
                 return .none
             }
         }
+        .logged(as: Self.self, children: [])
     }
 }

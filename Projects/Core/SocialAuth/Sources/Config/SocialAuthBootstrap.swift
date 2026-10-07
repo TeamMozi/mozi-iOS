@@ -9,7 +9,7 @@ public enum SocialAuthBootstrap {
         guard let appKey = config.kakaoAppKey, appKey.isEmpty == false else {
             Logger.shared.info(
                 "Kakao SDK skipped: KAKAO_NATIVE_APP_KEY is empty",
-                category: .general
+                category: .app
             )
             return
         }
