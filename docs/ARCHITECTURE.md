@@ -79,7 +79,7 @@ MoziApp.init
           → SocialAuthBootstrap.run(config:)
           → prepareDependencies → Dependencies.register(_:infra:)
               → AuthSessionAssembly.make(keychain:networkConfig:socialAuthServices:)
-                  → NetworkFactory.makePlain(config:) · makeAuthed(config:tokenProvider:tokenRefresher:)
+                  → NetworkFactory.makePlain(config:) · makeAuthed(config:tokenProvider:tokenRefresher:) · makeUploader()
               → AuthClientFactory.make(session:)
       → Store(RootFeature)
   → RootView → RootFlowView
@@ -124,11 +124,13 @@ TestFlight 업로드 절차는 `fastlane/Fastfile` 에 있다. 빌드 번호 `YY
 ## 4. 새 기능
 
 1. Domain `{Model,Error,Client}`
-2. Data `{DTO,Datasource,Mapper,RepositoryImpl,ClientFactory,SessionAssembly}`. Network 클라이언트는 `NetworkFactory.makePlain(config:)`·`makeAuthed(config:tokenProvider:tokenRefresher:)` 로 만든다. 업로드가 필요하면 `NetworkFactory.makeUploader()`
+2. Data `{DTO,Datasource,Mapper,RepositoryImpl,ClientFactory}`. 기능 ClientFactory 는 `AuthSessionAssembly` 에서 `authedClient`·`uploader` 를 꺼낸다. 기능마다 Network 클라이언트나 조립체를 만들지 않는다
 3. App `Dependencies.register`
 4. Feature `Scene/<Name>`
 5. 필요 시 Flow/Root/DeepLink
 6. Feature 테스트
+
+Data 의 받는 클라이언트·오류 변환·업로드·공개 범위는 [Data README](../Projects/Data/README.md) 「RemoteDatasource 규칙」 을 따른다.
 
 새 기술 구현은 Core 모듈에 둔다.
 

@@ -3,16 +3,16 @@ import CoreStorage
 import Domain
 import Foundation
 
-public actor AuthTokenRefresher: TokenRefreshing {
+actor AuthTokenRefresher: TokenRefreshing {
     private let remote: AuthRemoteDatasource
     private let local: AuthLocalDatasource
 
-    public init(remote: AuthRemoteDatasource, local: AuthLocalDatasource) {
+    init(remote: AuthRemoteDatasource, local: AuthLocalDatasource) {
         self.remote = remote
         self.local = local
     }
 
-    public func refresh() async throws {
+    func refresh() async throws {
         let stored: AuthSessionStorageDTO
         do {
             guard let loaded = try await local.load() else {

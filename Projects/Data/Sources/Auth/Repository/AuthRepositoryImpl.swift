@@ -1,16 +1,16 @@
 import Domain
 import Foundation
 
-public struct AuthRepositoryImpl: Sendable {
+struct AuthRepositoryImpl: Sendable {
     private let remote: AuthRemoteDatasource
     private let local: AuthLocalDatasource
 
-    public init(remote: AuthRemoteDatasource, local: AuthLocalDatasource) {
+    init(remote: AuthRemoteDatasource, local: AuthLocalDatasource) {
         self.remote = remote
         self.local = local
     }
 
-    public func restoreSession() async throws -> AuthSession? {
+    func restoreSession() async throws -> AuthSession? {
         do {
             guard let stored = try await local.load() else {
                 return nil
@@ -21,14 +21,14 @@ public struct AuthRepositoryImpl: Sendable {
         }
     }
 
-    public func currentSession() async -> AuthSession? {
+    func currentSession() async -> AuthSession? {
         guard let stored = try? await local.load() else {
             return nil
         }
         return AuthDTOMapper.domain(from: stored)
     }
 
-    public func loginWithKakao(accessToken: String) async throws -> AuthSession {
+    func loginWithKakao(accessToken: String) async throws -> AuthSession {
         do {
             let dto = try await remote.loginWithKakao(accessToken: accessToken)
             return try await saveLoginSession(dto)
@@ -37,7 +37,7 @@ public struct AuthRepositoryImpl: Sendable {
         }
     }
 
-    public func loginWithApple(identityToken: String) async throws -> AuthSession {
+    func loginWithApple(identityToken: String) async throws -> AuthSession {
         do {
             let dto = try await remote.loginWithApple(identityToken: identityToken)
             return try await saveLoginSession(dto)
@@ -46,7 +46,7 @@ public struct AuthRepositoryImpl: Sendable {
         }
     }
 
-    public func loginWithDev() async throws -> AuthSession {
+    func loginWithDev() async throws -> AuthSession {
         do {
             let dto = try await remote.loginWithDev()
             return try await saveLoginSession(dto)
@@ -55,7 +55,7 @@ public struct AuthRepositoryImpl: Sendable {
         }
     }
 
-    public func logout() async throws {
+    func logout() async throws {
         do {
             try await remote.logout()
         } catch {

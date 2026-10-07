@@ -8,6 +8,8 @@ import Foundation
 public struct AuthSessionAssembly: Sendable {
     let plainClient: any NetworkClient
     let authedClient: any NetworkClient
+    /// 업로드 주소 전용. 기능 ClientFactory 가 `UploadRemoteDatasource(uploader:)` 에 넣는다.
+    let uploader: any Uploading
     let local: AuthLocalDatasource
     let socialAuthServices: SocialAuthServices
 
@@ -34,6 +36,7 @@ public struct AuthSessionAssembly: Sendable {
         return AuthSessionAssembly(
             plainClient: plainClient,
             authedClient: authedClient,
+            uploader: NetworkFactory.makeUploader(),
             local: local,
             socialAuthServices: socialAuthServices
         )
