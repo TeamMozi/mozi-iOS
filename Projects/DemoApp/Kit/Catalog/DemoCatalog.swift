@@ -25,8 +25,9 @@ public enum DemoFlow: String, CaseIterable, Identifiable, Hashable {
     public var screens: [DemoScreen] {
         switch self {
         case .login: [.login]
+        case .onboarding: [.profileSetting, .interestSetting, .onboardingFlow]
         case .shortform: [.tabNavigation]
-        case .onboarding, .search, .create, .chat, .myPage: []
+        case .search, .create, .chat, .myPage: []
         }
     }
 
@@ -43,6 +44,9 @@ public enum DemoFlow: String, CaseIterable, Identifiable, Hashable {
 /// 흐름 안의 화면. 상태 목록은 화면마다 따로 둔다.
 public enum DemoScreen: String, Hashable, Identifiable {
     case login
+    case profileSetting
+    case interestSetting
+    case onboardingFlow
     case tabNavigation
 
     public var id: String { rawValue }
@@ -50,6 +54,9 @@ public enum DemoScreen: String, Hashable, Identifiable {
     public var title: String {
         switch self {
         case .login: "로그인"
+        case .profileSetting: "프로필 설정"
+        case .interestSetting: "카테고리 설정"
+        case .onboardingFlow: "온보딩 흐름 전체"
         case .tabNavigation: "탭 안 이동"
         }
     }
@@ -57,6 +64,9 @@ public enum DemoScreen: String, Hashable, Identifiable {
     var stateTitles: [String] {
         switch self {
         case .login: LoginDemoState.allCases.map(\.title)
+        case .profileSetting: ProfileSettingDemoState.allCases.map(\.title)
+        case .interestSetting: InterestSettingDemoState.allCases.map(\.title)
+        case .onboardingFlow: OnboardingFlowDemoState.allCases.map(\.title)
         case .tabNavigation: TabNavigationDemoState.allCases.map(\.title)
         }
     }
@@ -68,10 +78,11 @@ public enum DemoScreen: String, Hashable, Identifiable {
 
     /// 자기 NavigationStack 을 가진 Feature Flow 를 띄우는 화면이다.
     /// 데모 최상위 NavigationStack 에 쌓으면 뒤로 가기가 꼬이므로 전체 화면으로 덮어 띄운다.
+    /// 온보딩 두 화면은 툴바를 그리려고 자기 NavigationStack 으로 감싼다.
     public var presentsFullScreen: Bool {
         switch self {
         case .login: false
-        case .tabNavigation: true
+        case .profileSetting, .interestSetting, .onboardingFlow, .tabNavigation: true
         }
     }
 }

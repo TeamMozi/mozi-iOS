@@ -68,10 +68,10 @@
 - 업로드 거부(`UploadError.rejected`)는 상태 코드와 상관없이 `unknown` 이다
 - 엔드포인트별 오류 뜻은 `docs/agent/api/error-codes.md` 에 모은다
 
-### 빈 message
+### 서버 message
 - 서버 문구가 없으면 Domain 오류의 message 는 `""` 다
 - 기술 문구(`String(describing:)`, 상태 코드)는 message 에 넣지 않는다
-- 화면은 message 가 비면 기본 문구를 쓴다
+- 화면은 message 를 띄우지 않는다. Feature 공통 오류 문구 표(`FeatureErrorMessage`)가 오류 종류마다 문구를 주고, message 는 로그에만 남는다
 
 ### 업로드 담당 층
 - 올리기는 `UploadRemoteDatasource.upload(_:to:contentType:onProgress:)` 가 맡는다

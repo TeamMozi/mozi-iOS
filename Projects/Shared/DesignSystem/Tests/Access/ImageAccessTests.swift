@@ -4,10 +4,10 @@ import UIKit
 import XCTest
 
 final class ImageAccessTests: XCTestCase {
-    func test_Image_ds_경로가_아이콘_168개와_기존_이미지_7개() {
+    func test_Image_ds_경로가_아이콘_168개와_기존_이미지_7개와_온보딩_그림_13개() {
         let paths = leafPaths(of: Image.ds)
 
-        XCTAssertEqual(paths.count, 175)
+        XCTAssertEqual(paths.count, 188)
         XCTAssertEqual(paths.filter { $0.hasPrefix("icon.") }.count, 168)
         XCTAssertEqual(Set(paths), Set(ImageAccessPaths.all))
     }
@@ -31,6 +31,21 @@ final class ImageAccessTests: XCTestCase {
         }
     }
 
+    func test_온보딩_그림_13장은_번들에서_원래_색으로_불러와진다() {
+        let names = [
+            "onboarding_profile_default",
+            "interest_hobby", "interest_growth", "interest_art", "interest_activity",
+            "interest_friend", "interest_travel", "interest_food", "interest_pet",
+            "interest_dessert", "interest_study", "interest_party", "interest_etc",
+        ]
+
+        for name in names {
+            let image = UIImage(named: name, in: SharedDesignSystemResources.bundle, compatibleWith: nil)
+            XCTAssertNotNil(image, "Missing image asset: \(name)")
+            XCTAssertNotEqual(image?.renderingMode, .alwaysTemplate, "Template: \(name)")
+        }
+    }
+
     @MainActor
     func test_iconSize와_foregroundStyle로_크기와_색을_바꿔_그린다() throws {
         let view = Image.ds.icon.search.filled
@@ -50,7 +65,7 @@ final class ImageAccessTests: XCTestCase {
 
     @MainActor
     func test_Image_ds_경로가_같은_이름의_에셋을_그린다() throws {
-        XCTAssertEqual(ImageAccessAssets.all.count, 175)
+        XCTAssertEqual(ImageAccessAssets.all.count, 188)
 
         for entry in ImageAccessAssets.all {
             let viaPath = try rgbaPixels(of: render(entry.image))
@@ -121,6 +136,18 @@ private struct RGBA: Equatable {
 private enum ImageAccessPaths {
     static let all: [String] = [
         "brand.logo",
+        "interest.activity",
+        "interest.art",
+        "interest.dessert",
+        "interest.etc",
+        "interest.food",
+        "interest.friend",
+        "interest.growth",
+        "interest.hobby",
+        "interest.party",
+        "interest.pet",
+        "interest.study",
+        "interest.travel",
         "icon.arrows.down",
         "icon.arrows.left",
         "icon.arrows.leftDown",
@@ -293,6 +320,7 @@ private enum ImageAccessPaths {
         "login.shortform02",
         "login.shortform03",
         "login.shortform04",
+        "onboarding.profileDefault",
         "social.apple",
         "social.kakao",
     ]
@@ -301,6 +329,18 @@ private enum ImageAccessPaths {
 private enum ImageAccessAssets {
     static let all: [(image: Image, asset: String)] = [
         (Image.ds.brand.logo, "logo_mozi"),
+        (Image.ds.interest.activity, "interest_activity"),
+        (Image.ds.interest.art, "interest_art"),
+        (Image.ds.interest.dessert, "interest_dessert"),
+        (Image.ds.interest.etc, "interest_etc"),
+        (Image.ds.interest.food, "interest_food"),
+        (Image.ds.interest.friend, "interest_friend"),
+        (Image.ds.interest.growth, "interest_growth"),
+        (Image.ds.interest.hobby, "interest_hobby"),
+        (Image.ds.interest.party, "interest_party"),
+        (Image.ds.interest.pet, "interest_pet"),
+        (Image.ds.interest.study, "interest_study"),
+        (Image.ds.interest.travel, "interest_travel"),
         (Image.ds.icon.arrows.down, "icon_arrows_down"),
         (Image.ds.icon.arrows.left, "icon_arrows_left"),
         (Image.ds.icon.arrows.leftDown, "icon_arrows_left_down"),
@@ -473,6 +513,7 @@ private enum ImageAccessAssets {
         (Image.ds.login.shortform02, "login_shortform_02"),
         (Image.ds.login.shortform03, "login_shortform_03"),
         (Image.ds.login.shortform04, "login_shortform_04"),
+        (Image.ds.onboarding.profileDefault, "onboarding_profile_default"),
         (Image.ds.social.apple, "icon_social_apple"),
         (Image.ds.social.kakao, "icon_social_kakao"),
     ]

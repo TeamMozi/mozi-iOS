@@ -13,7 +13,7 @@ final class FeatureLogAttachmentTests: XCTestCase {
             ),
             (
                 OnboardingFlowFeature().body,
-                LoggedAttachment(scene: "OnboardingFlow", children: ["onboarding"], wrapsStack: true)
+                LoggedAttachment(scene: "OnboardingFlow", children: ["profile"], wrapsStack: true)
             ),
             (
                 MainTabFeature().body,
@@ -46,12 +46,13 @@ final class FeatureLogAttachmentTests: XCTestCase {
         }
     }
 
-    func test_화면_다섯은_자식없이_로그가_붙어_있다() {
+    func test_화면_여섯은_자식없이_로그가_붙어_있다() {
         let expected: [(body: Any, scene: String)] = [
             (LoginFeature().body, "Login"),
             (PlaceholderFeature().body, "Placeholder"),
             (MyPagePlaceholderFeature().body, "MyPagePlaceholder"),
-            (OnboardingPlaceholderFeature().body, "OnboardingPlaceholder"),
+            (ProfileSettingFeature().body, "ProfileSetting"),
+            (InterestSettingFeature().body, "InterestSetting"),
             (NavigationSampleFeature().body, "NavigationSample"),
         ]
 

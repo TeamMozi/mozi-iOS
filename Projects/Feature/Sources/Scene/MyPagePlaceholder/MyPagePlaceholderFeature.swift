@@ -76,7 +76,7 @@ public struct MyPagePlaceholderFeature {
             case let .logoutResponse(.failure(error)):
                 // 로컬 세션이 남아 있을 수 있으므로 화면을 유지하고 재시도를 유도한다.
                 state.isLoggingOut = false
-                state.errorMessage = Self.errorMessage(for: error)
+                state.errorMessage = FeatureErrorMessage.logoutFailure(for: error)
                 return .none
 
             case .delegate:
@@ -84,16 +84,5 @@ public struct MyPagePlaceholderFeature {
             }
         }
         .logged(as: Self.self, children: [])
-    }
-
-    private static func errorMessage(for error: AuthError) -> String {
-        switch error {
-        case .storage:
-            return "로그아웃 정보를 지우지 못했어요. 다시 시도해 주세요."
-        case .network:
-            return "네트워크 연결을 확인해 주세요"
-        default:
-            return "로그아웃에 실패했어요. 다시 시도해 주세요."
-        }
     }
 }

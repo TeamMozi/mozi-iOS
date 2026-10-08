@@ -52,12 +52,12 @@ public struct LoginFeature {
                 return .send(.delegate(.loggedIn(session)))
 
             case let .loginResponse(.failure(error)):
-                // 사용자 취소는 피드백 없이 idle 복귀한다.
-                if case .cancelled = error {
+                // 사용자 취소는 문구가 없다. 피드백 없이 idle 복귀한다.
+                guard let message = Self.errorMessage(for: error) else {
                     state.screen = .idle
                     return .none
                 }
-                state.screen = .actionFailed(message: Self.errorMessage(for: error))
+                state.screen = .actionFailed(message: message)
                 return .none
 
             case .failureDismissed:
@@ -93,22 +93,15 @@ public struct LoginFeature {
         }
     }
 
-    private static func errorMessage(for error: AuthError) -> String {
+    /// 공통 표에서 로그인 동작 이름이 필요한 두 종류만 덮어쓴다.
+    private static func errorMessage(for error: AuthError) -> String? {
         switch error {
-        case .cancelled:
-            return ""
-        case .notConfigured:
-            return "로그인 설정이 완료되지 않았어요."
-        case .loginFailed:
-            return "로그인에 실패했어요"
-        case .network:
-            return "네트워크 연결을 확인해 주세요"
         case .unauthorized:
-            return "로그인에 실패했어요"
+            "로그인에 실패했어요"
         case .storage:
-            return "로그인 정보를 저장하지 못했어요."
-        case .unknown:
-            return "알 수 없는 오류가 발생했어요."
+            "로그인 정보를 저장하지 못했어요."
+        case .cancelled, .notConfigured, .loginFailed, .network, .unknown:
+            FeatureErrorMessage.message(for: error)
         }
     }
 }

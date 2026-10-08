@@ -54,6 +54,12 @@ struct DemoRootView: View {
         switch screen {
         case .login:
             LoginDemoScreen(onExit: backToList)
+        case .profileSetting:
+            ProfileSettingDemoScreen(onExit: backToList)
+        case .interestSetting:
+            InterestSettingDemoScreen(onExit: backToList)
+        case .onboardingFlow:
+            OnboardingFlowDemoScreen(onExit: backToList)
         case .tabNavigation:
             TabNavigationDemoScreen(onExit: backToList)
         }

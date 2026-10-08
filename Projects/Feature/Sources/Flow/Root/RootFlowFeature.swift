@@ -118,11 +118,12 @@ public struct RootFlowFeature {
             return .send(.flushPendingDeepLink)
 
         case .onboarding(.delegate(.finished)):
-            // 서버에는 알리지 않는다. 앱을 다시 켜면 restore 가 온보딩으로 되돌린다
+            // UserClient.completeOnboarding 이 기기 세션의 프로필 완료 값을 참으로 바꿨다. 다음 실행 때 restore 가 메인으로 보낸다
             state.phase = .main(MainTabFeature.State())
             return .send(.flushPendingDeepLink)
 
-        case .main(.delegate(.loggedOut)):
+        case .main(.delegate(.loggedOut)), .onboarding(.delegate(.loggedOut)):
+            // 보관한 딥링크는 지우지 않는다. 다시 로그인해 메인에 들어갈 때 처리한다
             state.phase = .login(LoginFeature.State())
             return .none
 

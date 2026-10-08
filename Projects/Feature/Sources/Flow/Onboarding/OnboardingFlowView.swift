@@ -9,12 +9,14 @@ public struct OnboardingFlowView: View {
     }
 
     public var body: some View {
-        // 온보딩 화면 스택은 OnboardingFlowFeature 의 path 가 소유한다
+        // 온보딩 화면 스택은 OnboardingFlowFeature 의 path 가 소유한다. 뒤로 가기는 `.path(.popFrom)` 으로 들어온다
         NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
-            OnboardingPlaceholderView(store: store.scope(state: \.onboarding, action: \.onboarding))
-        } destination: { _ in
-            // Route 에 케이스가 없어 이 목적지는 만들어지지 않는다. 쌓일 화면이 생기면 `switch routeStore.case` 로 바꾼다
-            EmptyView()
+            ProfileSettingView(store: store.scope(state: \.profile, action: \.profile))
+        } destination: { routeStore in
+            switch routeStore.case {
+            case let .interestSetting(interestStore):
+                InterestSettingView(store: interestStore)
+            }
         }
     }
 }
@@ -25,6 +27,10 @@ public struct OnboardingFlowView: View {
     OnboardingFlowView(
         store: Store(initialState: OnboardingFlowFeature.State()) {
             OnboardingFlowFeature()
+        } withDependencies: {
+            $0.interestClient = .previewValue
+            $0.userClient = .previewValue
+            $0.authClient.logout = {}
         }
     )
 }

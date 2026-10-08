@@ -1,3 +1,4 @@
+import Domain
 import Feature
 import SharedDesignSystem
 
@@ -7,8 +8,8 @@ public enum LoginDemoState: String, CaseIterable, Hashable, Sendable {
     case loading
     case networkError
 
-    /// LoginFeature 가 `AuthError.network` 에 쓰는 문구와 같다. LoginDemoTests 가 둘이 같은지 본다.
-    static let networkErrorMessage = "네트워크 연결을 확인해 주세요"
+    /// LoginFeature 가 `AuthError.network` 에 쓰는 공통 표 문구다. LoginDemoTests 가 둘이 같은지 본다.
+    static let networkErrorMessage = FeatureErrorMessage.message(for: AuthError.network) ?? ""
 
     /// 상태 시트의 줄 이름.
     public var title: String {
