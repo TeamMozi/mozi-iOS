@@ -144,7 +144,7 @@ public struct ProfileSettingView: View {
     /// 눌러도 동작이 없는 안내 문장. 「이용 약관」「개인정보 보호 정책」 만 강조한다
     private static var termsNotice: AttributedString {
         let parts: [(String, Bool)] = [
-            ("계정 만들기를 클릭하면 모지의 ", false),
+            ("시작하기를 누르면 모지의 ", false),
             ("이용 약관", true),
             ("에 동의하며\n", false),
             ("개인정보 보호 정책", true),
