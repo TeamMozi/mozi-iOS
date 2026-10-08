@@ -7,9 +7,10 @@
 
 ## 현재 상태
 - 첫 화면: 이번 빌드에서 바뀐 것 · 흐름 일곱 · 디자인 시스템 · 바닥 글(업로드 빌드만)
-- 흐름 일곱 중 로그인과 숏폼이 열린다. 나머지는 「준비 중」
+- 흐름 일곱 중 로그인·온보딩·숏폼이 열린다. 나머지는 「준비 중」
 - 로그인 화면 상태 셋: 기본 / 불러오는 중 / 오류 안내
 - 숏폼 「탭 안 이동」: 누르면 숏폼 탭 Flow 가 전체 화면으로 덮여 뜬다. 상태 셋: 첫 화면 / 견본 1장 / 견본 2장. 견본의 「다음」은 견본을 하나 더 쌓고, 뒤로 가기로 하나씩 빠진다
+- 온보딩 세 화면은 모두 전체 화면으로 덮여 뜬다. 프로필 설정 상태 셋: 빈 화면 / 다 채운 화면 / 로그아웃 실패(뒤로는 데모에 Flow 가 없어 아무 일도 없다). 카테고리 설정 상태 여섯: 받는 중 / 기본 / 고른 상태 / 저장 중 / 받기 실패 / 저장 실패. 온보딩 흐름 전체 상태 하나(처음부터): 가짜 목록과 1초 뒤 성공하는 저장으로 「완료」 까지 넘기고, 끝나거나 로그아웃하면 `DemoOnboardingFlowFeature` 가 처음 화면으로 되돌린다
 - 디자인 시스템 칸: 색 · 글자 · 버튼 · 화면 상태 · 입력 · 헤더·탭바 여섯 줄이 화면을 하나씩 연다. 화면마다 위의 전환으로 그 화면만 시스템·다크·라이트로 본다. 시스템 얼럿은 이 전환을 따르지 않고 기기 모드를 따른다
   - 색: 의미 색 63(Figma 묶음 17)
   - 글자: 스타일 21개마다 이름, 수치 한 줄(크기 · 줄 높이 · 자간 % (pt) · 굵기), 여러 줄 견본. 견본 뒤 옅은 가로선이 줄 높이 간격이다
@@ -17,7 +18,7 @@
   - 입력: 한 줄 · 여러 줄 · 캡션 · 드롭다운 줄 · 체크박스 세 꼴 · 토글 · 칩 세 꼴 · 검색 칸 두 꼴 · 상태 드롭다운을 시안 상태별로 늘어놓는다. 글자 입력과 글자 수 끊기, 체크, 토글, 칩 닫기와 편집 중, 상태 메뉴, 드롭다운 메뉴가 실제로 동작한다
   - 헤더·탭바: 하단 버튼 영역 다섯(Figma 변형 순서). 헤더 · 탭바 · 바텀시트는 버튼을 누르면 고른 모드로 전체 화면 견본이 뜬다. 헤더는 변형 다섯(투명 · 채움 · 글자 버튼 · 오른쪽 버튼 둘 · 왼쪽 정렬 제목), 바텀시트는 기본 · 왼쪽 정렬 제목 × large · medium, 탭바는 탭 안에서 하단 버튼 영역이 있는 화면을 연다
 - 기기 설정의 다크·라이트를 따른다. 로그인 화면만 다크로 뜬다
-- 떠 있는 데모 버튼: 로그인 화면, 숏폼 「탭 안 이동」, 디자인 시스템 화면 다섯. 끌어서 옮긴다
+- 떠 있는 데모 버튼: 로그인 화면, 온보딩 세 화면, 숏폼 「탭 안 이동」, 디자인 시스템 화면 다섯. 끌어서 옮긴다
 
 ## 의존
 - 허용: Feature, Domain, SharedDesignSystem, ThirdParty, ThirdPartyUI
@@ -57,6 +58,7 @@
 - `Kit/Catalog/DemoCatalog.swift`
 - `Kit/Screens/Login/` · `Sources/Screens/Login/LoginDemoScreen.swift`
 - `Kit/Screens/TabNavigation/` · `Sources/Screens/TabNavigation/TabNavigationDemoScreen.swift`
+- `Kit/Screens/ProfileSetting/` · `Kit/Screens/InterestSetting/` · `Kit/Screens/OnboardingFlow/` · `Sources/Screens/{ProfileSetting,InterestSetting,OnboardingFlow}/`
 - `Sources/DemoMenu/` · `Kit/DemoMenu/DemoFloatingButtonLayout.swift`
 - `Sources/Gallery/GalleryPage.swift`
 - `Kit/Gallery/GalleryCatalog.swift` · `Kit/Gallery/GalleryAppearance.swift`
@@ -72,7 +74,8 @@ mise exec -- bundle exec fastlane beta app:demo note:"이번 빌드에서 볼 �
 
 ## 테스트 포인트
 - 빌드 정보: 개발 빌드 판정, Base64 문구 풀기 (`fastlane/test/build_note_test.rb` 와 같은 짝)
-- 목록: 흐름 일곱의 순서, 로그인과 숏폼만 열림, 상태 개수와 이름, 전체 화면으로 띄우는 화면
+- 목록: 흐름 일곱의 순서, 로그인·온보딩·숏폼만 열림, 상태 개수와 이름, 전체 화면으로 띄우는 화면
+- 온보딩 상태: 프로필 다 채움의 「시작하기」 켜짐, 로그아웃 실패 알림, 카테고리 고른 세 칸·저장 중 모양·받기 실패·저장 실패 알림 다시 뜸, 흐름 데모가 끝·로그아웃 때 처음으로 돌아감
 - 로그인 상태: 기본 1초 뒤 복귀, 불러오는 중 잠김, 오류 안내 얼럿 다시 뜸
 - 탭 안 이동 상태: 상태마다 쌓인 견본 수와 1부터 매긴 번호
 - 데모 버튼 끌기 범위

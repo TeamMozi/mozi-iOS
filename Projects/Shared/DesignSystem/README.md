@@ -5,7 +5,7 @@
 - 공통 부품: 버튼 여섯 계열(스타일 `.main`·`.neutral`·`.ghost`·`.textButton(_:)`·`.action(_:)`·`.shortcut(_:)`·`.pill` 과 화면 조각 `SocialLoginButton`), 아이콘 버튼 생성자 `Button(_:icon:)`, `DesignText`, `ScreenStatus` · `.screenStatus`, 하단 버튼 영역 `BottomButtonArea`
 - 입력 부품: `DesignTextField` · `DesignTextArea` · `DesignDropdownRow` · `DesignCheckbox` · `DesignToggle` · `DesignChip` · `DesignSearchField` · `DesignStatusMenu`
 - 헤더·탭바 꾸밈: 탭바 아이콘 `TabBarIcon`, 툴바 제목·아이콘 `DesignToolbarTitle`·`DesignToolbarIcon`, 헤더 배경 `.designHeaderBackground(_:)`, 뒤로 가기 그림 `DesignNavigationBar.applyBackIndicator()`, 시트 딤 `.designSheet(item:detents:content:)`
-- 글꼴(Pretendard 네 굵기)과 에셋(로고·소셜 아이콘·로그인 숏폼 사진)
+- 글꼴(Pretendard 네 굵기)과 에셋(로고·소셜 아이콘·로그인 숏폼 사진·온보딩 기본 사진·카테고리 그림 12장)
 
 ## 의존
 - 허용: SharedUtils
@@ -125,6 +125,24 @@ Figma 아이콘 이름과 코드 경로. 아이콘 경로는 `Image.ds.icon.<종
 | `Image.ds.login.shortform04` | `loginShortform04` | `Login/login_shortform_04` |
 | `Image.ds.social.apple` | `iconSocialApple` | `Icon/Social/icon_social_apple` |
 | `Image.ds.social.kakao` | `iconSocialKakao` | `Icon/Social/icon_social_kakao` |
+
+온보딩 13장 (원래 색, 다크도 같은 그림):
+
+| 코드 경로 | Tuist 접근자 | 에셋 | Figma 노드 |
+|---|---|---|---|
+| `Image.ds.onboarding.profileDefault` | `onboardingProfileDefault` | `Onboarding/onboarding_profile_default` | `2653:68604` (PNG 3x) |
+| `Image.ds.interest.hobby` | `interestHobby` | `Interest/interest_hobby` | `2141:11658` |
+| `Image.ds.interest.growth` | `interestGrowth` | `Interest/interest_growth` | `2141:11659` |
+| `Image.ds.interest.art` | `interestArt` | `Interest/interest_art` | `2141:11661` |
+| `Image.ds.interest.activity` | `interestActivity` | `Interest/interest_activity` | `2141:11660` |
+| `Image.ds.interest.friend` | `interestFriend` | `Interest/interest_friend` | `2141:11664` |
+| `Image.ds.interest.travel` | `interestTravel` | `Interest/interest_travel` | `2141:11665` |
+| `Image.ds.interest.food` | `interestFood` | `Interest/interest_food` | `2141:11666` |
+| `Image.ds.interest.pet` | `interestPet` | `Interest/interest_pet` | `2141:11663` |
+| `Image.ds.interest.dessert` | `interestDessert` | `Interest/interest_dessert` | `2141:11668` |
+| `Image.ds.interest.study` | `interestStudy` | `Interest/interest_study` | `2141:11667` |
+| `Image.ds.interest.party` | `interestParty` | `Interest/interest_party` | `2141:11662` |
+| `Image.ds.interest.etc` | `interestEtc` | `Interest/interest_etc` | `2141:11657` |
 
 아이콘 168장:
 
