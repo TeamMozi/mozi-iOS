@@ -135,7 +135,7 @@ final class FeatureLogEventsTests: XCTestCase {
     func test_delegate와_path_액션은_어느_층에서도_찍지_않는다() {
         XCTAssertEqual(
             FeatureLogEvents.beforeReduce(
-                action: OnboardingPlaceholderFeature.Action.delegate(.finished),
+                action: InterestSettingFeature.Action.delegate(.finished),
                 children: []
             ),
             []
