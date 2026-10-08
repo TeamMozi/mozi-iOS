@@ -62,4 +62,8 @@ final class LoginDemoTests: XCTestCase {
             $0.screen = .actionFailed(message: LoginDemoState.networkErrorMessage)
         }
     }
+
+    func test_오류_안내_문구는_공통_오류_문구_표의_네트워크_문구다() {
+        XCTAssertEqual(LoginDemoState.networkErrorMessage, FeatureErrorMessage.message(for: AuthError.network))
+    }
 }
