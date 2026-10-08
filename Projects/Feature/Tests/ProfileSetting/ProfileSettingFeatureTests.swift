@@ -149,8 +149,8 @@ final class ProfileSettingFeatureTests: XCTestCase {
         )
     }
 
-    func test_사진을_고르면_올리는_초안에_새_사진이_담긴다() async {
-        let store = makeStore(filled(introduction: "영화 좋아해요"))
+    func test_사진을_고르면_올리는_초안에_새_사진과_앞뒤_공백을_자른_소개가_담긴다() async {
+        let store = makeStore(filled(introduction: " 영화 좋아해요\n"))
         let photo = Data([1, 2, 3])
 
         await store.send(.photoPicked(photo)) {

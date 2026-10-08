@@ -225,7 +225,7 @@ public struct ProfileSettingFeature {
             nickname: state.nickname.trimmingCharacters(in: .whitespacesAndNewlines),
             birthDate: birthDate,
             gender: gender,
-            introduction: introduction.isEmpty ? nil : state.introduction,
+            introduction: introduction.isEmpty ? nil : introduction,
             profileImage: state.profileImage,
             interestIDs: []
         )
