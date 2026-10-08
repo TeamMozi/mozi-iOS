@@ -13,13 +13,6 @@ enum MeetingPreviewData {
         participatedCount: 30
     )
 
-    static let categories = [
-        Interest(id: "culture", name: "문화·예술"),
-        Interest(id: "music", name: "음악"),
-        Interest(id: "sports", name: "운동"),
-        Interest(id: "food", name: "맛집·카페"),
-    ]
-
     static let backgroundMusics = [
         BackgroundMusic(id: "preview-music-1", title: "키즈나 뮤직"),
         BackgroundMusic(id: "preview-music-2", title: "Hey-day 광소곡"),
@@ -41,7 +34,7 @@ enum MeetingPreviewData {
         ageRange: AgeRange(minAge: 20, maxAge: 35),
         genderRestriction: .any,
         joinType: .approval,
-        category: categories[0],
+        category: InterestPreviewData.art,
         status: .recruiting,
         host: host,
         episode: SeriesEpisode(seriesID: SeriesClient.PreviewID.sample, number: 2),
@@ -67,7 +60,7 @@ enum MeetingPreviewData {
         ageRange: AgeRange(minAge: nil, maxAge: nil),
         genderRestriction: .any,
         joinType: .instant,
-        category: categories[0],
+        category: InterestPreviewData.art,
         status: .closed,
         host: host,
         episode: nil,
@@ -93,7 +86,7 @@ enum MeetingPreviewData {
         ageRange: AgeRange(minAge: 25, maxAge: nil),
         genderRestriction: .female,
         joinType: .approval,
-        category: categories[3],
+        category: InterestPreviewData.food,
         status: .recruiting,
         host: host,
         episode: nil,
@@ -119,7 +112,7 @@ enum MeetingPreviewData {
         ageRange: AgeRange(minAge: nil, maxAge: 40),
         genderRestriction: .any,
         joinType: .approval,
-        category: categories[2],
+        category: InterestPreviewData.activity,
         status: .recruiting,
         host: host,
         episode: nil,
@@ -148,7 +141,7 @@ enum MeetingPreviewData {
         ageRange: AgeRange(minAge: 20, maxAge: 35),
         genderRestriction: .any,
         joinType: .approval,
-        category: categories[0],
+        category: InterestPreviewData.art,
         status: .ended,
         host: host,
         episode: SeriesEpisode(seriesID: SeriesClient.PreviewID.sample, number: 1),
@@ -207,7 +200,7 @@ enum MeetingPreviewData {
 
     /// 입력 초안으로 모임장이 막 만든 모임을 흉내 낸다.
     static func meeting(from draft: MeetingDraft, id: String) -> Meeting {
-        let category = categories.first { $0.id == draft.categoryID }
+        let category = InterestPreviewData.all.first { $0.id == draft.categoryID }
             ?? Interest(id: draft.categoryID, name: draft.categoryID)
         return Meeting(
             id: id,
@@ -254,7 +247,7 @@ enum MeetingPreviewData {
             ageRange: AgeRange(minAge: nil, maxAge: nil),
             genderRestriction: .any,
             joinType: .instant,
-            category: categories[0],
+            category: InterestPreviewData.art,
             status: .ended,
             host: host,
             episode: SeriesEpisode(seriesID: SeriesClient.PreviewID.walk, number: number),
