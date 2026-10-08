@@ -9,6 +9,8 @@ public struct DesignSystemImages: Sendable {
     public let brand = BrandImages()
     public let login = LoginImages()
     public let social = SocialImages()
+    public let onboarding = OnboardingImages()
+    public let interest = InterestImages()
 
     public init() {}
 }
@@ -31,6 +33,31 @@ public struct LoginImages: Sendable {
 public struct SocialImages: Sendable {
     public let apple = Image(decorative: SharedDesignSystemAsset.iconSocialApple)
     public let kakao = Image(decorative: SharedDesignSystemAsset.iconSocialKakao)
+
+    public init() {}
+}
+
+/// 온보딩 프로필 사진 칸의 기본 그림(모지 캐릭터). 다크에도 같은 그림이다.
+public struct OnboardingImages: Sendable {
+    public let profileDefault = Image(decorative: SharedDesignSystemAsset.onboardingProfileDefault)
+
+    public init() {}
+}
+
+/// 카테고리 칸 그림 12장. 이름은 Figma `Category images` 의 `type` 변형이다.
+public struct InterestImages: Sendable {
+    public let hobby = Image(decorative: SharedDesignSystemAsset.interestHobby)
+    public let growth = Image(decorative: SharedDesignSystemAsset.interestGrowth)
+    public let art = Image(decorative: SharedDesignSystemAsset.interestArt)
+    public let activity = Image(decorative: SharedDesignSystemAsset.interestActivity)
+    public let friend = Image(decorative: SharedDesignSystemAsset.interestFriend)
+    public let travel = Image(decorative: SharedDesignSystemAsset.interestTravel)
+    public let food = Image(decorative: SharedDesignSystemAsset.interestFood)
+    public let pet = Image(decorative: SharedDesignSystemAsset.interestPet)
+    public let dessert = Image(decorative: SharedDesignSystemAsset.interestDessert)
+    public let study = Image(decorative: SharedDesignSystemAsset.interestStudy)
+    public let party = Image(decorative: SharedDesignSystemAsset.interestParty)
+    public let etc = Image(decorative: SharedDesignSystemAsset.interestEtc)
 
     public init() {}
 }
