@@ -317,6 +317,23 @@ Figma 아이콘 이름과 코드 경로. 아이콘 경로는 `Image.ds.icon.<종
 | `Image.ds.icon.zoomOut.filled` | `icon_zoom_out_filled` | `icon/zoom-out` · `Style=filled` | `346:11809` |  |
 | `Image.ds.icon.zoomOut.outlined` | `icon_zoom_out_outlined` | `icon/zoom-out` · `Style=outlined` | `346:11787` |  |
 
+## 키보드 내리기
+입력 칸이 있는 스크롤 뷰에 `.designKeyboardDismissal()` 을 붙인다. 매개변수는 없다.
+
+```swift
+ScrollView {
+    DesignTextField("이름", text: $name, placeholder: "이름", maxLength: 10)
+}
+.designKeyboardDismissal()
+```
+
+- 스크롤을 시작하면 키보드를 바로 내린다(`.scrollDismissesKeyboard(.immediately)`). 쓰는 화면이 방식을 고르는 칸은 없다
+- 붙인 뷰 안에서 입력 칸이 아닌 곳을 누르면 키보드를 가진 칸이 키보드를 놓는다(`endEditing`). 화면에 포커스 상태를 두지 않아도 된다
+- 누르기는 버튼·메뉴와 함께 인식된다. 사진·메뉴를 누르면 키보드가 내려가고 누른 동작도 그대로 실행된다
+- 입력 칸(`UITextField`·`UITextView` 와 그 안)을 누르면 거른다. 다른 칸을 누르면 포커스만 옮겨 가고 키보드는 남는다
+- 누르기 손짓은 창에 달고 붙인 뷰 영역 안 누르기만 받는다. 붙인 뷰가 창에서 빠지면 손짓도 뗀다
+- 테스트 `DesignKeyboardDismissalTests`
+
 ## 주요 진입점
 - `Sources/Access/Color+DesignSystem.swift` · `CGFloat+DesignSystem.swift`
 - `Sources/Tokens/Typography/TextStyle.swift` · `Typography.swift`
