@@ -3,9 +3,9 @@ import SwiftUI
 import XCTest
 
 final class DesignSheetTests: XCTestCase {
-    func test_시트_딤은_overlay_gray_default_다크_706D82_40퍼센트_라이트_AFAFAF_20퍼센트다() {
+    func test_시트_딤은_overlay_gray_default_다크_706D82_20퍼센트_라이트_AFAFAF_20퍼센트다() {
         XCTAssertEqual(DesignSheetMetrics.dim, SemanticColor.overlay.gray.default)
-        assertTheme(DesignSheetMetrics.dim, dark: 0x706D8266, light: 0xAFAFAF33)
+        assertTheme(DesignSheetMetrics.dim, dark: 0x706D8233, light: 0xAFAFAF33)
     }
 
     func test_시트_몸통은_fill_neutral_default로_불투명하다() {

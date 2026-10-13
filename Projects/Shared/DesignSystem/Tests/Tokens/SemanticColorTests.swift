@@ -4,7 +4,7 @@ import UIKit
 import XCTest
 
 final class SemanticColorTests: XCTestCase {
-    func test_의미_색_63개와_overlay_gray_10_과_상태_글자색_둘의_다크_라이트_쌍이_Figma_별칭_값이다() {
+    func test_의미_색_63개와_overlay_gray_10_deep_과_상태_글자색_둘의_다크_라이트_쌍이_Figma_별칭_값이다() {
         for item in semanticCases {
             XCTAssertEqual(rgba(item.theme.dark), item.dark, "\(item.name) dark")
             XCTAssertEqual(rgba(item.theme.light), item.light, "\(item.name) light")
@@ -510,7 +510,7 @@ private let semanticCases: [SemanticCase] = [
         "overlay/gray/default",
         SemanticColor.overlay.gray.default,
         Color.ds.overlay.gray.default,
-        dark: 0x706D8266,
+        dark: 0x706D8233,
         light: 0xAFAFAF33
     ),
     SemanticCase(
@@ -526,5 +526,12 @@ private let semanticCases: [SemanticCase] = [
         Color.ds.overlay.gray._10,
         dark: 0xAFAFAF1A,
         light: 0xAFAFAF1A
+    ),
+    SemanticCase(
+        "overlay/gray/deep (Figma 알파 색, 두 모드 같음)",
+        SemanticColor.overlay.gray.deep,
+        Color.ds.overlay.gray.deep,
+        dark: 0x423F5533,
+        light: 0x423F5533
     ),
 ]

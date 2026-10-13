@@ -28,6 +28,43 @@ final class TypographyTests: XCTestCase {
         XCTAssertEqual(TextStyle.ds.title1.bold.lineBoxVerticalPadding, 0.293, accuracy: 0.01)
         XCTAssertEqual(TextStyle.ds.caption2.regular.lineBoxVerticalPadding, 0)
     }
+
+    func test_pretendard_함수는_굵기_크기_줄_높이_자간으로_글자_모양을_만든다() {
+        let name = TextStyle.ds.pretendard(.semiBold, size: 20, lineHeight: 28, letterSpacingEm: -0.02)
+        XCTAssertEqual(
+            name,
+            TextStyle(fontName: "Pretendard-SemiBold", size: 20, lineHeight: 28, letterSpacingEm: -0.02)
+        )
+    }
+
+    func test_pretendard_함수에_이름_있는_토큰_값을_넣으면_그_토큰과_같다() {
+        XCTAssertEqual(
+            TextStyle.ds.pretendard(.semiBold, size: 16, lineHeight: 22, letterSpacingEm: -0.02),
+            TextStyle.ds.headline.semiBold
+        )
+        XCTAssertEqual(
+            TextStyle.ds.pretendard(.bold, size: 28, lineHeight: 34, letterSpacingEm: -0.02),
+            TextStyle.ds.title1.bold
+        )
+    }
+
+    func test_굵기_다섯의_글꼴_이름은_Pretendard_PostScript_이름이다() {
+        XCTAssertEqual(PretendardWeight.extraLight.fontName, "Pretendard-ExtraLight")
+        XCTAssertEqual(PretendardWeight.regular.fontName, "Pretendard-Regular")
+        XCTAssertEqual(PretendardWeight.medium.fontName, "Pretendard-Medium")
+        XCTAssertEqual(PretendardWeight.semiBold.fontName, "Pretendard-SemiBold")
+        XCTAssertEqual(PretendardWeight.bold.fontName, "Pretendard-Bold")
+    }
+
+    func test_시안의_토큰_밖_글자_모양을_함수로_만든다() {
+        let pill = TextStyle.ds.pretendard(.regular, size: 10, lineHeight: 18, letterSpacingEm: -0.01)
+        XCTAssertEqual(pill.fontName, "Pretendard-Regular")
+        XCTAssertEqual(pill.letterSpacing, -0.1, accuracy: 0.0001)
+
+        let tool = TextStyle.ds.pretendard(.extraLight, size: 10, lineHeight: 14, letterSpacingEm: 0)
+        XCTAssertEqual(tool.fontName, "Pretendard-ExtraLight")
+        XCTAssertEqual(tool.lineHeight, 14)
+    }
 }
 
 /// 코드 이름, 스타일, 기대값. 자간은 Figma 백분율을 100 으로 나눈 값이다.

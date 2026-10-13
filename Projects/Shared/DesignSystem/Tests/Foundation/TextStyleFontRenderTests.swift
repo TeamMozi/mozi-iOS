@@ -27,6 +27,29 @@ final class TextStyleFontRenderTests: XCTestCase {
         XCTAssertNotEqual(drawnWithStyle, drawnWithSystem)
     }
 
+    func test_TextStyle_글꼴을_쓰면_Pretendard_다섯_굵기가_모두_등록된다() {
+        _ = TextStyle.ds.pretendard(.extraLight, size: 10, lineHeight: 14, letterSpacingEm: 0).font
+        for name in [
+            "Pretendard-ExtraLight",
+            "Pretendard-Regular",
+            "Pretendard-Medium",
+            "Pretendard-SemiBold",
+            "Pretendard-Bold",
+        ] {
+            XCTAssertNotNil(UIFont(name: name, size: 10), "\(name) 이 등록되지 않았다")
+        }
+    }
+
+    @MainActor
+    func test_ExtraLight_글자는_Regular_글자와_다르게_그려진다() throws {
+        let extraLight = TextStyle.ds.pretendard(.extraLight, size: 28, lineHeight: 34, letterSpacingEm: 0)
+        let regular = TextStyle.ds.pretendard(.regular, size: 28, lineHeight: 34, letterSpacingEm: 0)
+        XCTAssertNotEqual(
+            try render(Text(sampleText).font(extraLight.font)),
+            try render(Text(sampleText).font(regular.font))
+        )
+    }
+
     /// 보이지 않는 창에 `UIHostingController` 로 올려 `window.layer.render(in:)` 로 그린다.
     /// `ImageRenderer` 는 스크롤 안을 비워 그리고, `drawHierarchy` 는 호스트 앱 없는 테스트에서 빈 그림을 낸다.
     @MainActor
