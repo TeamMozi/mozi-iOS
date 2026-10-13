@@ -17,6 +17,13 @@ public struct MeetingClient: Sendable {
     public var members: @Sendable (_ id: String, _ status: MemberStatus?) async throws -> [MeetingMember]
     public var approve: @Sendable (_ meetingID: String, _ userID: String) async throws -> Void
     public var kick: @Sendable (_ meetingID: String, _ userID: String) async throws -> Void
+    /// 모집 마감. 서버 `POST /api/meetings/{id}/close` 와 짝이다.
+    public var closeRecruitment: @Sendable (_ id: String) async throws -> Meeting
+    /// 모집 재개. 서버 `POST /api/meetings/{id}/reopen` 과 짝이다. 정원이 차 있으면 `.conflict` 다.
+    public var reopenRecruitment: @Sendable (_ id: String) async throws -> Meeting
+    /// 모임 종료. 서버 `POST /api/meetings/{id}/end` 와 짝이다. 되돌리지 않는다.
+    /// 모집 마감 상태에서만 종료한다. 모집 중이면 서버가 409(`.conflict`)로 막는다.
+    public var end: @Sendable (_ id: String) async throws -> Meeting
     public var requestNotification: @Sendable (_ id: String) async throws -> Void
     public var cancelNotificationRequest: @Sendable (_ id: String) async throws -> Void
     /// 알림을 요청한 사람 목록. 모임장용이다.
@@ -57,6 +64,15 @@ extension MeetingClient: TestDependencyKey {
         },
         approve: { _, _ in },
         kick: { _, _ in },
+        closeRecruitment: { id in
+            try MeetingPreviewData.meeting(id: id, changingStatusTo: .closed)
+        },
+        reopenRecruitment: { id in
+            try MeetingPreviewData.meeting(id: id, changingStatusTo: .recruiting)
+        },
+        end: { id in
+            try MeetingPreviewData.meeting(id: id, changingStatusTo: .ended)
+        },
         requestNotification: { _ in },
         cancelNotificationRequest: { _ in },
         notificationRequesters: { _ in
