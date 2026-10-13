@@ -2,19 +2,26 @@ import SwiftUI
 
 /// 모집 상태 드롭다운. 접힌 알약을 누르면 iOS 기본 메뉴가 뜬다.
 /// 지금 값은 쓰는 쪽이 넘기고, 고르면 `onSelect` 가 불린다. 메뉴 항목 글자색은 시스템이 정한다.
+/// 메뉴에 보일 항목은 쓰는 쪽이 `options` 로 고른다(기본은 셋 다, 순서도 넘긴 대로).
 public struct DesignStatusMenu: View {
     private let status: DesignRecruitStatus
+    let options: [DesignRecruitStatus]
     private let onSelect: @MainActor (DesignRecruitStatus) -> Void
 
-    public init(status: DesignRecruitStatus, onSelect: @escaping @MainActor (DesignRecruitStatus) -> Void) {
+    public init(
+        status: DesignRecruitStatus,
+        options: [DesignRecruitStatus] = DesignRecruitStatus.allCases,
+        onSelect: @escaping @MainActor (DesignRecruitStatus) -> Void
+    ) {
         self.status = status
+        self.options = options
         self.onSelect = onSelect
     }
 
     public var body: some View {
         Menu {
             DesignMenuOptions(
-                options: DesignRecruitStatus.allCases,
+                options: options,
                 selected: status,
                 title: \.title,
                 onSelect: onSelect

@@ -2,7 +2,7 @@ import MoziDemoKit
 import SharedDesignSystem
 import SwiftUI
 
-/// 색 화면. Figma 의미 색 묶음 17개, 칸 63개.
+/// 색 화면. 의미 색 묶음 18개(Figma 17 + 상태 글자색), 칸 66개.
 struct ColorGalleryView: View {
     var body: some View {
         GalleryPage(.color) {

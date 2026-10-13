@@ -11,12 +11,17 @@ public struct DesignSystemImages: Sendable {
     public let social = SocialImages()
     public let onboarding = OnboardingImages()
     public let interest = InterestImages()
+    public let snapPoint = SnapPointImages()
+    public let placeholder = PlaceholderImages()
+    public let symbol = SymbolImages()
 
     public init() {}
 }
 
 public struct BrandImages: Sendable {
     public let logo = Image(decorative: SharedDesignSystemAsset.logoMozi)
+    /// 검정 한 색 로고(Figma `I2973:36511;2973:36492`). 알림 미리보기 앱 아이콘 안에 쓴다.
+    public let logoBlack = Image(decorative: SharedDesignSystemAsset.logoMoziBlack)
 
     public init() {}
 }
@@ -26,6 +31,25 @@ public struct LoginImages: Sendable {
     public let shortform02 = Image(decorative: SharedDesignSystemAsset.loginShortform02)
     public let shortform03 = Image(decorative: SharedDesignSystemAsset.loginShortform03)
     public let shortform04 = Image(decorative: SharedDesignSystemAsset.loginShortform04)
+
+    public init() {}
+}
+
+/// 스냅 포인트 도움말 그림 셋(Figma `2836:143681`·`2836:143690`·`2836:143697`, 102×124). 두 모드에 같은 그림이다.
+/// 그림 안에 글자(「이게모지?」·「가장 나다운 소지품을 찍어보세요!」)가 들어 있다.
+public struct SnapPointImages: Sendable {
+    public let help01 = Image(decorative: SharedDesignSystemAsset.snapPointHelp01)
+    public let help02 = Image(decorative: SharedDesignSystemAsset.snapPointHelp02)
+    public let help03 = Image(decorative: SharedDesignSystemAsset.snapPointHelp03)
+
+    public init() {}
+}
+
+/// 실제 내용이 오기 전 자리를 채우는 그림.
+public struct PlaceholderImages: Sendable {
+    /// 시안 장소 카드의 지도 그림(Figma `I2973:30332;2973:30319`, 48×48, 핀 뺀 블록 넷). 실제 장소 지도가 아니다.
+    /// 한 색 템플릿이라 쓰는 쪽이 `.foregroundStyle` 로 색을 준다(시안은 `fill/neutral/strong`).
+    public let map = Image(decorative: SharedDesignSystemAsset.placeholderMap)
 
     public init() {}
 }
@@ -58,6 +82,14 @@ public struct InterestImages: Sendable {
     public let study = Image(decorative: SharedDesignSystemAsset.interestStudy)
     public let party = Image(decorative: SharedDesignSystemAsset.interestParty)
     public let etc = Image(decorative: SharedDesignSystemAsset.interestEtc)
+
+    public init() {}
+}
+
+/// Figma 아이콘 묶음에 없어 SF Symbol 로 그리는 그림. 에셋과 달리 VoiceOver 가 이름을 읽으므로 쓰는 쪽이 숨긴다.
+public struct SymbolImages: Sendable {
+    /// 모임장 표시 왕관
+    public let crown = Image(systemName: "crown.fill")
 
     public init() {}
 }
