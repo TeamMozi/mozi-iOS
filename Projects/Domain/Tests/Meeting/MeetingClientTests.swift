@@ -182,4 +182,22 @@ final class MeetingClientTests: XCTestCase {
         XCTAssertEqual(meeting.place, draft.place)
         XCTAssertEqual(meeting.category.id, draft.categoryID)
     }
+
+    func test_previewValue_인기_배경음악은_길이와_사용횟수를_담은_곡을_돌려줌() async throws {
+        let musics = try await MeetingClient.previewValue.popularBackgroundMusics()
+        XCTAssertEqual(musics.count, 7)
+        XCTAssertEqual(Set(musics.map(\.id)).count, musics.count)
+        for music in musics {
+            XCTAssertGreaterThan(music.durationSeconds, 0, music.title)
+            XCTAssertGreaterThan(music.useCount, 0, music.title)
+        }
+    }
+
+    func test_previewValue_만들기에_지난_포스터를_이어쓰면_그_주소를_담은_모임을_돌려줌() async throws {
+        var draft = MeetingFixtures.draft()
+        let poster = URL(filePath: "/poster.jpg")
+        draft.poster = .reuse(poster)
+        let meeting = try await MeetingClient.previewValue.create(draft: draft)
+        XCTAssertEqual(meeting.posterURL, poster)
+    }
 }

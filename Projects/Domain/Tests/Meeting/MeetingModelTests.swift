@@ -29,6 +29,25 @@ final class MeetingModelTests: XCTestCase {
         XCTAssertNotEqual(ImageInput.keep, ImageInput.remove)
     }
 
+    func test_사진입력_이어쓰기는_주소가_같으면_같고_다른_갈래와_다름() {
+        let poster = URL(filePath: "/poster.jpg")
+        XCTAssertEqual(ImageInput.reuse(poster), ImageInput.reuse(poster))
+        XCTAssertNotEqual(ImageInput.reuse(poster), ImageInput.reuse(URL(filePath: "/other.jpg")))
+        XCTAssertNotEqual(ImageInput.reuse(poster), ImageInput.keep)
+    }
+
+    func test_배경음악_칸이_같으면_같고_사용횟수가_다르면_다름() {
+        let music = BackgroundMusic(id: "m1", title: "키즈나 뮤직", albumImageURL: nil, durationSeconds: 99, useCount: 110)
+        XCTAssertEqual(
+            music,
+            BackgroundMusic(id: "m1", title: "키즈나 뮤직", albumImageURL: nil, durationSeconds: 99, useCount: 110)
+        )
+        XCTAssertNotEqual(
+            music,
+            BackgroundMusic(id: "m1", title: "키즈나 뮤직", albumImageURL: nil, durationSeconds: 99, useCount: 111)
+        )
+    }
+
     func test_앵콜초안_칸이_같으면_같은_초안() {
         let a = EncoreDraft(
             meeting: MeetingFixtures.draft(),
