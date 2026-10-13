@@ -48,7 +48,7 @@ public struct ProfileSettingView: View {
             .padding(.horizontal, ProfileSettingLayout.horizontalPadding)
             .padding(.top, ProfileSettingLayout.contentTopPadding)
         }
-        .scrollDismissesKeyboard(.interactively)
+        .designKeyboardDismissal()
         .disabled(store.isLoggingOut)
         .background(Color.ds.fill.neutral.default.ignoresSafeArea())
         .navigationBarTitleDisplayMode(.inline)
