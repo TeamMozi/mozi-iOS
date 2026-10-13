@@ -1,10 +1,13 @@
+import MoziDemoKit
 import SharedDesignSystem
 import SwiftUI
 
-/// 데모 버튼을 누르면 뜨는 시트. 「목록으로 돌아가기」와, 상태가 있으면 상태 목록을 보인다.
+/// 데모 버튼을 누르면 뜨는 시트. 「목록으로 돌아가기」, 화면 모드 전환, 상태가 있으면 상태 목록을 보인다.
 struct DemoMenuSheet: View {
     let options: [DemoMenuOption]
     let selectedID: String?
+    /// nil 이면 화면 모드 칸을 숨긴다.
+    let appearance: Binding<GalleryAppearance>?
     let onExit: () -> Void
     let onSelect: (String) -> Void
 
@@ -13,6 +16,10 @@ struct DemoMenuSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: CGFloat.ds.spacing.sm) {
             exitRow
+
+            if let appearance {
+                appearanceSection(appearance)
+            }
 
             if !options.isEmpty {
                 DesignText("화면 상태", style: TextStyle.ds.title3.semiBold)
@@ -56,6 +63,19 @@ struct DemoMenuSheet: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .padding(.top, CGFloat.ds.spacing.sm)
+    }
+
+    private func appearanceSection(_ appearance: Binding<GalleryAppearance>) -> some View {
+        VStack(alignment: .leading, spacing: CGFloat.ds.spacing.sm) {
+            DesignText(DemoMenuAppearance.title, style: TextStyle.ds.title3.semiBold)
+            Picker(DemoMenuAppearance.title, selection: appearance) {
+                ForEach(DemoMenuAppearance.options) { option in
+                    Text(option.title).tag(option)
+                }
+            }
+            .pickerStyle(.segmented)
+        }
         .padding(.top, CGFloat.ds.spacing.sm)
     }
 
