@@ -40,7 +40,8 @@ private struct DesignKeyboardDismissalTapHost: UIViewRepresentable {
 
 /// 창에 누르기 손짓을 달고, 이 뷰 영역 안에서 입력 칸이 아닌 곳을 누르면 키보드를 내린다.
 /// 뒤에 깔린 뷰는 앞의 내용에 가려 터치를 받지 못하므로 손짓은 창에 단다. 창에 단 손짓은 창 안 모든 터치를 보므로
-/// 이 뷰의 영역으로 다시 거른다. 터치를 막지 않고 다른 손짓과 함께 인식해 버튼·메뉴도 그대로 눌린다.
+/// 이 뷰의 영역과 이 뷰가 속한 화면으로 다시 거른다. 영역만 보면 같은 창에 뜬 시트를 눌러도 영역 안 좌표라 받는다.
+/// 터치를 막지 않고 다른 손짓과 함께 인식해 버튼·메뉴도 그대로 눌린다.
 final class DesignKeyboardDismissalTapView: UIView, UIGestureRecognizerDelegate {
     let tapRecognizer = UITapGestureRecognizer()
     private weak var installedWindow: UIWindow?
@@ -71,8 +72,24 @@ final class DesignKeyboardDismissalTapView: UIView, UIGestureRecognizerDelegate 
     }
 
     /// `touchedView` 가 이 뷰 좌표 `point` 의 터치를 받았을 때 손짓이 받을지. 영역 밖이거나 입력 칸이면 받지 않는다.
+    /// 누른 뷰가 이 뷰가 속한 화면 밖이면 받지 않는다. 누른 뷰나 화면을 모르면 남의 키보드를 내리지 않도록 받지 않는다.
     func acceptsTouch(on touchedView: UIView?, at point: CGPoint) -> Bool {
-        bounds.contains(point) && !DesignKeyboardDismissal.isTextInput(touchedView)
+        guard let touchedView, let screenView = owningScreenView, touchedView.isDescendant(of: screenView) else {
+            return false
+        }
+        return bounds.contains(point) && !DesignKeyboardDismissal.isTextInput(touchedView)
+    }
+
+    /// 응답 사슬에서 처음 만나는 화면(뷰 컨트롤러)의 뷰.
+    private var owningScreenView: UIView? {
+        var responder = next
+        while let current = responder {
+            if let controller = current as? UIViewController {
+                return controller.view
+            }
+            responder = current.next
+        }
+        return nil
     }
 
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
