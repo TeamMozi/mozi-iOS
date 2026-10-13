@@ -26,16 +26,36 @@ public struct DesignToolbarTitle: View {
 public struct DesignToolbarIcon: View {
     static let size: CGFloat = CGFloat.ds.iconSize._24
     static let color = SemanticColor.text.neutral.primary
+    /// 강조 유리 원 위 아이콘. 시안 Header Btn accent 는 모드와 상관없이 검정이다
+    static let prominentColor = ThemedColor.fixed(PrimitiveColor.neutral._1300)
 
+    @Environment(\.isEnabled) private var isEnabled
     private let image: Image
+    private let isProminent: Bool
 
-    public init(_ image: Image) {
+    /// - Parameter isProminent: 버튼에 `.designToolbarProminent()` 를 걸었으면 `true`. 켜진 동안 아이콘을 검정으로 그린다.
+    public init(_ image: Image, isProminent: Bool = false) {
         self.image = image
+        self.isProminent = isProminent
     }
 
     public var body: some View {
         image
             .iconSize(Self.size)
-            .foregroundStyle(Self.color.color)
+            .foregroundStyle((isProminent && isEnabled ? Self.prominentColor : Self.color).color)
     }
+}
+
+/// 헤더 오른쪽 확인 버튼(→·체크)의 강조 모양. 시안 Header Btn accent 처럼 켜지면 강조색 유리 원, 꺼지면 시스템 회색 유리 원이다.
+/// `Button { } label: { DesignToolbarIcon(Image.ds.icon.arrows.right, isProminent: true) }.designToolbarProminent()` 꼴로 쓴다.
+public extension View {
+    func designToolbarProminent() -> some View {
+        buttonStyle(.glassProminent)
+            .tint(DesignToolbarProminent.tint.color)
+    }
+}
+
+enum DesignToolbarProminent {
+    /// 시안 Header Btn accent 바탕 `text/accent/highlight`
+    static let tint = SemanticColor.text.accent.highlight
 }
