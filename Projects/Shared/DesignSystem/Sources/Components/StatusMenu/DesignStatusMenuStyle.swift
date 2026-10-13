@@ -19,7 +19,8 @@ public enum DesignRecruitStatus: String, CaseIterable, Identifiable, Sendable {
 
 /// Figma status dropdown 의 접힌 알약 색. 「모집 마감」은 Figma 에 의미 색이 없어 원시 빨강이다.
 enum DesignStatusMenuStyleResolver {
-    static let background = SemanticColor.overlay.gray.default
+    /// 접힌 알약의 바탕. Figma `fill/neutral/default`.
+    static let background = SemanticColor.fill.neutral.default
     static let chevron = SemanticColor.text.neutral.subtle
 
     static func text(for status: DesignRecruitStatus) -> ThemedColor {

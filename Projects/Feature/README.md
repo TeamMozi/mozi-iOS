@@ -33,7 +33,7 @@
 - `Route.State`·`Route.Action` 은 Flow 파일 아래 `extension <Flow>.Route.State: Equatable {}` 와 `extension <Flow>.Route.Action: Equatable {}` 로 Equatable 을 맞춘다. 케이스가 없는 `Route` 의 목적지는 `{ _ in EmptyView() }` 로 둔다 (빈 `switch` 는 컴파일되지 않는다)
 - 화면이나 상태를 더하는 작업은 데모 앱 목록에도 한 줄 더한다. 방법은 [DemoApp README](../DemoApp/README.md)
 - 컨테이너와 화면 리듀서는 body 끝에 `.logged(as: Self.self, children: [...])` 를 붙이고, 자식 Scope·ifLet 의 액션 이름을 `children` 에 넘긴다. 자식이 없으면 `children: []`. 붙인 곳은 `Tests/Log/FeatureLogAttachmentTests` 표에도 더한다
-- 오류 문구는 `Common/Error/FeatureErrorMessage` 한 벌을 쓴다. Domain 오류 타입마다 함수 하나가 종류마다 문구 하나를 준다. 동작 이름이 필요한 화면만 몇 종류를 덮어쓴다(로그인의 `unauthorized`·`storage`, 로그아웃의 `logoutFailure(for:)`). 서버 message 는 화면에 띄우지 않고 로그에만 남는다. 문구가 없는 종류(`AuthError.cancelled`)는 알림 창을 띄우지 않는다. 새 Domain 오류 타입은 이 표에 함수 하나를 더한다
+- 오류 문구는 `Common/Error/FeatureErrorMessage` 한 벌을 쓴다. Domain 오류 타입마다 함수 하나가 종류마다 문구 하나를 준다. 동작 이름이 필요한 화면만 몇 종류를 덮어쓴다(로그인의 `unauthorized`·`storage`, 로그아웃의 `logoutFailure(for:)`, 모임 화면의 `meetingFailure(for:action:conflict:)`, 스냅 포인트 목록 읽기의 `snapPointFailure(for:action:)` 와 동작 문구 `MeetingAction`). 서버 message 는 화면에 띄우지 않고 로그에만 남는다. 문구가 없는 종류(`AuthError.cancelled`)는 알림 창을 띄우지 않는다. 새 Domain 오류 타입은 이 표에 함수 하나를 더한다
 
 ## 주요 진입점
 - `RootFeature`, `RootView`

@@ -126,7 +126,8 @@ public enum GalleryScreenStatusSample: String, CaseIterable, Identifiable {
     }
 }
 
-/// 색 화면의 의미 색 63개와 글자 화면의 글자 스타일 21개(묶음 8개). 둘 다 Figma 순서다.
+/// 색 화면의 의미 색 66개(Figma 63개 + 알파 색 `overlay/gray/10` + 상태 글자색 둘)와 글자 화면의 글자 스타일 21개(묶음 8개). 둘 다 Figma 순서다.
+/// 다만 `text/status` 는 Figma 에 없는 묶음이라 글자색 묶음 끝(`text/accent` 뒤)에 끼워 두었다.
 public enum GalleryCatalog {
     /// 글자 화면 견본. 가장 작은 글자에서도 폭 안에서 두 줄 넘게 넘어가는 길이다.
     public static let sampleText = "동네라서 가능한 모든 모임. 가까운 이웃과 취미를 나누고, 주말마다 새로운 모임을 열어 함께 시간을 보내요."
@@ -150,6 +151,13 @@ public enum GalleryCatalog {
                 GallerySwatch("text.accent.subtle", Color.ds.text.accent.subtle),
                 GallerySwatch("text.accent.highlight", Color.ds.text.accent.highlight),
                 GallerySwatch("text.accent.strong", Color.ds.text.accent.strong),
+            ]
+        ),
+        GalleryColorGroup(
+            title: "text/status",
+            swatches: [
+                GallerySwatch("text.status.positive", Color.ds.text.status.positive),
+                GallerySwatch("text.status.negative", Color.ds.text.status.negative),
             ]
         ),
         GalleryColorGroup(
@@ -278,6 +286,7 @@ public enum GalleryCatalog {
             swatches: [
                 GallerySwatch("overlay.gray.default", Color.ds.overlay.gray.default),
                 GallerySwatch("overlay.gray.plain", Color.ds.overlay.gray.plain),
+                GallerySwatch("overlay.gray._10", Color.ds.overlay.gray._10),
             ]
         ),
     ]

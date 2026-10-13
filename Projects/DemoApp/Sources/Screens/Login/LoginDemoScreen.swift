@@ -24,6 +24,7 @@ struct LoginDemoScreen: View {
                 shortLabel: demoState.shortTitle,
                 options: LoginDemoState.allCases.map { DemoMenuOption(id: $0.rawValue, title: $0.title) },
                 selectedID: demoState.rawValue,
+                selectsAppearance: DemoScreen.login.selectsAppearance,
                 onSelect: { id in
                     select(LoginDemoState(rawValue: id) ?? .idle)
                 },

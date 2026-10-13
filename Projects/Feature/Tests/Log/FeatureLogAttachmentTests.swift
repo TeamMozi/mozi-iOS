@@ -68,6 +68,32 @@ final class FeatureLogAttachmentTests: XCTestCase {
     func test_RootFeature에는_로그가_붙지_않는다() {
         XCTAssertNil(LoggedAttachment.find(in: RootFeature().body))
     }
+
+    func test_모임_상세_흐름과_화면_다섯에_로그가_붙어_있다() {
+        XCTAssertEqual(
+            LoggedAttachment.find(in: MeetingDetailFlowFeature().body),
+            LoggedAttachment(
+                scene: "MeetingDetailFlow",
+                children: ["detail", "widget", "management"],
+                wrapsStack: true
+            )
+        )
+
+        let scenes: [(body: Any, scene: String)] = [
+            (MeetingDetailFeature().body, "MeetingDetail"),
+            (MeetingManagementFeature().body, "MeetingManagement"),
+            (MemberManagementFeature().body, "MemberManagement"),
+            (SnapPointSettingFeature().body, "SnapPointSetting"),
+            (MeetingWidgetFeature().body, "MeetingWidget"),
+        ]
+        for (body, scene) in scenes {
+            XCTAssertEqual(
+                LoggedAttachment.find(in: body),
+                LoggedAttachment(scene: scene, children: [], wrapsStack: false),
+                scene
+            )
+        }
+    }
 }
 
 /// body 안의 `.logged` 래퍼가 받은 값. `wrapsStack` 은 `.forEach` 까지 감쌌는지다

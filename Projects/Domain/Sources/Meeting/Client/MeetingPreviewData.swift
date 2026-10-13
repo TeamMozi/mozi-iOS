@@ -116,7 +116,7 @@ enum MeetingPreviewData {
         status: .recruiting,
         host: host,
         episode: nil,
-        myParticipation: .none,
+        myParticipation: MyParticipation.none,
         joinQuestions: ["평소 얼마나 달리시나요?"],
         notificationRequestCount: 2,
         isNotificationRequested: true

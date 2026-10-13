@@ -4,7 +4,7 @@ public extension Color {
     static let ds = DesignSystemColors()
 }
 
-/// Figma 의미 색 63개와 소셜 로그인 색 넷. 의미 색은 기기 모드를 따라 바뀐다.
+/// Figma 의미 색 63개, 알파 색 `overlay.gray._10`, 상태 글자색 둘(`text.status`), 소셜 로그인 색 넷. 의미 색은 기기 모드를 따라 바뀐다.
 public struct DesignSystemColors: Sendable {
     public let text = TextColors()
     public let fill = FillColors()
@@ -19,6 +19,7 @@ public struct DesignSystemColors: Sendable {
 public struct TextColors: Sendable {
     public let neutral = TextNeutralColors()
     public let accent = TextAccentColors()
+    public let status = TextStatusColors()
 
     public init() {}
 }
@@ -39,6 +40,14 @@ public struct TextAccentColors: Sendable {
     public let subtle = SemanticColor.text.accent.subtle.color
     public let highlight = SemanticColor.text.accent.highlight.color
     public let strong = SemanticColor.text.accent.strong.color
+
+    public init() {}
+}
+
+/// 상태 글자색. 모드와 상관없이 같은 색이다. 긍정은 초록(「모집 중」), 부정은 빨강(「종료」·삭제).
+public struct TextStatusColors: Sendable {
+    public let positive = SemanticColor.text.status.positive.color
+    public let negative = SemanticColor.text.status.negative.color
 
     public init() {}
 }
@@ -214,6 +223,7 @@ public struct OverlayInverseColors: Sendable {
 public struct OverlayGrayColors: Sendable {
     public let `default` = SemanticColor.overlay.gray.default.color
     public let plain = SemanticColor.overlay.gray.plain.color
+    public let _10 = SemanticColor.overlay.gray._10.color
 
     public init() {}
 }

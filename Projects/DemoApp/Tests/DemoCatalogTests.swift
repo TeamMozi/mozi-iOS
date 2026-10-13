@@ -2,15 +2,15 @@
 import XCTest
 
 final class DemoCatalogTests: XCTestCase {
-    func test_흐름은_일곱이고_스펙_순서다() {
+    func test_흐름은_여덟이고_스펙_순서다() {
         XCTAssertEqual(
             DemoFlow.allCases.map(\.title),
-            ["로그인", "온보딩", "숏폼", "검색", "만들기", "채팅", "마이"]
+            ["로그인", "온보딩", "숏폼", "모임", "검색", "만들기", "채팅", "마이"]
         )
     }
 
-    func test_로그인과_온보딩과_숏폼만_열리고_나머지는_준비_중() {
-        XCTAssertEqual(DemoFlow.allCases.filter(\.isReady), [.login, .onboarding, .shortform])
+    func test_로그인과_온보딩과_숏폼과_모임만_열리고_나머지는_준비_중() {
+        XCTAssertEqual(DemoFlow.allCases.filter(\.isReady), [.login, .onboarding, .shortform, .meeting])
     }
 
     func test_로그인_흐름은_화면_하나() {
@@ -33,6 +33,12 @@ final class DemoCatalogTests: XCTestCase {
         XCTAssertEqual(DemoFlow.shortform.screenCountTitle, "화면 1개")
     }
 
+    func test_모임_흐름은_모임_상세와_위젯_화면_둘() {
+        XCTAssertEqual(DemoFlow.meeting.screens, [.meetingDetail, .meetingWidget])
+        XCTAssertEqual(DemoFlow.meeting.screenCountLabel, "화면 2")
+        XCTAssertEqual(DemoFlow.meeting.screenCountTitle, "화면 2개")
+    }
+
     func test_탭_안_이동_화면_줄은_상태_셋의_개수와_이름을_보인다() {
         XCTAssertEqual(DemoScreen.tabNavigation.title, "탭 안 이동")
         XCTAssertEqual(DemoScreen.tabNavigation.stateSummary, "상태 3개 · 첫 화면, 견본 1장, 견본 2장")
@@ -42,12 +48,14 @@ final class DemoCatalogTests: XCTestCase {
         XCTAssertEqual(TabNavigationDemoState.allCases.map(\.shortTitle), ["처음", "1장", "2장"])
     }
 
-    func test_탭_안_이동과_온보딩_세_화면만_전체_화면으로_덮어_띄운다() {
+    func test_로그인을_뺀_여섯_화면은_전체_화면으로_덮어_띄운다() {
         XCTAssertFalse(DemoScreen.login.presentsFullScreen)
         XCTAssertTrue(DemoScreen.tabNavigation.presentsFullScreen)
         XCTAssertTrue(DemoScreen.profileSetting.presentsFullScreen)
         XCTAssertTrue(DemoScreen.interestSetting.presentsFullScreen)
         XCTAssertTrue(DemoScreen.onboardingFlow.presentsFullScreen)
+        XCTAssertTrue(DemoScreen.meetingDetail.presentsFullScreen)
+        XCTAssertTrue(DemoScreen.meetingWidget.presentsFullScreen)
     }
 
     func test_온보딩_흐름은_프로필_카테고리_흐름_전체_세_화면() {
@@ -75,5 +83,15 @@ final class DemoCatalogTests: XCTestCase {
             ["받는 중", "기본", "고름", "저장 중", "받기 실패", "저장 실패"]
         )
         XCTAssertEqual(OnboardingFlowDemoState.allCases.map(\.shortTitle), ["처음"])
+    }
+
+    func test_모임_상세_화면_줄은_관점_넷의_개수와_이름을_보인다() {
+        XCTAssertEqual(DemoScreen.meetingDetail.title, "모임 상세")
+        XCTAssertEqual(DemoScreen.meetingDetail.stateSummary, "상태 4개 · 모임장, 멤버, 승인 대기, 신청 전")
+    }
+
+    func test_위젯_화면_줄은_상태_둘의_개수와_이름을_보인다() {
+        XCTAssertEqual(DemoScreen.meetingWidget.title, "위젯 / 스냅포인트")
+        XCTAssertEqual(DemoScreen.meetingWidget.stateSummary, "상태 2개 · 알림 전, 진행 중")
     }
 }

@@ -1,6 +1,6 @@
 import Foundation
 
-/// Figma 의미 색 63개. 다크·라이트 두 모드의 원시 색 쌍을 Figma 별칭 그대로 적는다.
+/// Figma 의미 색 63개, Figma 알파 색을 두 모드에 같이 건 `overlay.gray._10`, Figma 밖 상태 글자색 둘(`text.status`). 다크·라이트 두 모드의 원시 색 쌍을 Figma 별칭 그대로 적는다.
 /// 공개 길은 `Color.ds` 다. 여기 값은 부품과 테스트가 쓴다.
 enum SemanticColor {
     static let text = SemanticTextColors()
@@ -13,6 +13,7 @@ enum SemanticColor {
 struct SemanticTextColors: Sendable {
     let neutral = SemanticTextNeutralColors()
     let accent = SemanticTextAccentColors()
+    let status = SemanticTextStatusColors()
 }
 
 struct SemanticTextNeutralColors: Sendable {
@@ -29,6 +30,13 @@ struct SemanticTextAccentColors: Sendable {
     let subtle = ThemedColor(dark: PrimitiveColor.primary._200, light: PrimitiveColor.primary._400)
     let highlight = ThemedColor(dark: PrimitiveColor.primary._50, light: PrimitiveColor.primary._700)
     let strong = ThemedColor(dark: PrimitiveColor.primary._0, light: PrimitiveColor.primary._600)
+}
+
+/// Figma 에 의미 색이 없어 원시 색 `color/system/green`·`color/system/red` 를 두 모드에 같이 건다.
+/// 시안의 「모집 중」 초록, 「종료」·「모임 삭제」 빨강 글자다.
+struct SemanticTextStatusColors: Sendable {
+    let positive = ThemedColor(dark: PrimitiveColor.system.green, light: PrimitiveColor.system.green)
+    let negative = ThemedColor(dark: PrimitiveColor.system.red, light: PrimitiveColor.system.red)
 }
 
 struct SemanticFillColors: Sendable {
@@ -162,4 +170,7 @@ struct SemanticOverlayInverseColors: Sendable {
 struct SemanticOverlayGrayColors: Sendable {
     let `default` = ThemedColor(dark: AlphaColor.overlay.gray._40, light: AlphaColor.overlay.gray._20)
     let plain = ThemedColor(dark: AlphaColor.overlay.dark._40, light: PrimitiveColor.neutral._50)
+    /// Figma `overlay/gray/10`(`Sementic Numbers` 의 한 모드 알파 색)을 시안이 그대로 쓴다. 두 모드에 같은 색이다.
+    /// 다크 사이드바 `2798:102194` 의 행 묶음(Form Group)도 같은 변수에 묶여 있다.
+    let _10 = ThemedColor(dark: AlphaColor.overlay.gray._10, light: AlphaColor.overlay.gray._10)
 }

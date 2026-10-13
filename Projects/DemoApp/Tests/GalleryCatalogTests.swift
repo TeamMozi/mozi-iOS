@@ -3,10 +3,11 @@ import SwiftUI
 import XCTest
 
 final class GalleryCatalogTests: XCTestCase {
-    func test_색_묶음은_Figma_의미_색_묶음_17개를_Figma_순서로_보인다() {
+    func test_색_묶음은_의미_색_묶음_18개를_Figma_순서로_보인다() {
         XCTAssertEqual(GalleryCatalog.colorGroups.map(\.title), [
             "text/neutral",
             "text/accent",
+            "text/status",
             "fill/neutral",
             "fill/accent",
             "border/neutral",
@@ -28,13 +29,13 @@ final class GalleryCatalogTests: XCTestCase {
     func test_색_묶음마다_Figma_의미_색_개수만큼_칸을_보인다() {
         XCTAssertEqual(
             GalleryCatalog.colorGroups.map(\.swatches.count),
-            [6, 4, 8, 3, 7, 3, 3, 3, 3, 1, 3, 3, 3, 2, 6, 3, 2]
+            [6, 4, 2, 8, 3, 7, 3, 3, 3, 3, 1, 3, 3, 3, 2, 6, 3, 3]
         )
     }
 
-    func test_색_칸_63개의_이름이_서로_다르고_자기_묶음_경로로_시작한다() {
+    func test_색_칸_66개의_이름이_서로_다르고_자기_묶음_경로로_시작한다() {
         let names = GalleryCatalog.colorGroups.flatMap { $0.swatches.map(\.name) }
-        XCTAssertEqual(Set(names).count, 63)
+        XCTAssertEqual(Set(names).count, 66)
 
         for group in GalleryCatalog.colorGroups {
             let prefix = group.title.replacingOccurrences(of: "/", with: ".") + "."
@@ -51,9 +52,9 @@ final class GalleryCatalogTests: XCTestCase {
         XCTAssertEqual(shortName(of: "overlay.dim._60"), "60")
     }
 
-    func test_색_칸_63개의_짧은_이름은_비어_있지_않고_점이나_밑줄로_시작하지_않는다() {
+    func test_색_칸_66개의_짧은_이름은_비어_있지_않고_점이나_밑줄로_시작하지_않는다() {
         let swatches = GalleryCatalog.colorGroups.flatMap(\.swatches)
-        XCTAssertEqual(swatches.count, 63)
+        XCTAssertEqual(swatches.count, 66)
 
         for swatch in swatches {
             XCTAssertFalse(swatch.shortName.isEmpty, "\(swatch.name) 의 짧은 이름이 비었다")

@@ -4,23 +4,28 @@ import UIKit
 import XCTest
 
 final class ImageAccessTests: XCTestCase {
-    func test_Image_ds_경로가_아이콘_168개와_기존_이미지_7개와_온보딩_그림_13개() {
+    func test_Image_ds_경로가_아이콘_168개와_기존_이미지_12개와_온보딩_그림_13개와_SF_Symbol_1개() {
         let paths = leafPaths(of: Image.ds)
 
-        XCTAssertEqual(paths.count, 188)
+        XCTAssertEqual(paths.count, 194)
         XCTAssertEqual(paths.filter { $0.hasPrefix("icon.") }.count, 168)
         XCTAssertEqual(Set(paths), Set(ImageAccessPaths.all))
     }
 
-    func test_기존_이미지_7장이_번들에서_불러와진다() {
+    func test_기존_이미지_12장이_번들에서_불러와진다() {
         let names = [
             "logo_mozi",
+            "logo_mozi_black",
             "login_shortform_01",
             "login_shortform_02",
             "login_shortform_03",
             "login_shortform_04",
             "icon_social_apple",
             "icon_social_kakao",
+            "snap_point_help_01",
+            "snap_point_help_02",
+            "snap_point_help_03",
+            "placeholder_map",
         ]
 
         for name in names {
@@ -65,7 +70,7 @@ final class ImageAccessTests: XCTestCase {
 
     @MainActor
     func test_Image_ds_경로가_같은_이름의_에셋을_그린다() throws {
-        XCTAssertEqual(ImageAccessAssets.all.count, 188)
+        XCTAssertEqual(ImageAccessAssets.all.count, 193)
 
         for entry in ImageAccessAssets.all {
             let viaPath = try rgbaPixels(of: render(entry.image))
@@ -136,18 +141,7 @@ private struct RGBA: Equatable {
 private enum ImageAccessPaths {
     static let all: [String] = [
         "brand.logo",
-        "interest.activity",
-        "interest.art",
-        "interest.dessert",
-        "interest.etc",
-        "interest.food",
-        "interest.friend",
-        "interest.growth",
-        "interest.hobby",
-        "interest.party",
-        "interest.pet",
-        "interest.study",
-        "interest.travel",
+        "brand.logoBlack",
         "icon.arrows.down",
         "icon.arrows.left",
         "icon.arrows.leftDown",
@@ -316,31 +310,37 @@ private enum ImageAccessPaths {
         "icon.zoomIn.outlined",
         "icon.zoomOut.filled",
         "icon.zoomOut.outlined",
+        "interest.activity",
+        "interest.art",
+        "interest.dessert",
+        "interest.etc",
+        "interest.food",
+        "interest.friend",
+        "interest.growth",
+        "interest.hobby",
+        "interest.party",
+        "interest.pet",
+        "interest.study",
+        "interest.travel",
         "login.shortform01",
         "login.shortform02",
         "login.shortform03",
         "login.shortform04",
         "onboarding.profileDefault",
+        "placeholder.map",
+        "snapPoint.help01",
+        "snapPoint.help02",
+        "snapPoint.help03",
         "social.apple",
         "social.kakao",
+        "symbol.crown",
     ]
 }
 
 private enum ImageAccessAssets {
     static let all: [(image: Image, asset: String)] = [
         (Image.ds.brand.logo, "logo_mozi"),
-        (Image.ds.interest.activity, "interest_activity"),
-        (Image.ds.interest.art, "interest_art"),
-        (Image.ds.interest.dessert, "interest_dessert"),
-        (Image.ds.interest.etc, "interest_etc"),
-        (Image.ds.interest.food, "interest_food"),
-        (Image.ds.interest.friend, "interest_friend"),
-        (Image.ds.interest.growth, "interest_growth"),
-        (Image.ds.interest.hobby, "interest_hobby"),
-        (Image.ds.interest.party, "interest_party"),
-        (Image.ds.interest.pet, "interest_pet"),
-        (Image.ds.interest.study, "interest_study"),
-        (Image.ds.interest.travel, "interest_travel"),
+        (Image.ds.brand.logoBlack, "logo_mozi_black"),
         (Image.ds.icon.arrows.down, "icon_arrows_down"),
         (Image.ds.icon.arrows.left, "icon_arrows_left"),
         (Image.ds.icon.arrows.leftDown, "icon_arrows_left_down"),
@@ -509,11 +509,27 @@ private enum ImageAccessAssets {
         (Image.ds.icon.zoomIn.outlined, "icon_zoom_in_outlined"),
         (Image.ds.icon.zoomOut.filled, "icon_zoom_out_filled"),
         (Image.ds.icon.zoomOut.outlined, "icon_zoom_out_outlined"),
+        (Image.ds.interest.activity, "interest_activity"),
+        (Image.ds.interest.art, "interest_art"),
+        (Image.ds.interest.dessert, "interest_dessert"),
+        (Image.ds.interest.etc, "interest_etc"),
+        (Image.ds.interest.food, "interest_food"),
+        (Image.ds.interest.friend, "interest_friend"),
+        (Image.ds.interest.growth, "interest_growth"),
+        (Image.ds.interest.hobby, "interest_hobby"),
+        (Image.ds.interest.party, "interest_party"),
+        (Image.ds.interest.pet, "interest_pet"),
+        (Image.ds.interest.study, "interest_study"),
+        (Image.ds.interest.travel, "interest_travel"),
         (Image.ds.login.shortform01, "login_shortform_01"),
         (Image.ds.login.shortform02, "login_shortform_02"),
         (Image.ds.login.shortform03, "login_shortform_03"),
         (Image.ds.login.shortform04, "login_shortform_04"),
         (Image.ds.onboarding.profileDefault, "onboarding_profile_default"),
+        (Image.ds.placeholder.map, "placeholder_map"),
+        (Image.ds.snapPoint.help01, "snap_point_help_01"),
+        (Image.ds.snapPoint.help02, "snap_point_help_02"),
+        (Image.ds.snapPoint.help03, "snap_point_help_03"),
         (Image.ds.social.apple, "icon_social_apple"),
         (Image.ds.social.kakao, "icon_social_kakao"),
     ]

@@ -10,7 +10,7 @@ final class MeetingModelTests: XCTestCase {
     func test_모임_참여상태가_다르면_다른_모임() {
         XCTAssertNotEqual(
             MeetingFixtures.meeting(myParticipation: .host),
-            MeetingFixtures.meeting(myParticipation: .none)
+            MeetingFixtures.meeting(myParticipation: MyParticipation.none)
         )
     }
 

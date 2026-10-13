@@ -5,6 +5,8 @@ import SwiftUI
 /// 화면 오른쪽 아래에 떠 있는 데모 버튼. 지금 상태를 짧게 적고, 누르면 시트를 열고, 끌어서 옮긴다.
 struct DemoFloatingButton: View {
     let shortLabel: String?
+    /// 창 좌표의 버튼 자리. 위 창이 이 자리 밖 터치를 아래 앱 창으로 넘긴다.
+    var onFrameChange: (CGRect) -> Void = { _ in }
     let action: () -> Void
 
     @State private var settledOffset: CGSize = .zero
@@ -14,6 +16,11 @@ struct DemoFloatingButton: View {
         GeometryReader { proxy in
             let container = proxy.size
             label
+                .onGeometryChange(for: CGRect.self) { proxy in
+                    proxy.frame(in: .global)
+                } action: { frame in
+                    onFrameChange(frame)
+                }
                 .offset(
                     DemoFloatingButtonLayout.clampedOffset(
                         Self.sum(settledOffset, dragTranslation),
