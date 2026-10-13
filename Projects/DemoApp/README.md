@@ -7,8 +7,10 @@
 
 ## 현재 상태
 - 첫 화면: 이번 빌드에서 바뀐 것 · 흐름 여덟 · 디자인 시스템 · 바닥 글(업로드 빌드만)
-- 흐름 여덟 중 로그인 · 온보딩 · 숏폼 · 모임이 열린다. 나머지는 「준비 중」. 모임 흐름은 「모임 상세」 · 「위젯 / 스냅포인트」 두 화면. 위젯 데모는 두 상태(알림 전 · 진행 중) 모두 모임이 모집 마감으로 시작한다(`MeetingDetailDemoBackend(initialStatus:)`). 모집 중이면 「모임 종료」 가 감춰지기 때문이다. 모임 상세 데모는 모집 중으로 시작한다
+- 흐름 여덟 중 로그인 · 온보딩 · 숏폼 · 모임이 열린다. 나머지는 「준비 중」(「만들기」 흐름은 화면이 없다). 모임 흐름은 「모임 만들기」 · 「모임 상세」 · 「위젯 / 스냅포인트」 세 화면. 위젯 데모는 두 상태(알림 전 · 진행 중) 모두 모임이 모집 마감으로 시작한다(`MeetingDetailDemoBackend(initialStatus:)`). 모집 중이면 「모임 종료」 가 감춰지기 때문이다. 모임 상세 데모는 모집 중으로 시작한다
 - 모임 데모는 사진 하나(`Resources/Photos/demo_photo.png`, 시안 포스터 원본)를 모임 포스터·회차 카드 포스터·모임장·멤버·알림 요청자·「나」 의 프로필 사진에 돌려 쓴다. 앱이 `Bundle.main` 에서 파일 URL 을 찾아 가짜 서버(`MeetingDetailDemoBackend(photoURL:)`)와 시리즈 Client(`MeetingDetailDemoClients.seriesClient(photoURL:)`)에 넘긴다. Domain 가짜 데이터는 사진이 없다
+- 모임 만들기는 바탕 화면 위에 모임 만들기 시트(`CreateMeetingFlowView`)를 띄운다. 상태 여덟: 빈 화면에서 처음 만들기 / 입력 다 채운 모임 만들기 / 지난 모임 불러오기 / 지난 포스터 이어 쓰기 / 포스터에서 → 누르면 만들기 실패 / 시리즈 정보에서 → 누르면 연결만 실패 / 장소 검색 결과 없음 / 만든 뒤. 상태마다 그 일이 일어나는 화면을 쌓고 필요한 입력을 채운 채로 시작한다(날짜·시간은 다음 날 19:00). 만들거나 닫으면 `DemoCreateMeetingFeature` 가 시트를 닫고 만든 모임 한 줄을 보인다. 연결만 실패하면 시트를 닫고 안내를 띄운다
+  - 가짜 응답은 `CreateMeetingDemoClients` 가 Domain `previewValue` 를 상태마다 덮어쓴다. 장소 검색은 아무 검색어에나 가짜 장소 넷을 모두 돌려준다(결과 없음 상태만 0건). 지난 모임은 처음 만들기만 비고, 그 밖에는 첫 페이지 맨 앞에 시리즈에 안 묶인 모임 하나를 더해 2회차(앵콜) 흐름을 본다. 지난 포스터는 임시 폴더에 쓴 단색 그림(`CreateMeetingDemoPoster`)이다
 - 로그인 화면 상태 셋: 기본 / 불러오는 중 / 오류 안내
 - 숏폼 「탭 안 이동」: 누르면 숏폼 탭 Flow 가 전체 화면으로 덮여 뜬다. 상태 셋: 첫 화면 / 견본 1장 / 견본 2장. 견본의 「다음」은 견본을 하나 더 쌓고, 뒤로 가기로 하나씩 빠진다
 - 온보딩 세 화면은 모두 전체 화면으로 덮여 뜬다. 프로필 설정 상태 셋: 빈 화면 / 다 채운 화면 / 로그아웃 실패(뒤로는 데모에 Flow 가 없어 아무 일도 없다). 카테고리 설정 상태 여섯: 받는 중 / 기본 / 고른 상태 / 저장 중 / 받기 실패 / 저장 실패. 온보딩 흐름 전체 상태 하나(처음부터): 가짜 목록과 1초 뒤 성공하는 저장으로 「완료」 까지 넘기고, 끝나거나 로그아웃하면 `DemoOnboardingFlowFeature` 가 처음 화면으로 되돌린다
@@ -16,10 +18,10 @@
   - 색: 의미 색 66(Figma 묶음 17 + 알파 색 `overlay/gray/10` + 상태 글자색 `text/status` 둘)
   - 글자: 스타일 21개마다 이름, 수치 한 줄(크기 · 줄 높이 · 자간 % (pt) · 굵기), 여러 줄 견본. 견본 뒤 옅은 가로선이 줄 높이 간격이다
   - 버튼: 버튼 여섯 계열(기본 · 글자 · 액션 · Shortcut · 알약 · 소셜)을 기본 줄과 비활성 줄로 늘어놓는다. 기본 버튼은 sm·md·lg, 아이콘, 너비 채움 예를 보인다. 눌림은 눌러서 본다
-  - 입력: 한 줄 · 여러 줄 · 캡션 · 드롭다운 줄 · 체크박스 세 꼴 · 토글 · 칩 세 꼴 · 검색 칸 두 꼴 · 상태 드롭다운을 시안 상태별로 늘어놓는다. 글자 입력과 글자 수 끊기, 체크, 토글, 칩 닫기와 편집 중, 상태 메뉴, 드롭다운 메뉴가 실제로 동작한다
+  - 입력: 한 줄 · 여러 줄 · 캡션 · 드롭다운 줄 · 체크박스 세 꼴 · 토글 · 칩 세 꼴 · 검색 칸 두 꼴 · 상태 드롭다운 · 고르기 칸 · 끝 아이콘 칩 · 달력 · 시간 휠 · 목록 줄 세 모양 · 칸 묶음과 줄 구분선 · 시리즈 설명 그림을 시안 상태별로 늘어놓는다. 글자 입력과 글자 수 끊기, 체크, 토글, 칩 닫기와 편집 중, 상태 메뉴, 드롭다운 메뉴, 날짜·시각·줄 고르기가 실제로 동작한다
   - 헤더·탭바: 하단 버튼 영역 다섯(Figma 변형 순서). 헤더 · 탭바 · 바텀시트는 버튼을 누르면 고른 모드로 전체 화면 견본이 뜬다. 헤더는 변형 다섯(투명 · 채움 · 글자 버튼 · 오른쪽 버튼 둘 · 왼쪽 정렬 제목), 바텀시트는 기본 · 왼쪽 정렬 제목 × large · medium, 탭바는 탭 안에서 하단 버튼 영역이 있는 화면을 연다
-- 처음엔 기기 설정의 다크·라이트를 따른다. 로그인 화면은 화면이 스스로 다크를 고른다. 온보딩 세 화면, 숏폼, 모임 두 화면은 스스로 고르지 않아 기기 설정이나 시트에서 고른 화면 모드를 따른다
-- 떠 있는 데모 버튼: 로그인 화면, 온보딩 세 화면, 숏폼 「탭 안 이동」, 모임 「모임 상세」 · 「위젯 / 스냅포인트」, 디자인 시스템 화면 여섯. 끌어서 옮긴다. 누르면 시트에 「목록으로 돌아가기」, 「화면 모드」(시스템 · 다크 · 라이트, 로그인·디자인 시스템 화면은 없음), 상태가 있으면 「화면 상태」 목록이 뜬다
+- 처음엔 기기 설정의 다크·라이트를 따른다. 로그인 화면은 화면이 스스로 다크를 고른다. 온보딩 세 화면, 숏폼, 모임 세 화면은 스스로 고르지 않아 기기 설정이나 시트에서 고른 화면 모드를 따른다
+- 떠 있는 데모 버튼: 로그인 화면, 온보딩 세 화면, 숏폼 「탭 안 이동」, 모임 「모임 만들기」 · 「모임 상세」 · 「위젯 / 스냅포인트」, 디자인 시스템 화면 여섯. 끌어서 옮긴다. 누르면 시트에 「목록으로 돌아가기」, 「화면 모드」(시스템 · 다크 · 라이트, 로그인·디자인 시스템 화면은 없음), 상태가 있으면 「화면 상태」 목록이 뜬다
   - 버튼과 시트는 앱 창 위의 별도 창(`Kit/DemoMenu/DemoMenuPassThroughWindow.swift`, 창 높이 `.normal + 1`)에 그린다. 화면 데모가 띄운 덮개·시트(모임 상세의 사이드바 등) 위에 뜨고, 버튼 밖 터치는 아래 앱 창으로 넘긴다
   - 화면 모드는 앱 창(데모 버튼 창이 아닌 `.normal` 높이 창, `DemoMenuPassThroughWindow.appWindow(among:)`)의 `overrideUserInterfaceStyle` 에 건다. 그래서 전체 화면으로 덮어 띄운 화면과 그 안에서 이미 떠 있는 시트·덮개(모임 상세의 사이드바 등)도 바로 바뀐다. 시스템은 기기 모드를 덮어쓰지 않는다(`.unspecified`)
   - 화면 데모를 닫으면(「목록으로 돌아가기」, 데모 버튼 창 보관 객체가 풀릴 때) 앱 창을 시스템으로 되돌린다. 기억하지 않아 화면 데모를 새로 열면 시스템이다
@@ -64,10 +66,11 @@
 - `Kit/Screens/Login/` · `Sources/Screens/Login/LoginDemoScreen.swift`
 - `Kit/Screens/TabNavigation/` · `Sources/Screens/TabNavigation/TabNavigationDemoScreen.swift`
 - `Kit/Screens/ProfileSetting/` · `Kit/Screens/InterestSetting/` · `Kit/Screens/OnboardingFlow/` · `Sources/Screens/{ProfileSetting,InterestSetting,OnboardingFlow}/`
+- `Kit/Screens/CreateMeeting/` · `Sources/Screens/CreateMeeting/CreateMeetingDemoScreen.swift`
 - `Sources/DemoMenu/` · `Kit/DemoMenu/DemoFloatingButtonLayout.swift` · `Kit/DemoMenu/DemoMenuAppearance.swift` · `Kit/DemoMenu/DemoMenuPassThroughWindow.swift`
 - `Sources/Gallery/GalleryPage.swift`
 - `Kit/Gallery/GalleryCatalog.swift` · `Kit/Gallery/GalleryAppearance.swift`
-- `Sources/Gallery/ColorGalleryView.swift` · `TypographyGalleryView.swift` · `ButtonGalleryView.swift` · `InputGalleryView.swift` · `FramePartsGalleryView.swift`
+- `Sources/Gallery/ColorGalleryView.swift` · `TypographyGalleryView.swift` · `ButtonGalleryView.swift` · `InputGalleryView.swift`(고르기 부품 `PickerGallerySections.swift`, 칸 묶음·그림 `FormGroupGallerySections.swift`) · `FramePartsGalleryView.swift`
 - `Sources/Gallery/FrameParts/` (헤더·탭바 전체 화면 견본) · `Kit/Gallery/FramePartsCatalog.swift`
 - `Kit/BuildInfo/DemoBuildInfo.swift`
 
@@ -82,6 +85,7 @@ mise exec -- bundle exec fastlane beta app:demo note:"이번 빌드에서 볼 �
 - 목록: 흐름 여덟의 순서, 로그인 · 온보딩 · 숏폼 · 모임만 열림, 상태 개수와 이름, 전체 화면으로 띄우는 화면
 - 온보딩 상태: 프로필 다 채움의 「시작하기」 켜짐, 로그아웃 실패 알림, 카테고리 고른 세 칸·저장 중 모양·받기 실패·저장 실패 알림 다시 뜸, 흐름 데모가 끝·로그아웃 때 처음으로 돌아감
 - 로그인 상태: 기본 1초 뒤 복귀, 불러오는 중 잠김, 오류 안내 얼럿 다시 뜸
+- 모임 만들기 상태: 상태 여덟의 이름과 데모 버튼 짧은 이름, 상태마다 시작 화면과 채운 입력, 상태별 가짜 응답(지난 모임 유무·포스터, 만들기 실패, 연결만 실패, 장소 0건·넷), 만든 뒤 시트 닫기와 연결만 실패 안내
 - 탭 안 이동 상태: 상태마다 쌓인 견본 수와 1부터 매긴 번호
 - 데모 버튼 끌기 범위, 데모 버튼 창의 높이와 버튼 밖 터치 넘기기
 - 디자인 시스템 목록: 화면 여섯의 순서(색 · 글자 · 버튼 · 화면 상태 · 입력 · 헤더·탭바), 의미 색 묶음 18개의 순서와 칸 수(합 66), 칸 이름, 글자 스타일 21개, 글자 수치 줄, 모드 전환의 시스템은 덮어쓰지 않음

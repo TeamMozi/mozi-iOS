@@ -13,6 +13,7 @@
 - Meeting·Series·Place·Interest Client 는 `previewValue` 에 가짜 데이터(`*PreviewData`)를 둔다. `InterestClient.previewValue` 는 시안 12개 이름(`InterestClient.previewInterests`)이고 가짜 모임 카테고리도 이 목록을 쓴다. `UserClient.previewValue` 는 1초 뒤 성공이다. `testValue` 는 비워 둔다
 - 페이지 동작 셋: `SeriesClient.episodes`(시리즈 회차, 최신 회차부터), `MeetingClient.hostedMeetings`(이전 모임 불러오기 최신순), `SeriesClient.hostedSeries`(시리즈별, 최근 모임 최대 `HostedSeries.recentMeetingLimit` 개). 불러오기 둘은 서버 API 가 없다
 - 첫 요청 상수: `MeetingClient.hostedMeetingsFirstPage`(최신순 10개), `SeriesClient.moreEpisodesFirstPage`(시리즈별 더보기 5개). 그 밖의 목록은 `PageRequest.first`. 화면은 이 상수와 받은 `next` 만 보낸다
+- 모임 만들기용 서버에 아직 없는 것 셋: 사진 입력 `ImageInput.reuse(URL)`(지난 모임·시리즈 사진 이어 쓰기, 서버에 보내는 방법은 Data 가 정한다), `MeetingClient.popularBackgroundMusics`(포스터 배경음악 「인기」 목록), `BackgroundMusic` 의 앨범 그림·길이(초)·사용 수. `previewValue` 는 배경음악 일곱 곡을 주고, 만들기에 `.reuse` 를 넘기면 그 주소를 포스터로 담아 돌려준다
 
 ## 이후 패턴
 - `Domain/<Name>/{Model,Client,Error}`
@@ -74,6 +75,7 @@
 - `MeetingClient`·`SeriesClient`·`PlaceClient` 의 `testValue`·`previewValue` 생성 가능성
 - `previewValue` 가짜 데이터가 상한을 넘지 않음, 모임 넷이 나의 참여 상태 넷을 모두 담음
 - 첫 요청 상수 값(`hostedMeetingsFirstPage` 10개, `moreEpisodesFirstPage` 5개), `HostedSeries.recentMeetingLimit` 3
+- 사진 입력 `.reuse` 동등성, `BackgroundMusic` 칸 동등성, `previewValue` 의 인기 배경음악(길이·사용 수)과 지난 포스터 이어 쓰기
 - `previewValue` 페이지 동작: 첫 페이지 개수와 `next`, 마지막 페이지 `next == nil`, 범위 밖·음수 페이지·`size` 0 이하는 빈 목록과 `nil`, 시리즈별 최근 모임이 회차 목록의 앞 3개
 
 ## 관련 문서
