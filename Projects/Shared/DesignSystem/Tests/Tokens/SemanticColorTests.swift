@@ -4,7 +4,7 @@ import UIKit
 import XCTest
 
 final class SemanticColorTests: XCTestCase {
-    func test_의미_색_63개의_다크_라이트_쌍이_Figma_별칭_값이다() {
+    func test_의미_색_63개와_overlay_gray_10_과_상태_글자색_둘의_다크_라이트_쌍이_Figma_별칭_값이다() {
         for item in semanticCases {
             XCTAssertEqual(rgba(item.theme.dark), item.dark, "\(item.name) dark")
             XCTAssertEqual(rgba(item.theme.light), item.light, "\(item.name) light")
@@ -134,6 +134,20 @@ private let semanticCases: [SemanticCase] = [
         Color.ds.text.accent.strong,
         dark: 0xFFFFB9FF,
         light: 0xF1A727FF
+    ),
+    SemanticCase(
+        "text/status/positive (Figma 밖, color/system/green)",
+        SemanticColor.text.status.positive,
+        Color.ds.text.status.positive,
+        dark: 0x6CE582FF,
+        light: 0x6CE582FF
+    ),
+    SemanticCase(
+        "text/status/negative (Figma 밖, color/system/red)",
+        SemanticColor.text.status.negative,
+        Color.ds.text.status.negative,
+        dark: 0xFF5F57FF,
+        light: 0xFF5F57FF
     ),
     SemanticCase(
         "fill/neutral/default",
@@ -505,5 +519,12 @@ private let semanticCases: [SemanticCase] = [
         Color.ds.overlay.gray.plain,
         dark: 0x00000066,
         light: 0xFCFCFCFF
+    ),
+    SemanticCase(
+        "overlay/gray/10 (Figma 알파 색, 두 모드 같음)",
+        SemanticColor.overlay.gray._10,
+        Color.ds.overlay.gray._10,
+        dark: 0xAFAFAF1A,
+        light: 0xAFAFAF1A
     ),
 ]

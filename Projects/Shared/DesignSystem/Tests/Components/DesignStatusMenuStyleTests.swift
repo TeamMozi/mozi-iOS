@@ -20,8 +20,8 @@ final class DesignStatusMenuStyleTests: XCTestCase {
         assertTheme(DesignStatusMenuStyleResolver.text(for: .ended), dark: 0x7A7887FF, light: 0xB0AFB5FF)
     }
 
-    func test_알약_바탕은_overlay_gray_꺾쇠는_subtle이다() {
-        assertTheme(DesignStatusMenuStyleResolver.background, dark: 0x706D8266, light: 0xAFAFAF33)
+    func test_알약_바탕은_fill_neutral_default_꺾쇠는_subtle이다() {
+        assertTheme(DesignStatusMenuStyleResolver.background, dark: 0x000000FF, light: 0xFCFCFCFF)
         assertTheme(DesignStatusMenuStyleResolver.chevron, dark: 0x7A7887FF, light: 0xB0AFB5FF)
     }
 
@@ -41,6 +41,15 @@ final class DesignStatusMenuStyleTests: XCTestCase {
             let size = fittingSize(DesignStatusMenu(status: status) { _ in })
             XCTAssertEqual(size.width, 105, accuracy: 0.5, status.title)
         }
+    }
+
+    /// 항목을 따로 넘기지 않으면 셋 다, 넘기면 그 항목만 넘긴 순서대로다.
+    @MainActor
+    func test_항목을_넘기지_않으면_셋_넘기면_그_항목만이다() {
+        XCTAssertEqual(DesignStatusMenu(status: .closed) { _ in }.options, DesignRecruitStatus.allCases)
+        let menu = DesignStatusMenu(status: .recruiting, options: [.recruiting, .closed]) { _ in }
+        XCTAssertEqual(menu.options, [.recruiting, .closed])
+        XCTAssertEqual(fittingSize(menu).width, 105, accuracy: 0.5)
     }
 
     /// 글자 칸은 폭이 고정이라 넘치면 잘린다. 잘리지 않는지 글자만 따로 잰다.
