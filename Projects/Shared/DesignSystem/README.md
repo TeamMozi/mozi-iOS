@@ -5,7 +5,7 @@
 - 공통 부품: 버튼 여섯 계열(스타일 `.main`·`.neutral`·`.ghost`·`.textButton(_:)`·`.action(_:)`·`.shortcut(_:)`·`.pill` 과 화면 조각 `SocialLoginButton`), 아이콘 버튼 생성자 `Button(_:icon:)`, `DesignText`, `ScreenStatus` · `.screenStatus`, 하단 버튼 영역 `BottomButtonArea`
 - 입력 부품: `DesignTextField` · `DesignTextArea` · `DesignDropdownRow` · `DesignCheckbox` · `DesignToggle` · `DesignChip` · `DesignSearchField` · `DesignStatusMenu`
 - 헤더·탭바 꾸밈: 탭바 아이콘 `TabBarIcon`, 툴바 제목·아이콘 `DesignToolbarTitle`·`DesignToolbarIcon`, 헤더 배경 `.designHeaderBackground(_:)`, 뒤로 가기 그림 `DesignNavigationBar.applyBackIndicator()`, 시트 딤 `.designSheet(item:detents:content:)`
-- 글꼴(Pretendard 네 굵기)과 에셋(로고·소셜 아이콘·로그인 숏폼 사진·온보딩 기본 사진·카테고리 그림 12장)
+- 글꼴(Pretendard 네 굵기)과 에셋(로고 둘·소셜 아이콘·로그인 숏폼 사진·온보딩 기본 사진·카테고리 그림 12장·스냅 포인트 도움말 그림·자리 표시용 지도)
 
 ## 의존
 - 허용: SharedUtils
@@ -26,7 +26,7 @@ Figma 경로를 낱말 단위로 옮긴다.
 |---|---|---|---|
 | `color/*` 원시 색 | `PrimitiveColor.primary._100` | 34 | 모듈 안 |
 | `Sementic Numbers` 컬렉션의 `overlay/dark·light·gray/*` 알파 색 | `AlphaColor.overlay.dark._40` | 20 | 모듈 안 |
-| 의미 색 `text` · `fill` · `border` · `button` · `overlay` | `Color.ds.text.neutral.primary` (쌍은 `SemanticColor.text.neutral.primary`) | 63 | `Color.ds` |
+| 의미 색 `text` · `fill` · `border` · `button` · `overlay` | `Color.ds.text.neutral.primary` (쌍은 `SemanticColor.text.neutral.primary`) | 63 (+ Figma 알파 색 `overlay.gray._10` 1, Figma 밖 `text.status` 2) | `Color.ds` |
 | `radius` · `spacing` · `border` · `Button Height` · `icon-size` | `CGFloat.ds.radius._8`, `CGFloat.ds.spacing.lg`, `CGFloat.ds.iconSize._14` | 24 | `CGFloat.ds` |
 | 그리드 스타일 `mozi_layout` 의 바깥 여백 16 | `CGFloat.ds.layout.margin` | 1 | `CGFloat.ds` |
 | 글자 스타일 (Pretendard) | `TextStyle.ds.caption1.medium` | 21 | `TextStyle.ds` |
@@ -36,17 +36,20 @@ Figma 경로를 낱말 단위로 옮긴다.
 ## 모드
 - 의미 색은 다크·라이트 원시 색 쌍(`ThemedColor`)이다. 두 값은 Figma 별칭을 그대로 옮겼다
 - `Color.ds` 의 의미 색은 기기 모드를 따라 바뀐다. 모드가 정해지지 않은 trait 에서는 다크 값이다
-- 앱과 데모 앱은 기기 설정만 따른다. 로그인 화면만 `.preferredColorScheme(.dark)` 로 다크다
+- 앱은 기기 설정만 따르고, 로그인 화면만 `.preferredColorScheme(.dark)` 로 다크다. 데모 앱은 데모 메뉴 「화면 모드」 로 앱 창에 모드를 건다([DemoApp README](../../DemoApp/README.md))
 
 ## Figma 밖 토큰
-- `Color.ds.social.*` 넷만 있다. 모드와 상관없다. 바탕은 카카오·애플 브랜드 색이고, 글자·아이콘은 Figma login 의 `color/neutral/1200` 이다
+- 상태 글자색 `Color.ds.text.status.*` 둘. Figma 에 의미 변수가 없어 원시 색을 두 모드에 같이 건다(시안 대조에서 사용자가 정했다). Figma 에 의미 색이 생기면 그 이름으로 옮긴다
+  - `positive` = `color/system/green` #6CE582 (「모집 중」) · `negative` = `color/system/red` #FF5F57 (회차 카드의 「종료」, 「모임 삭제」)
+- `Color.ds.social.*` 넷. 모드와 상관없다. 바탕은 카카오·애플 브랜드 색이고, 글자·아이콘은 Figma login 의 `color/neutral/1200` 이다
   - `kakao` #FEE500 · `kakaoContent` #0E0E11 · `appleBackground` #FFFFFF · `appleContent` #0E0E11
+- `Color.ds.overlay.gray._10` 하나. Figma `overlay/gray/10`(VariableID:1570:44338)은 `Sementic Numbers` 컬렉션의 한 모드 알파 색이라 다크·라이트 구분이 없다. 시안(모임 관리 사이드바 라이트 `2798:100802` · 다크 `2798:102194` 의 행 묶음)이 이 변수를 바로 쓰므로 두 모드에 같은 알파 색 #AFAFAF1A(`AlphaColor.overlay.gray._10`)를 건다
 - 이전의 Secondary 색 9개, System orange, `CGFloat.ds.dim`, `Font.ds` 는 지웠다
 
 ## Figma 와 맞춰 볼 것
 - `overlay/gray/40`·`overlay/gray/80` 은 다른 gray(#AFAFAF)와 RGB 가 다르다(#706D82·#423F55). 이름과 지금 값(40%·80%)을 그대로 둔다. Figma 값(20%)은 디자이너가 맞춘다
 - 흰색 알파 색은 `overlay/light/80`(0xCC)이다. 의미 색 `overlay/dim/70` 의 라이트 값이 이것을 가리킨다
-- 의미 색 가운데 system·swatch 원시 색을 가리키는 것이 없다. 오류·성공 색이 필요하면 Figma 에 의미 색이 먼저 있어야 한다
+- Figma 의미 색 가운데 system·swatch 원시 색을 가리키는 것이 없다. 위 상태 글자색 둘만 코드에서 먼저 열었다
 
 ## 부품
 버튼은 SwiftUI `Button` 에 스타일을 입혀 쓴다. 크기는 `.controlSize`, 비활성은 `.disabled()`, 너비 채우기는 내용에 `.frame(maxWidth: .infinity)` 를 건다.
@@ -95,6 +98,7 @@ SocialLoginButton(.kakao) {
 - 입력 중 테두리는 칸이 키보드를 가진 동안 켜진다
 - 드롭다운 줄 칸(`DesignDropdownCell`)은 지금 값·메뉴 항목·`onSelect` 를 받는다. 누르면 칸 안의 iOS 기본 `Menu` 가 뜨고 지금 값에 체크가 붙는다. 메뉴가 떠 있어도 입력 중 테두리는 켜지지 않는다
 - 체크박스 `.check`·`.order(Int)`·`.vote`, 칩 `.outlined`·`.filled`(닫기 아이콘 켜고 끔)·`.pill`(편집 중), 검색 칸 `.glass`(`glassEffect`)·`.flat`(지우기 버튼), 상태 드롭다운은 iOS 기본 `Menu` 와 표시용 `DesignRecruitStatus` 셋(Domain 타입과 다르다)
+  - 상태 드롭다운 `DesignStatusMenu(status:options:onSelect:)`: 접힌 알약 바탕은 Figma `fill/neutral/default`(`2774:128129`). `options` 로 메뉴에 보일 항목을 고른다(기본 셋 다). 메뉴 항목 글자색은 시스템이 정한다
 - 체크박스·토글은 VoiceOver 이름(`title`)을 받고 화면에는 그리지 않는다
 - 원시 색은 부품 안에서만 쓴다: 토글 켜짐 green, 상태 「모집 마감」·필수 `*` red, 체크박스·칩 채움형의 neutral·primary 원시 색, 번호 체크박스 해제 바탕 알파 `overlay/gray/70`. Figma 에 의미 색이 생기면 옮긴다
 - 포커스: 쓰는 화면이 칸에 `.focused($focus, equals:)` 를 건다. 감싼 UIKit 칸과 양방향으로 이어진다(테스트 `DesignTextInputFocusTests`)
@@ -104,6 +108,7 @@ SocialLoginButton(.kakao) {
   - 헤더 배경: `.transparent`(시스템 기본, 스크롤하면 가장자리 효과) · `.filled`(`fill/neutral/default`)
   - 뒤로 가기: 시스템 버튼에 그림만 `chevron.left`. 앱·데모 앱 시작에서 `DesignNavigationBar.applyBackIndicator()` 를 한 번 부른다
   - 바텀시트: `.designSheet(item:detents:content:)`(또는 `isPresented:`)로 띄운다. 시스템 딤을 끄고 뒤 화면 전체를 `overlay/gray/default` 로 덮으며, 딤을 누르면 닫힌다. 딤 짙기는 시트 위치를 따른다(자리 잡으면 다 짙고, 가장 작은 높이 아래로 끌어내린 만큼 옅어진다). 몸통은 `fill/neutral/default`. 높이는 쓰는 화면이 `detents` 로 작은 것부터 넘긴다(`.large` 가 없으면 마지막을 가장 큰 높이로 본다)
+- 프로필 사진 `DesignAvatar(_:diameter:shape:)`: 모양은 원이 기본이고 `.roundedRectangle(cornerRadius:)` 를 고를 수 있다. 사진이 없거나 읽는 중이면 바탕색이다
 - 하단 버튼 영역 `BottomButtonArea(_:showsTopBorder:caption:buttons:)`: 배치 `.single` · `.split5To5` · `.split3To7`(오른쪽 240 고정). 여백 위 12(3:7 은 16)·좌우 16, 간격 12, 바탕 `fill/neutral/default`, 위쪽 1pt 선 `border/neutral/10` 은 켜고 끈다. 아래 여백은 안전 영역이다. 버튼과 윗줄은 쓰는 화면이 넣는다
   - 화면에 붙일 때는 `.bottomButtonArea { BottomButtonArea(...) { ... } }`. 탭바를 숨기고, 키보드가 올라와도 버튼 줄은 키보드 뒤에 남는다. 본문은 그대로 키보드를 피한다
 
@@ -114,17 +119,28 @@ SocialLoginButton(.kakao) {
 ## 아이콘 대응표
 Figma 아이콘 이름과 코드 경로. 아이콘 경로는 `Image.ds.icon.<종류>.<모양>`, 크기는 `.iconSize(_:)`, 색은 `.foregroundStyle` 이다. `Image.ds` 는 장식용이라 VoiceOver 가 읽지 않는다.
 
-기존 7장:
+기존 12장:
 
 | 코드 경로 | Tuist 접근자 | 에셋 |
 |---|---|---|
 | `Image.ds.brand.logo` | `logoMozi` | `Brand/logo_mozi` |
+| `Image.ds.brand.logoBlack` | `logoMoziBlack` | `Brand/logo_mozi_black` (검정 한 색 SVG, Figma `I2973:36511;2973:36492`) |
 | `Image.ds.login.shortform01` | `loginShortform01` | `Login/login_shortform_01` |
 | `Image.ds.login.shortform02` | `loginShortform02` | `Login/login_shortform_02` |
 | `Image.ds.login.shortform03` | `loginShortform03` | `Login/login_shortform_03` |
 | `Image.ds.login.shortform04` | `loginShortform04` | `Login/login_shortform_04` |
 | `Image.ds.social.apple` | `iconSocialApple` | `Icon/Social/icon_social_apple` |
 | `Image.ds.social.kakao` | `iconSocialKakao` | `Icon/Social/icon_social_kakao` |
+| `Image.ds.snapPoint.help01` | `snapPointHelp01` | `SnapPoint/snap_point_help_01` (Figma `2836:143681`, 102×124 @2x·@3x, 그림 안 글자 있음) |
+| `Image.ds.snapPoint.help02` | `snapPointHelp02` | `SnapPoint/snap_point_help_02` (Figma `2836:143690`, 그림 안 글자 있음) |
+| `Image.ds.snapPoint.help03` | `snapPointHelp03` | `SnapPoint/snap_point_help_03` (Figma `2836:143697`) |
+| `Image.ds.placeholder.map` | `placeholderMap` | `Placeholder/placeholder_map` (자리 표시용 고정 지도. 실제 장소 지도가 아니다. 한 색 템플릿 SVG, 색은 쓰는 쪽 `fill/neutral/strong`, Figma `I2973:30332;2973:30319`) |
+
+Figma 아이콘에 없어 SF Symbol 로 그리는 1장(VoiceOver 가 이름을 읽으므로 쓰는 쪽이 `.accessibilityHidden(true)` 를 건다):
+
+| 코드 경로 | SF Symbol |
+|---|---|
+| `Image.ds.symbol.crown` | `crown.fill` (모임장 표시) |
 
 온보딩 13장 (원래 색, 다크도 같은 그림):
 
@@ -344,7 +360,7 @@ ScrollView {
 - `Sources/Components/` · 헤더·탭바·하단 버튼 영역은 `Sources/Components/Frame/`
 
 ## 테스트 포인트
-- 원시 색 34 · 알파 색 20 · 의미 색 63 쌍 · 숫자 · 글자 스타일 21 값이 Figma 표와 같다
+- 원시 색 34 · 알파 색 20 · 의미 색 63 쌍과 `overlay.gray._10` 1 쌍, 상태 글자색 2 쌍 · 숫자 · 글자 스타일 21 값이 Figma 표와 같다
 - 의미 색의 공개 `Color` 가 다크·라이트·정해지지 않은 trait 에서 맞는 값을 낸다
 - 호스트 앱 없는 테스트에서 `TextStyle` 글자가 Pretendard 로 그려진다
 - 버튼: `.controlSize` 크기 대응(기본 sm·md·lg, 액션 s·m), 계열·상태(기본·눌림·비활성)별 색과 불투명도, 소셜 버튼 문구·색·치수
