@@ -1,7 +1,9 @@
 import Foundation
+import SharedDesignSystem
 import ThirdParty
 
 /// 탭 다섯을 쥐는 허브. 탭 사이 이동은 여기서만 한다.
+/// 「만들기」 탭은 고른 탭을 바꾸지 않고 모임 만들기 시트를 띄운다. 시트를 닫으면 보던 탭에 그대로 있다.
 @Reducer
 public struct MainTabFeature {
     public enum Tab: String, Equatable, Sendable, CaseIterable {
@@ -19,7 +21,9 @@ public struct MainTabFeature {
         public var search: SearchFlowFeature.State
         public var chat: ChatFlowFeature.State
         public var myPage: MyPageFlowFeature.State
-        public var create: CreateFlowFeature.State
+        @Presents public var createMeeting: CreateMeetingFlowFeature.State?
+        /// 시트를 닫은 뒤 한 번 띄우는 안내. 앵콜에서 시리즈만 실패했을 때 쓴다.
+        public var screen: ScreenStatus
 
         public init(
             selectedTab: Tab = .shortform,
@@ -27,14 +31,16 @@ public struct MainTabFeature {
             search: SearchFlowFeature.State = SearchFlowFeature.State(),
             chat: ChatFlowFeature.State = ChatFlowFeature.State(),
             myPage: MyPageFlowFeature.State = MyPageFlowFeature.State(),
-            create: CreateFlowFeature.State = CreateFlowFeature.State()
+            createMeeting: CreateMeetingFlowFeature.State? = nil,
+            screen: ScreenStatus = .idle
         ) {
             self.selectedTab = selectedTab
             self.shortform = shortform
             self.search = search
             self.chat = chat
             self.myPage = myPage
-            self.create = create
+            self.createMeeting = createMeeting
+            self.screen = screen
         }
     }
 
@@ -46,7 +52,8 @@ public struct MainTabFeature {
         case search(SearchFlowFeature.Action)
         case chat(ChatFlowFeature.Action)
         case myPage(MyPageFlowFeature.Action)
-        case create(CreateFlowFeature.Action)
+        case createMeeting(PresentationAction<CreateMeetingFlowFeature.Action>)
+        case noticeDismissed
         case delegate(Delegate)
 
         public enum Delegate: Equatable {
@@ -70,16 +77,20 @@ public struct MainTabFeature {
         Scope(state: \.myPage, action: \.myPage) {
             MyPageFlowFeature()
         }
-        Scope(state: \.create, action: \.create) {
-            CreateFlowFeature()
-        }
         Reduce(core)
-            .logged(as: Self.self, children: ["shortform", "search", "chat", "myPage", "create"])
+            .ifLet(\.$createMeeting, action: \.createMeeting) {
+                CreateMeetingFlowFeature()
+            }
+            .logged(as: Self.self, children: ["shortform", "search", "chat", "myPage", "createMeeting"])
     }
 
     private func core(state: inout State, action: Action) -> Effect<Action> {
         switch action {
         case let .tabSelected(tab):
+            guard tab != .create else {
+                state.createMeeting = CreateMeetingFlowFeature.State()
+                return .none
+            }
             state.selectedTab = tab
             return .none
 
@@ -95,7 +106,21 @@ public struct MainTabFeature {
         case .myPage(.delegate(.loggedOut)):
             return .send(.delegate(.loggedOut))
 
-        case .shortform, .search, .chat, .myPage, .create, .delegate:
+        case .createMeeting(.presented(.delegate(.created))), .createMeeting(.presented(.delegate(.closed))):
+            // TODO: 만든 모임 상세로 잇기는 모임 연결 작업(2b)이 한다
+            state.createMeeting = nil
+            return .none
+
+        case .createMeeting(.presented(.delegate(.createdWithoutSeries))):
+            state.createMeeting = nil
+            state.screen = .actionFailed(message: CreateMeetingFlowFeature.seriesFailedNotice)
+            return .none
+
+        case .noticeDismissed:
+            state.screen = .idle
+            return .none
+
+        case .shortform, .search, .chat, .myPage, .createMeeting, .delegate:
             return .none
         }
     }

@@ -7,6 +7,8 @@ public enum FeatureErrorMessage {
     static let unauthorized = "로그인이 필요해요. 다시 로그인해 주세요."
     static let unknown = "알 수 없는 오류가 발생했어요."
     static let requestFailed = "요청을 처리하지 못했어요. 다시 시도해 주세요."
+    static let notFound = "선택한 항목을 찾을 수 없어요. 다시 시도해 주세요."
+    static let validation = "입력한 내용을 확인해 주세요."
 
     /// `nil` 이면 알림 창을 띄우지 않는다(`cancelled`).
     public static func message(for error: AuthError) -> String? {
@@ -26,8 +28,30 @@ public enum FeatureErrorMessage {
         case .network: network
         case .unauthorized: unauthorized
         case .forbidden, .conflict: requestFailed
-        case .notFound: "선택한 항목을 찾을 수 없어요. 다시 시도해 주세요."
-        case .validation: "입력한 내용을 확인해 주세요."
+        case .notFound: notFound
+        case .validation: validation
+        case .unknown: unknown
+        }
+    }
+
+    public static func message(for error: SeriesError) -> String {
+        switch error {
+        case .network: network
+        case .unauthorized: unauthorized
+        case .forbidden, .conflict: requestFailed
+        case .notFound: notFound
+        case .validation: validation
+        case .unknown: unknown
+        }
+    }
+
+    public static func message(for error: PlaceError) -> String {
+        switch error {
+        case .network: network
+        case .unauthorized: unauthorized
+        case .forbidden, .conflict: requestFailed
+        case .notFound: notFound
+        case .validation: validation
         case .unknown: unknown
         }
     }
