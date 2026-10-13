@@ -4,7 +4,7 @@ public extension Color {
     static let ds = DesignSystemColors()
 }
 
-/// Figma 의미 색 63개, 알파 색 `overlay.gray._10`, 상태 글자색 둘(`text.status`), 소셜 로그인 색 넷. 의미 색은 기기 모드를 따라 바뀐다.
+/// Figma 의미 색 63개, 알파 색 `overlay.gray._10`·`overlay.gray.deep`, 상태 글자색 둘(`text.status`), 소셜 로그인 색 넷. 의미 색은 기기 모드를 따라 바뀐다.
 public struct DesignSystemColors: Sendable {
     public let text = TextColors()
     public let fill = FillColors()
@@ -224,6 +224,8 @@ public struct OverlayGrayColors: Sendable {
     public let `default` = SemanticColor.overlay.gray.default.color
     public let plain = SemanticColor.overlay.gray.plain.color
     public let _10 = SemanticColor.overlay.gray._10.color
+    /// 포스터 배경음악 알약 바탕 #423F55 20%(Figma `overlay/gray/deep`). 두 모드에 같다.
+    public let deep = SemanticColor.overlay.gray.deep.color
 
     public init() {}
 }

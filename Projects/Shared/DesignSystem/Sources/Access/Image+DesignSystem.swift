@@ -7,6 +7,7 @@ public extension Image {
 public struct DesignSystemImages: Sendable {
     public let icon = DesignSystemIcons()
     public let brand = BrandImages()
+    public let illustration = IllustrationImages()
     public let login = LoginImages()
     public let social = SocialImages()
     public let onboarding = OnboardingImages()
@@ -22,6 +23,14 @@ public struct BrandImages: Sendable {
     public let logo = Image(decorative: SharedDesignSystemAsset.logoMozi)
     /// 검정 한 색 로고(Figma `I2973:36511;2973:36492`). 알림 미리보기 앱 아이콘 안에 쓴다.
     public let logoBlack = Image(decorative: SharedDesignSystemAsset.logoMoziBlack)
+
+    public init() {}
+}
+
+/// 설명 그림. 라이트·다크 그림이 따로 있어 기기 모드를 따라 바뀐다.
+public struct IllustrationImages: Sendable {
+    /// 시리즈 설명 그림. 시안 `2238:127709`(라이트)·`2238:127503`(다크), 342×397pt.
+    public let seriesInfo = Image(decorative: SharedDesignSystemAsset.illustrationSeriesInfo)
 
     public init() {}
 }

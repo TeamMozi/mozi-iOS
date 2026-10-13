@@ -1,6 +1,6 @@
 import Foundation
 
-/// Figma 의미 색 63개, Figma 알파 색을 두 모드에 같이 건 `overlay.gray._10`, Figma 밖 상태 글자색 둘(`text.status`). 다크·라이트 두 모드의 원시 색 쌍을 Figma 별칭 그대로 적는다.
+/// Figma 의미 색 63개, Figma 알파 색을 두 모드에 같이 건 `overlay.gray._10`·`overlay.gray.deep`, Figma 밖 상태 글자색 둘(`text.status`). 다크·라이트 두 모드의 원시 색 쌍을 Figma 별칭 그대로 적는다.
 /// 공개 길은 `Color.ds` 다. 여기 값은 부품과 테스트가 쓴다.
 enum SemanticColor {
     static let text = SemanticTextColors()
@@ -168,9 +168,11 @@ struct SemanticOverlayInverseColors: Sendable {
 }
 
 struct SemanticOverlayGrayColors: Sendable {
-    let `default` = ThemedColor(dark: AlphaColor.overlay.gray._40, light: AlphaColor.overlay.gray._20)
+    let `default` = ThemedColor(dark: AlphaColor.overlay.gray.muted, light: AlphaColor.overlay.gray._20)
     let plain = ThemedColor(dark: AlphaColor.overlay.dark._40, light: PrimitiveColor.neutral._50)
     /// Figma `overlay/gray/10`(`Sementic Numbers` 의 한 모드 알파 색)을 시안이 그대로 쓴다. 두 모드에 같은 색이다.
     /// 다크 사이드바 `2798:102194` 의 행 묶음(Form Group)도 같은 변수에 묶여 있다.
     let _10 = ThemedColor(dark: AlphaColor.overlay.gray._10, light: AlphaColor.overlay.gray._10)
+    /// Figma 에 의미 색이 없다. 포스터 배경음악 알약(`2973:29857`) 바탕이 알파 색 `overlay/gray/deep` 을 바로 쓴다. 두 모드에 같다.
+    let deep = ThemedColor(dark: AlphaColor.overlay.gray.deep, light: AlphaColor.overlay.gray.deep)
 }

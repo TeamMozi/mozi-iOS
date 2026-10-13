@@ -36,7 +36,7 @@ struct AlphaOverlayLightColors: Sendable {
 struct AlphaOverlayGrayColors: Sendable {
     let _10 = TokenColor(hexRGB: 0xAFAFAF, alpha: 0x1A / 255.0)
     let _20 = TokenColor(hexRGB: 0xAFAFAF, alpha: 0x33 / 255.0)
-    let _40 = TokenColor(hexRGB: 0x706D82, alpha: 0x66 / 255.0)
+    let muted = TokenColor(hexRGB: 0x706D82, alpha: 0x33 / 255.0)
     let _70 = TokenColor(hexRGB: 0xAFAFAF, alpha: 0xB2 / 255.0)
-    let _80 = TokenColor(hexRGB: 0x423F55, alpha: 0xCC / 255.0)
+    let deep = TokenColor(hexRGB: 0x423F55, alpha: 0x33 / 255.0)
 }

@@ -16,7 +16,7 @@ public struct DesignSystemMetrics: Sendable {
     public init() {}
 }
 
-/// Figma `radius/*`.
+/// Figma `radius/*`. `_26` 은 Figma 변수가 아니고 시안 칸 묶음(Form Group) 모서리 값이다.
 public struct RadiusMetrics: Sendable {
     public let none: CGFloat = 0
     public let _4: CGFloat = 4
@@ -26,6 +26,7 @@ public struct RadiusMetrics: Sendable {
     public let _12: CGFloat = 12
     public let _16: CGFloat = 16
     public let _24: CGFloat = 24
+    public let _26: CGFloat = 26
     public let full: CGFloat = 9999
 
     public init() {}
