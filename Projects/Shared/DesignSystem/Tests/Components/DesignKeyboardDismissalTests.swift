@@ -126,6 +126,35 @@ final class DesignKeyboardDismissalTests: XCTestCase {
     }
 
     @MainActor
+    func test_붙인_화면_위에_뜬_다른_화면을_누르면_손짓이_거른다() async throws {
+        let (window, root) = showInKeyWindow(KeyboardProbeView())
+        defer { window.isHidden = true }
+        try await spinMainLoop()
+        let tapView = try XCTUnwrap(findSubviews(of: DesignKeyboardDismissalTapView.self, in: root).first)
+        // 시트 상자처럼 붙인 화면의 하위가 아니면서 같은 창에 오른 뷰.
+        let sheet = UIView(frame: window.bounds)
+        window.addSubview(sheet)
+        let sheetContent = UIView(frame: sheet.bounds)
+        sheet.addSubview(sheetContent)
+
+        let insidePoint = CGPoint(x: tapView.bounds.midX, y: tapView.bounds.maxY - 1)
+        XCTAssertFalse(tapView.acceptsTouch(on: sheet, at: insidePoint), "시트 상자")
+        XCTAssertFalse(tapView.acceptsTouch(on: sheetContent, at: insidePoint), "시트 안 뷰")
+        XCTAssertTrue(tapView.acceptsTouch(on: root, at: insidePoint), "붙인 화면")
+    }
+
+    @MainActor
+    func test_누른_뷰를_모르면_손짓이_거른다() async throws {
+        let (window, root) = showInKeyWindow(KeyboardProbeView())
+        defer { window.isHidden = true }
+        try await spinMainLoop()
+        let tapView = try XCTUnwrap(findSubviews(of: DesignKeyboardDismissalTapView.self, in: root).first)
+
+        let insidePoint = CGPoint(x: tapView.bounds.midX, y: tapView.bounds.maxY - 1)
+        XCTAssertFalse(tapView.acceptsTouch(on: nil, at: insidePoint))
+    }
+
+    @MainActor
     func test_내리기를_부르면_키보드를_가진_한_줄_칸이_키보드를_놓는다() async throws {
         let (window, root) = showInKeyWindow(KeyboardProbeView())
         defer { window.isHidden = true }
