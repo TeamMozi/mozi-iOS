@@ -18,7 +18,7 @@ enum MeetingFixtures {
         participatedCount: nil
     )
 
-    static func meeting(id: String = "meeting-1", myParticipation: MyParticipation = .none) -> Meeting {
+    static func meeting(id: String = "meeting-1", myParticipation: MyParticipation = MyParticipation.none) -> Meeting {
         Meeting(
             id: id,
             title: "뱅드림 몰아보고 코노가는 모임",

@@ -17,7 +17,7 @@ final class MeetingClientTests: XCTestCase {
         for id in MeetingClient.PreviewID.all {
             participations.insert(try await MeetingClient.previewValue.meeting(id: id).myParticipation)
         }
-        XCTAssertEqual(participations, [.host, .member, .pending, .none])
+        XCTAssertEqual(participations, [.host, .member, .pending, MyParticipation.none])
     }
 
     func test_previewValue_관점별_id는_그_참여상태의_모임을_돌려줌() async throws {
@@ -29,7 +29,7 @@ final class MeetingClientTests: XCTestCase {
         XCTAssertEqual(host.myParticipation, .host)
         XCTAssertEqual(member.myParticipation, .member)
         XCTAssertEqual(pending.myParticipation, .pending)
-        XCTAssertEqual(none.myParticipation, .none)
+        XCTAssertEqual(none.myParticipation, MyParticipation.none)
     }
 
     func test_previewValue_가짜_모임은_글자수와_인원_상한을_넘지_않음() async throws {
