@@ -31,6 +31,16 @@ final class FeatureErrorMessageTests: XCTestCase {
         )
     }
 
+    func test_시리즈_장소_오류도_같은_표를_쓰고_서버_문구는_띄우지_않는다() {
+        XCTAssertEqual(FeatureErrorMessage.message(for: SeriesError.network), "네트워크 연결을 확인해 주세요")
+        XCTAssertEqual(FeatureErrorMessage.message(for: SeriesError.validation(message: "서버")), "입력한 내용을 확인해 주세요.")
+        XCTAssertEqual(
+            FeatureErrorMessage.message(for: SeriesError.conflict(message: "서버")),
+            "요청을 처리하지 못했어요. 다시 시도해 주세요."
+        )
+        XCTAssertEqual(FeatureErrorMessage.message(for: PlaceError.unknown(message: "서버")), "알 수 없는 오류가 발생했어요.")
+    }
+
     func test_인증_오류_종류마다_문구가_있고_취소는_문구가_없다() {
         XCTAssertNil(FeatureErrorMessage.message(for: AuthError.cancelled))
         XCTAssertEqual(FeatureErrorMessage.message(for: AuthError.notConfigured(message: "x")), "로그인 설정이 완료되지 않았어요.")

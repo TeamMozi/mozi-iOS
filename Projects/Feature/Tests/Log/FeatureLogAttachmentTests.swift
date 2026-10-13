@@ -5,7 +5,7 @@ import XCTest
 @MainActor
 final class FeatureLogAttachmentTests: XCTestCase {
     func test_컨테이너_여덟은_자식이름과_함께_로그가_붙어_있다() {
-        let mainTabChildren: Set<String> = ["shortform", "search", "chat", "myPage", "create"]
+        let mainTabChildren: Set<String> = ["shortform", "search", "chat", "myPage", "createMeeting"]
         let expected: [(body: Any, attachment: LoggedAttachment)] = [
             (
                 RootFlowFeature().body,
@@ -36,8 +36,8 @@ final class FeatureLogAttachmentTests: XCTestCase {
                 LoggedAttachment(scene: "MyPageFlow", children: ["myPage"], wrapsStack: true)
             ),
             (
-                CreateFlowFeature().body,
-                LoggedAttachment(scene: "CreateFlow", children: ["placeholder"], wrapsStack: true)
+                CreateMeetingFlowFeature().body,
+                LoggedAttachment(scene: "CreateMeetingFlow", children: ["form"], wrapsStack: true)
             ),
         ]
 
@@ -46,7 +46,7 @@ final class FeatureLogAttachmentTests: XCTestCase {
         }
     }
 
-    func test_화면_여섯은_자식없이_로그가_붙어_있다() {
+    func test_화면_열하나는_자식없이_로그가_붙어_있다() {
         let expected: [(body: Any, scene: String)] = [
             (LoginFeature().body, "Login"),
             (PlaceholderFeature().body, "Placeholder"),
@@ -54,6 +54,11 @@ final class FeatureLogAttachmentTests: XCTestCase {
             (ProfileSettingFeature().body, "ProfileSetting"),
             (InterestSettingFeature().body, "InterestSetting"),
             (NavigationSampleFeature().body, "NavigationSample"),
+            (MeetingFormFeature().body, "MeetingForm"),
+            (PreviousMeetingFeature().body, "PreviousMeeting"),
+            (PlaceSearchFeature().body, "PlaceSearch"),
+            (PosterFeature().body, "Poster"),
+            (SeriesInfoFeature().body, "SeriesInfo"),
         ]
 
         for (body, scene) in expected {
