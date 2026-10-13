@@ -27,7 +27,8 @@ final class DemoMenuAppearanceTests: XCTestCase {
     func test_로그인_데모만_화면_모드를_고르지_않는다() {
         XCTAssertFalse(DemoScreen.login.selectsAppearance)
         let others: [DemoScreen] = [
-            .profileSetting, .interestSetting, .onboardingFlow, .tabNavigation, .meetingDetail, .meetingWidget,
+            .profileSetting, .interestSetting, .onboardingFlow, .tabNavigation, .createMeeting, .meetingDetail,
+            .meetingWidget,
         ]
         XCTAssertTrue(others.allSatisfy(\.selectsAppearance))
     }
