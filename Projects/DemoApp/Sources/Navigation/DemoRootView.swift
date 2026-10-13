@@ -43,6 +43,7 @@ struct DemoRootView: View {
                     shortLabel: nil,
                     options: [],
                     selectedID: nil,
+                    selectsAppearance: false,
                     onSelect: { _ in },
                     onExit: backToList
                 )
@@ -62,6 +63,10 @@ struct DemoRootView: View {
             OnboardingFlowDemoScreen(onExit: backToList)
         case .tabNavigation:
             TabNavigationDemoScreen(onExit: backToList)
+        case .meetingDetail:
+            MeetingDetailDemoScreen(onExit: backToList)
+        case .meetingWidget:
+            MeetingWidgetDemoScreen(onExit: backToList)
         }
     }
 

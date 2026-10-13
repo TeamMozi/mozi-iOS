@@ -2,7 +2,7 @@ import MoziDemoKit
 import SharedDesignSystem
 import SwiftUI
 
-/// 첫 화면. 위에서부터 바뀐 것, 흐름 일곱, 디자인 시스템, 바닥 글.
+/// 첫 화면. 위에서부터 바뀐 것, 흐름 여덟, 디자인 시스템, 바닥 글.
 struct DemoHomeView: View {
     let buildInfo: DemoBuildInfo
     let onOpen: (DemoRoute) -> Void
