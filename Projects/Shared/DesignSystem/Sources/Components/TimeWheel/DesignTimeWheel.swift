@@ -46,7 +46,7 @@ struct DesignTimeWheelBridge: UIViewRepresentable {
     @MainActor
     static func show(_ selection: DesignClockTime, minuteInterval: Int, in picker: UIDatePicker) {
         let target = selection.snapped(minuteInterval: minuteInterval)
-        let calendar = picker.calendar ?? .current
+        let calendar = wheelCalendar(of: picker)
         guard DesignClockTime(picker.date, calendar: calendar) != target,
               let date = target.date(on: picker.date, calendar: calendar)
         else { return }
@@ -67,6 +67,13 @@ struct DesignTimeWheelBridge: UIViewRepresentable {
         Self.show(selection, minuteInterval: minuteInterval, in: picker)
     }
 
+    /// 휠이 시각을 보이는 달력. `UIDatePicker.calendar` 를 읽으면 시간대가 기기 시간대로 돌아오므로 `timeZone` 을 다시 건다.
+    static func wheelCalendar(of picker: UIDatePicker) -> Calendar {
+        var calendar = picker.calendar ?? .current
+        calendar.timeZone = picker.timeZone ?? .current
+        return calendar
+    }
+
     func makeCoordinator() -> Coordinator {
         Coordinator(parent: self)
     }
@@ -80,7 +87,7 @@ struct DesignTimeWheelBridge: UIViewRepresentable {
         }
 
         @objc func valueChanged(_ picker: UIDatePicker) {
-            parent.onSelect(DesignClockTime(picker.date, calendar: picker.calendar ?? .current))
+            parent.onSelect(DesignClockTime(picker.date, calendar: DesignTimeWheelBridge.wheelCalendar(of: picker)))
         }
     }
 }
