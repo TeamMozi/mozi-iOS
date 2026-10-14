@@ -37,8 +37,8 @@ enum DesignChipStyleResolver {
             DesignChipPalette(
                 background: nil,
                 border: SemanticColor.border.neutral._40,
-                content: SemanticColor.text.neutral.secondary,
-                icon: SemanticColor.text.neutral.secondary
+                content: SemanticColor.text.neutral.tertiary,
+                icon: SemanticColor.text.neutral.tertiary
             )
         case .filled:
             DesignChipPalette(

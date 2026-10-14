@@ -63,6 +63,8 @@ struct DemoRootView: View {
             OnboardingFlowDemoScreen(onExit: backToList)
         case .tabNavigation:
             TabNavigationDemoScreen(onExit: backToList)
+        case .createMeeting:
+            CreateMeetingDemoScreen(onExit: backToList)
         case .meetingDetail:
             MeetingDetailDemoScreen(onExit: backToList)
         case .meetingWidget:

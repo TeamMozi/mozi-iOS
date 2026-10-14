@@ -29,7 +29,7 @@ public enum DemoFlow: String, CaseIterable, Identifiable, Hashable {
         case .login: [.login]
         case .onboarding: [.profileSetting, .interestSetting, .onboardingFlow]
         case .shortform: [.tabNavigation]
-        case .meeting: [.meetingDetail, .meetingWidget]
+        case .meeting: [.createMeeting, .meetingDetail, .meetingWidget]
         case .search, .create, .chat, .myPage: []
         }
     }
@@ -51,6 +51,7 @@ public enum DemoScreen: String, Hashable, Identifiable {
     case interestSetting
     case onboardingFlow
     case tabNavigation
+    case createMeeting
     case meetingDetail
     case meetingWidget
 
@@ -63,6 +64,7 @@ public enum DemoScreen: String, Hashable, Identifiable {
         case .interestSetting: "카테고리 설정"
         case .onboardingFlow: "온보딩 흐름 전체"
         case .tabNavigation: "탭 안 이동"
+        case .createMeeting: "모임 만들기"
         case .meetingDetail: "모임 상세"
         case .meetingWidget: "위젯 / 스냅포인트"
         }
@@ -75,6 +77,7 @@ public enum DemoScreen: String, Hashable, Identifiable {
         case .interestSetting: InterestSettingDemoState.allCases.map(\.title)
         case .onboardingFlow: OnboardingFlowDemoState.allCases.map(\.title)
         case .tabNavigation: TabNavigationDemoState.allCases.map(\.title)
+        case .createMeeting: CreateMeetingDemoState.allCases.map(\.title)
         case .meetingDetail: MeetingDetailDemoState.allCases.map(\.title)
         case .meetingWidget: MeetingWidgetDemoState.allCases.map(\.title)
         }
@@ -89,7 +92,8 @@ public enum DemoScreen: String, Hashable, Identifiable {
     public var selectsAppearance: Bool {
         switch self {
         case .login: false
-        case .profileSetting, .interestSetting, .onboardingFlow, .tabNavigation, .meetingDetail, .meetingWidget: true
+        case .profileSetting, .interestSetting, .onboardingFlow, .tabNavigation, .createMeeting, .meetingDetail,
+             .meetingWidget: true
         }
     }
 
@@ -99,7 +103,8 @@ public enum DemoScreen: String, Hashable, Identifiable {
     public var presentsFullScreen: Bool {
         switch self {
         case .login: false
-        case .profileSetting, .interestSetting, .onboardingFlow, .tabNavigation, .meetingDetail, .meetingWidget: true
+        case .profileSetting, .interestSetting, .onboardingFlow, .tabNavigation, .createMeeting, .meetingDetail,
+             .meetingWidget: true
         }
     }
 }

@@ -1,7 +1,8 @@
 import CoreGraphics
 
-/// Pretendard 네 굵기의 PostScript 이름. `Resources/Fonts/` 의 파일 이름과 같다.
+/// Pretendard 다섯 굵기의 PostScript 이름. `Resources/Fonts/` 의 파일 이름과 같다.
 enum DesignSystemFontName {
+    static let extraLight = "Pretendard-ExtraLight"
     static let regular = "Pretendard-Regular"
     static let medium = "Pretendard-Medium"
     static let semiBold = "Pretendard-SemiBold"

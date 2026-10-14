@@ -9,6 +9,8 @@ struct DesignTextViewBridge: UIViewRepresentable {
     let appearance: DesignTextInputAppearance
     /// 글자 수 규칙. nil 이면 세지 않는다.
     var limit: DesignTextLimit?
+    /// 커서 위치(UTF-16)를 알릴 곳. 비우면 알리지 않는다.
+    var cursor: Binding<Int?>?
     /// 칸이 키보드를 얻으면 true, 잃으면 false. 입력 중 테두리가 쓴다.
     let onEditingChanged: @MainActor (Bool) -> Void
 
@@ -139,10 +141,25 @@ struct DesignTextViewBridge: UIViewRepresentable {
 
         func textViewDidBeginEditing(_ textView: UITextView) {
             parent.onEditingChanged(true)
+            reportCursor(textView.selectedRange.location)
         }
 
         func textViewDidEndEditing(_ textView: UITextView) {
             parent.onEditingChanged(false)
+            reportCursor(nil)
+        }
+
+        func textViewDidChangeSelection(_ textView: UITextView) {
+            guard textView.isFirstResponder else { return }
+            reportCursor(textView.selectedRange.location)
+        }
+
+        // 화면을 그리는 도중에 바인딩을 바꾸면 SwiftUI 가 경고한다. 다음 차례로 미룬다.
+        private func reportCursor(_ location: Int?) {
+            guard parent.cursor != nil else { return }
+            Task { @MainActor [weak self] in
+                self?.parent.cursor?.wrappedValue = location
+            }
         }
 
         private func setText(_ text: String, in view: UITextView) {

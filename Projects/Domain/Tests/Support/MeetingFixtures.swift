@@ -25,7 +25,13 @@ enum MeetingFixtures {
             intro: nil,
             detail: nil,
             posterURL: nil,
-            backgroundMusic: BackgroundMusic(id: "music-1", title: "키즈나 뮤직"),
+            backgroundMusic: BackgroundMusic(
+                id: "music-1",
+                title: "키즈나 뮤직",
+                albumImageURL: nil,
+                durationSeconds: 99,
+                useCount: 110
+            ),
             startAt: Date(timeIntervalSince1970: 1_000),
             place: place,
             region: Region(id: "1126000000", province: "서울특별시", district: "중랑구"),

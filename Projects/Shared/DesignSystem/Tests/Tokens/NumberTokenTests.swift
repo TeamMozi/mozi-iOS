@@ -43,6 +43,10 @@ final class NumberTokenTests: XCTestCase {
         XCTAssertEqual(CGFloat.ds.iconSize._28, 28)
     }
 
+    func test_radius_26은_시안_칸_묶음_모서리다() {
+        XCTAssertEqual(CGFloat.ds.radius._26, 26)
+    }
+
     func test_layout_margin이_그리드_바깥_여백_16이다() {
         XCTAssertEqual(CGFloat.ds.layout.margin, 16)
     }

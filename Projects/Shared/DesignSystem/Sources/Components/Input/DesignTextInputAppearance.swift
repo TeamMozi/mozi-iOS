@@ -3,10 +3,10 @@ import UIKit
 /// UIKit 글자 칸의 글자·placeholder·커서·안쪽 여백. 색은 다크·라이트 쌍이다.
 struct DesignTextInputAppearance: Equatable, Sendable {
     let textStyle: TextStyle
-    let textColor: ThemedColor
+    let textColor: DesignInputColor
     let placeholder: String
     let placeholderStyle: TextStyle
-    let placeholderColor: ThemedColor
+    let placeholderColor: DesignInputColor
     let tint: ThemedColor
     let accessibilityLabel: String
     /// 여러 줄 칸의 글자 둘레(`textContainerInset`). 한 줄 칸은 쓰지 않는다.
@@ -24,7 +24,7 @@ struct DesignTextInputAppearance: Equatable, Sendable {
 
     private static func attributes(
         style: TextStyle,
-        color: ThemedColor,
+        color: DesignInputColor,
         includesLineHeight: Bool
     ) -> [NSAttributedString.Key: Any] {
         var result: [NSAttributedString.Key: Any] = [

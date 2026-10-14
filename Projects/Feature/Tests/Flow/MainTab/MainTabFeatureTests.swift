@@ -62,4 +62,50 @@ final class MainTabFeatureTests: XCTestCase {
             [.playStack, .search, .chat, .person, .plus]
         )
     }
+
+    func test_만들기_탭을_누르면_보던_탭은_그대로_두고_모임_만들기_시트를_띄운다() async {
+        let store = TestStore(initialState: MainTabFeature.State(selectedTab: .chat)) {
+            MainTabFeature()
+        }
+
+        await store.send(.tabSelected(.create)) {
+            $0.createMeeting = CreateMeetingFlowFeature.State()
+        }
+        XCTAssertEqual(store.state.selectedTab, .chat)
+    }
+
+    func test_모임_만들기_시트에서_닫기를_올리면_시트를_닫는다() async {
+        let store = TestStore(initialState: MainTabFeature.State(createMeeting: CreateMeetingFlowFeature.State())) {
+            MainTabFeature()
+        }
+
+        await store.send(.createMeeting(.presented(.delegate(.closed)))) {
+            $0.createMeeting = nil
+        }
+    }
+
+    func test_모임을_만들면_시트를_닫는다() async {
+        let store = TestStore(initialState: MainTabFeature.State(createMeeting: CreateMeetingFlowFeature.State())) {
+            MainTabFeature()
+        }
+
+        await store.send(.createMeeting(.presented(.delegate(.created(CreateMeetingFixtures.meeting()))))) {
+            $0.createMeeting = nil
+        }
+    }
+
+    func test_앵콜에서_시리즈만_실패하면_시트를_닫고_안내를_한_번_띄운다() async {
+        let store = TestStore(initialState: MainTabFeature.State(createMeeting: CreateMeetingFlowFeature.State())) {
+            MainTabFeature()
+        }
+
+        let meeting = CreateMeetingFixtures.meeting()
+        await store.send(.createMeeting(.presented(.delegate(.createdWithoutSeries(meeting))))) {
+            $0.createMeeting = nil
+            $0.screen = .actionFailed(message: "모임은 만들었지만 시리즈 연결에 실패했어요")
+        }
+        await store.send(.noticeDismissed) {
+            $0.screen = .idle
+        }
+    }
 }

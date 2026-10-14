@@ -3,9 +3,11 @@
 ## 책임
 - Figma 파일 `hnGl2AWCk8XCvrNK7MBkvq` 의 색·숫자·글자 스타일을 코드 토큰으로 연다
 - 공통 부품: 버튼 여섯 계열(스타일 `.main`·`.neutral`·`.ghost`·`.textButton(_:)`·`.action(_:)`·`.shortcut(_:)`·`.pill` 과 화면 조각 `SocialLoginButton`), 아이콘 버튼 생성자 `Button(_:icon:)`, `DesignText`, `ScreenStatus` · `.screenStatus`, 하단 버튼 영역 `BottomButtonArea`
-- 입력 부품: `DesignTextField` · `DesignTextArea` · `DesignDropdownRow` · `DesignCheckbox` · `DesignToggle` · `DesignChip` · `DesignSearchField` · `DesignStatusMenu`
+- 입력 부품: `DesignTextField` · `DesignTextArea` · `DesignDropdownRow` · `DesignPickerCell` · `DesignCheckbox` · `DesignToggle` · `DesignChip` · `DesignSearchField` · `DesignStatusMenu`
 - 헤더·탭바 꾸밈: 탭바 아이콘 `TabBarIcon`, 툴바 제목·아이콘 `DesignToolbarTitle`·`DesignToolbarIcon`, 헤더 배경 `.designHeaderBackground(_:)`, 뒤로 가기 그림 `DesignNavigationBar.applyBackIndicator()`, 시트 딤 `.designSheet(item:detents:content:)`
-- 글꼴(Pretendard 네 굵기)과 에셋(로고 둘·소셜 아이콘·로그인 숏폼 사진·온보딩 기본 사진·카테고리 그림 12장·스냅 포인트 도움말 그림·자리 표시용 지도)
+- 고르기 부품: 달력 `DesignCalendar`, 시간 휠 `DesignTimeWheel`, 목록 줄 `DesignListRow`
+- 칸 묶음: 둥근 칸 묶음 `DesignFormGroup`, 줄 구분선 `DesignFormRowSeparator`
+- 글꼴(Pretendard 다섯 굵기, ExtraLight 포함)과 에셋(로고 둘·소셜 아이콘·로그인 숏폼 사진·온보딩 기본 사진·카테고리 그림 12장·스냅 포인트 도움말 그림·자리 표시용 지도·시리즈 설명 그림)
 
 ## 의존
 - 허용: SharedUtils
@@ -26,10 +28,11 @@ Figma 경로를 낱말 단위로 옮긴다.
 |---|---|---|---|
 | `color/*` 원시 색 | `PrimitiveColor.primary._100` | 34 | 모듈 안 |
 | `Sementic Numbers` 컬렉션의 `overlay/dark·light·gray/*` 알파 색 | `AlphaColor.overlay.dark._40` | 20 | 모듈 안 |
-| 의미 색 `text` · `fill` · `border` · `button` · `overlay` | `Color.ds.text.neutral.primary` (쌍은 `SemanticColor.text.neutral.primary`) | 63 (+ Figma 알파 색 `overlay.gray._10` 1, Figma 밖 `text.status` 2) | `Color.ds` |
+| 의미 색 `text` · `fill` · `border` · `button` · `overlay` | `Color.ds.text.neutral.primary` (쌍은 `SemanticColor.text.neutral.primary`) | 63 (+ Figma 알파 색 `overlay.gray._10`·`overlay.gray.deep` 2, Figma 밖 `text.status` 2) | `Color.ds` |
 | `radius` · `spacing` · `border` · `Button Height` · `icon-size` | `CGFloat.ds.radius._8`, `CGFloat.ds.spacing.lg`, `CGFloat.ds.iconSize._14` | 24 | `CGFloat.ds` |
 | 그리드 스타일 `mozi_layout` 의 바깥 여백 16 | `CGFloat.ds.layout.margin` | 1 | `CGFloat.ds` |
 | 글자 스타일 (Pretendard) | `TextStyle.ds.caption1.medium` | 21 | `TextStyle.ds` |
+| 토큰에 없는 글자 모양 | `TextStyle.ds.pretendard(.semiBold, size: 20, lineHeight: 28, letterSpacingEm: -0.02)` (굵기 `PretendardWeight` 다섯) | 함수 | `TextStyle.ds` |
 
 그리드의 열 수(4)와 열 간격(16)은 옮기지 않았다. SwiftUI 배치에 쓰지 않는다.
 
@@ -43,11 +46,14 @@ Figma 경로를 낱말 단위로 옮긴다.
   - `positive` = `color/system/green` #6CE582 (「모집 중」) · `negative` = `color/system/red` #FF5F57 (회차 카드의 「종료」, 「모임 삭제」)
 - `Color.ds.social.*` 넷. 모드와 상관없다. 바탕은 카카오·애플 브랜드 색이고, 글자·아이콘은 Figma login 의 `color/neutral/1200` 이다
   - `kakao` #FEE500 · `kakaoContent` #0E0E11 · `appleBackground` #FFFFFF · `appleContent` #0E0E11
-- `Color.ds.overlay.gray._10` 하나. Figma `overlay/gray/10`(VariableID:1570:44338)은 `Sementic Numbers` 컬렉션의 한 모드 알파 색이라 다크·라이트 구분이 없다. 시안(모임 관리 사이드바 라이트 `2798:100802` · 다크 `2798:102194` 의 행 묶음)이 이 변수를 바로 쓰므로 두 모드에 같은 알파 색 #AFAFAF1A(`AlphaColor.overlay.gray._10`)를 건다
+- `Color.ds.overlay.gray._10`·`.deep` 둘. Figma `overlay/gray/10`(VariableID:1570:44338)·`overlay/gray/deep` 은 `Sementic Numbers` 컬렉션의 한 모드 알파 색이라 다크·라이트 구분이 없다. 시안이 이 변수를 바로 쓰므로 두 모드에 같은 알파 색을 건다
+  - `_10` #AFAFAF1A(`AlphaColor.overlay.gray._10`): 모임 관리 사이드바(라이트 `2798:100802` · 다크 `2798:102194`)의 행 묶음, 칸 묶음(Form Group) 채움
+  - `deep` #423F5533(`AlphaColor.overlay.gray.deep`): 포스터 배경음악 알약 `2973:29857` 바탕
+- `CGFloat.ds.radius._26`: 시안 칸 묶음(Form Group) 모서리. Figma `radius` 변수에 없다
 - 이전의 Secondary 색 9개, System orange, `CGFloat.ds.dim`, `Font.ds` 는 지웠다
 
 ## Figma 와 맞춰 볼 것
-- `overlay/gray/40`·`overlay/gray/80` 은 다른 gray(#AFAFAF)와 RGB 가 다르다(#706D82·#423F55). 이름과 지금 값(40%·80%)을 그대로 둔다. Figma 값(20%)은 디자이너가 맞춘다
+- `overlay/gray/muted`·`overlay/gray/deep` 은 다른 gray(#AFAFAF)와 RGB 가 다르다(#706D82·#423F55). 둘 다 20% 다. 예전 이름 `gray/40`·`gray/80` 을 Figma 가 이 이름으로 바꿨다(2026-10-13 정리). 의미 색 `overlay/gray/default` 의 다크 값이 `muted` 를 가리킨다
 - 흰색 알파 색은 `overlay/light/80`(0xCC)이다. 의미 색 `overlay/dim/70` 의 라이트 값이 이것을 가리킨다
 - Figma 의미 색 가운데 system·swatch 원시 색을 가리키는 것이 없다. 위 상태 글자색 둘만 코드에서 먼저 열었다
 
@@ -93,22 +99,30 @@ SocialLoginButton(.kakao) {
 - 토큰이 없는 값(아이콘 16, 여백 20, 액션 accent 의 원시 색 `color/primary/50`·`color/neutral/1300` 등)은 부품 파일 안 상수다
 - 글자는 `DesignText(_:style:)` 로 쓴다. `style.font` 만 꺼내면 줄 높이·자간이 빠진다
 - 입력 부품은 값과 선택을 들고 있지 않는다. 쓰는 쪽이 바인딩이나 지금 값과 「누르면 할 일」을 넘긴다. 오류·비활성 상태는 없다
-- 한 줄 `DesignTextField` 와 여러 줄·캡션 `DesignTextArea`(`.standard`·`.caption`)는 UIKit `UITextField`·`UITextView` 를 감싼다. 보이는 글자 하나를 1자로 세고 최대를 넘는 입력은 받지 않는다(붙여넣은 글은 뒤가 잘린다). 조합 중인 글자도 글자 수와 쓰는 쪽 값에 들어가지만, 조합 중에는 자르지 않고 조합이 끝나면 넘친 만큼 자른다
-- 최대보다 긴 값이 넘어오면 한 줄 칸은 받자마자 잘라 쓰는 쪽 값도 바꾸고, 여러 줄·캡션 칸은 그대로 두고 「55/50」으로 보이며 지우기만 받는다. 「현재/최대」는 여러 줄·캡션 칸만 그린다
+- 한 줄 `DesignTextField`(`.standard`·`.row`) 와 여러 줄·캡션 `DesignTextArea`(`.standard`·`.caption`·`.row(height:showsCounter:)`)는 UIKit `UITextField`·`UITextView` 를 감싼다. `.row` 는 시안 Row 줄 칸이다: 테두리·바탕 없이 위아래 10·좌우 16(한 줄은 높이 54), 둘레와 구분선은 쓰는 쪽 칸이 그린다. 보이는 글자 하나를 1자로 세고 최대를 넘는 입력은 받지 않는다(붙여넣은 글은 뒤가 잘린다). 조합 중인 글자도 글자 수와 쓰는 쪽 값에 들어가지만, 조합 중에는 자르지 않고 조합이 끝나면 넘친 만큼 자른다
+- 최대보다 긴 값이 넘어오면 한 줄 칸은 받자마자 잘라 쓰는 쪽 값도 바꾸고, 여러 줄·캡션 칸은 그대로 두고 「55/50」으로 보이며 지우기만 받는다. 「현재/최대」는 여러 줄·캡션 칸과 `showsCounter` 를 켠 여러 줄 `.row` 만 그린다
+- 줄 칸 글자 모양·색: `DesignTextFieldStyle.row(text:)` · `DesignTextAreaStyle.row(height:showsCounter:text:)` 에 `DesignRowText(textStyle:textColor:placeholderStyle:placeholderColor:)` 를 넘긴다. 입력 글자와 placeholder 를 따로 주고, 비운 값은 지금 모양(Body/Regular, 상태별 색)이다. 색을 넘기면 상태와 상관없이 그 색이다
 - 입력 중 테두리는 칸이 키보드를 가진 동안 켜진다
+- 여러 줄 칸은 `cursor:` 바인딩으로 커서 위치(UTF-16)를 알린다. 키보드를 가진 동안 쓰고, 놓으면 nil 이다. 쓰는 쪽이 커서 자리에 글을 끼울 때 쓴다(모임 만들기 상세 설명)
 - 드롭다운 줄 칸(`DesignDropdownCell`)은 지금 값·메뉴 항목·`onSelect` 를 받는다. 누르면 칸 안의 iOS 기본 `Menu` 가 뜨고 지금 값에 체크가 붙는다. 메뉴가 떠 있어도 입력 중 테두리는 켜지지 않는다
-- 체크박스 `.check`·`.order(Int)`·`.vote`, 칩 `.outlined`·`.filled`(닫기 아이콘 켜고 끔)·`.pill`(편집 중), 검색 칸 `.glass`(`glassEffect`)·`.flat`(지우기 버튼), 상태 드롭다운은 iOS 기본 `Menu` 와 표시용 `DesignRecruitStatus` 셋(Domain 타입과 다르다)
+- 고르기 칸 `DesignPickerCell(value:placeholder:options:onSelect:)`: 시안 Row chips 의 Picker 칸 하나. 라벨·채움 없이 높이 36·모서리 6·테두리 `border/neutral/40`, 글자 Caption1/Regular(값 `text/neutral/primary`, placeholder `text/neutral/tertiary`), 끝 아래 꺾쇠 14(`text/neutral/subtle`). 남는 폭을 채운다. 누르면 드롭다운 줄 칸과 같은 iOS 기본 `Menu`
+- 체크박스 `.check`·`.order(Int)`·`.vote`, 칩 `.outlined`·`.filled`(닫기 아이콘 켜고 끔, 눌리는 칩은 `trailingIcon` 으로 글자 뒤 아이콘 하나)·`.pill`(편집 중), 검색 칸 `.glass`(`glassEffect`)·`.flat`(지우기 버튼), 상태 드롭다운은 iOS 기본 `Menu` 와 표시용 `DesignRecruitStatus` 셋(Domain 타입과 다르다)
   - 상태 드롭다운 `DesignStatusMenu(status:options:onSelect:)`: 접힌 알약 바탕은 Figma `fill/neutral/default`(`2774:128129`). `options` 로 메뉴에 보일 항목을 고른다(기본 셋 다). 메뉴 항목 글자색은 시스템이 정한다
 - 체크박스·토글은 VoiceOver 이름(`title`)을 받고 화면에는 그리지 않는다
 - 원시 색은 부품 안에서만 쓴다: 토글 켜짐 green, 상태 「모집 마감」·필수 `*` red, 체크박스·칩 채움형의 neutral·primary 원시 색, 번호 체크박스 해제 바탕 알파 `overlay/gray/70`. Figma 에 의미 색이 생기면 옮긴다
 - 포커스: 쓰는 화면이 칸에 `.focused($focus, equals:)` 를 건다. 감싼 UIKit 칸과 양방향으로 이어진다(테스트 `DesignTextInputFocusTests`)
+- 달력 `DesignCalendar`: 시안 `2774:118148` 값. 년월 줄 24(화살표 칸 24 · 간격 8 · 글리프 높이 13), 요일 줄 34, 날짜 칸 44×48(원 36)을 주 칸 양 끝에 붙여 벌린다. 높이는 주 수를 따른다(다섯 주 298). 글자는 `text/neutral/secondary`, 화살표는 시안대로 `border/neutral/50`, 오늘은 `text/accent/default` 테두리 + `text/accent/strong` 글자, 고른 날은 `text/accent/default` 원 + inverse SemiBold
+- 시간 휠 `DesignTimeWheel(selection:minuteInterval:onSelect:)`: iOS 기본 `UIDatePicker`(`.time`, `.wheels`)를 감싼다. 분 간격(기본 5)은 `minuteInterval` 로 건다. 오전/오후·12·24시간은 기기 설정을 따른다
+- 목록 줄 `DesignListRow(_:subtitle:isSelected:style:leading:trailing:)`: `style` 은 `.standard`(지금 모양) · `.place`(좌우 20·위아래 10·높이 64, 제목 Headline/SemiBold) · `.music`(좌우 20·위아래 12·높이 64, 제목 Caption1/SemiBold secondary, 보조 Caption2/Regular subtle, 고른 줄 `overlay/gray/10`)
 - 탭바·헤더·바텀시트 헤더는 iOS 26 시스템 부품(`TabView`, `NavigationStack` + `.toolbar`, `.sheet` 안 `NavigationStack` + `.toolbar`)이다. 디자인 시스템은 꾸밈만 준다
   - 탭 아이콘: `.tabItem { TabBarIcon.search.image(isSelected:colorScheme:) }`. 선택은 채움, 나머지는 선, 「+」 는 늘 채움 + `text/accent/default`. 색을 입힌 원본 그림이라 탭바에 `.tint` 를 걸지 않는다
-  - 툴바: 제목 `DesignToolbarTitle`(Medium 16), 아이콘 `DesignToolbarIcon`(24) 둘 다 `text/neutral/primary`. 오른쪽 버튼 둘은 `ToolbarItem` 둘 + `ToolbarSpacer(.fixed)`, 왼쪽 정렬 제목은 `.topBarLeading` + `.sharedBackgroundVisibility(.hidden)` + `.fixedSize()`
+  - 툴바: 제목 `DesignToolbarTitle`(Medium 16), 아이콘 `DesignToolbarIcon`(24) 둘 다 `text/neutral/primary`. 오른쪽 확인 버튼(→·체크)은 `.designToolbarProminent()` + `DesignToolbarIcon(_:isProminent: true)` 로 켜지면 `text/accent/highlight` 유리 원에 검정 아이콘, 꺼지면 시스템 회색 유리 원이다(시안 Header Btn accent). 오른쪽 버튼 둘은 `ToolbarItem` 둘 + `ToolbarSpacer(.fixed)`, 왼쪽 정렬 제목은 `.topBarLeading` + `.sharedBackgroundVisibility(.hidden)` + `.fixedSize()`
   - 헤더 배경: `.transparent`(시스템 기본, 스크롤하면 가장자리 효과) · `.filled`(`fill/neutral/default`)
   - 뒤로 가기: 시스템 버튼에 그림만 `chevron.left`. 앱·데모 앱 시작에서 `DesignNavigationBar.applyBackIndicator()` 를 한 번 부른다
   - 바텀시트: `.designSheet(item:detents:content:)`(또는 `isPresented:`)로 띄운다. 시스템 딤을 끄고 뒤 화면 전체를 `overlay/gray/default` 로 덮으며, 딤을 누르면 닫힌다. 딤 짙기는 시트 위치를 따른다(자리 잡으면 다 짙고, 가장 작은 높이 아래로 끌어내린 만큼 옅어진다). 몸통은 `fill/neutral/default`. 높이는 쓰는 화면이 `detents` 로 작은 것부터 넘긴다(`.large` 가 없으면 마지막을 가장 큰 높이로 본다)
 - 프로필 사진 `DesignAvatar(_:diameter:shape:)`: 모양은 원이 기본이고 `.roundedRectangle(cornerRadius:)` 를 고를 수 있다. 사진이 없거나 읽는 중이면 바탕색이다
+- 칸 묶음 `DesignFormGroup { 줄들 }`: 시안 Form Group. 줄을 사이 간격 0 으로 쌓고 너비를 채운다. 모서리 `radius._26`, 채움 `overlay/gray/10`, 안쪽 여백 0. 줄 높이·여백은 줄(`.row` 칸 등)이 가진다
+  - 줄 구분선 `DesignFormRowSeparator()`: 시안 Row 의 Separator. 왼쪽 14·오른쪽 16 들여 1pt `border/neutral/30`, 누름을 받지 않는다. 줄 사이에 두거나 줄에 `.overlay(alignment: .bottom) { DesignFormRowSeparator() }` 로 얹는다. 다크에서 잘 안 보이는 것은 시안 그대로 둔다
 - 하단 버튼 영역 `BottomButtonArea(_:showsTopBorder:caption:buttons:)`: 배치 `.single` · `.split5To5` · `.split3To7`(오른쪽 240 고정). 여백 위 12(3:7 은 16)·좌우 16, 간격 12, 바탕 `fill/neutral/default`, 위쪽 1pt 선 `border/neutral/10` 은 켜고 끈다. 아래 여백은 안전 영역이다. 버튼과 윗줄은 쓰는 화면이 넣는다
   - 화면에 붙일 때는 `.bottomButtonArea { BottomButtonArea(...) { ... } }`. 탭바를 숨기고, 키보드가 올라와도 버튼 줄은 키보드 뒤에 남는다. 본문은 그대로 키보드를 피한다
 
@@ -119,7 +133,7 @@ SocialLoginButton(.kakao) {
 ## 아이콘 대응표
 Figma 아이콘 이름과 코드 경로. 아이콘 경로는 `Image.ds.icon.<종류>.<모양>`, 크기는 `.iconSize(_:)`, 색은 `.foregroundStyle` 이다. `Image.ds` 는 장식용이라 VoiceOver 가 읽지 않는다.
 
-기존 12장:
+기존 12장과 그림 1장:
 
 | 코드 경로 | Tuist 접근자 | 에셋 |
 |---|---|---|
@@ -135,6 +149,7 @@ Figma 아이콘 이름과 코드 경로. 아이콘 경로는 `Image.ds.icon.<종
 | `Image.ds.snapPoint.help02` | `snapPointHelp02` | `SnapPoint/snap_point_help_02` (Figma `2836:143690`, 그림 안 글자 있음) |
 | `Image.ds.snapPoint.help03` | `snapPointHelp03` | `SnapPoint/snap_point_help_03` (Figma `2836:143697`) |
 | `Image.ds.placeholder.map` | `placeholderMap` | `Placeholder/placeholder_map` (자리 표시용 고정 지도. 실제 장소 지도가 아니다. 한 색 템플릿 SVG, 색은 쓰는 쪽 `fill/neutral/strong`, Figma `I2973:30332;2973:30319`) |
+| `Image.ds.illustration.seriesInfo` | `illustrationSeriesInfo` | `Illustration/illustration_series_info` (PNG @2x·@3x, 라이트 `2238:127709`·다크 `2238:127503`, 342×397pt, 기기 모드를 따른다) |
 
 Figma 아이콘에 없어 SF Symbol 로 그리는 1장(VoiceOver 가 이름을 읽으므로 쓰는 쪽이 `.accessibilityHidden(true)` 를 건다):
 
@@ -360,13 +375,16 @@ ScrollView {
 - `Sources/Components/` · 헤더·탭바·하단 버튼 영역은 `Sources/Components/Frame/`
 
 ## 테스트 포인트
-- 원시 색 34 · 알파 색 20 · 의미 색 63 쌍과 `overlay.gray._10` 1 쌍, 상태 글자색 2 쌍 · 숫자 · 글자 스타일 21 값이 Figma 표와 같다
+- 원시 색 34 · 알파 색 20 · 의미 색 63 쌍과 `overlay.gray._10`·`.deep` 2 쌍, 상태 글자색 2 쌍 · 숫자 · 글자 스타일 21 값이 Figma 표와 같다. Figma 밖 숫자 `radius._26` 과 글자 모양 함수의 결과
+- Pretendard 다섯 굵기가 실제로 등록된다(ExtraLight 포함)
 - 의미 색의 공개 `Color` 가 다크·라이트·정해지지 않은 trait 에서 맞는 값을 낸다
 - 호스트 앱 없는 테스트에서 `TextStyle` 글자가 Pretendard 로 그려진다
 - 버튼: `.controlSize` 크기 대응(기본 sm·md·lg, 액션 s·m), 계열·상태(기본·눌림·비활성)별 색과 불투명도, 소셜 버튼 문구·색·치수
 - 입력 칸·체크박스·칩·검색 칸·상태 드롭다운의 상태별 색과 치수
 - 글자 수 규칙(빈 값, 정확히 최대, 최대+1, 이모지 묶음, 조합 중, 붙여넣기, 긴 값에서 지우기·더하기)과 UIKit 칸의 조합 뒤 자르기
 - UIKit 칸과 포커스의 양방향 연결
+- 칸 묶음 모서리·채움·여백과 줄 구분선 들여씀·색, 시리즈 설명 그림의 라이트·다크 불러오기
+- 줄 칸 글자 모양·색(기본값은 지금 모양), 달력 칸 치수·높이·색, 시간 휠의 모드·분 간격·분 내림, 목록 줄 모양별 치수·글자·색
 - 탭 아이콘의 모양(선택·「+」)·색·크기 28, 툴바 제목·아이콘 값, 헤더 배경, 뒤로 가기 그림 24, 하단 버튼 영역의 배치별 너비·여백·높이
 
 ## 명령

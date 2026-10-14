@@ -33,10 +33,10 @@ final class DemoCatalogTests: XCTestCase {
         XCTAssertEqual(DemoFlow.shortform.screenCountTitle, "화면 1개")
     }
 
-    func test_모임_흐름은_모임_상세와_위젯_화면_둘() {
-        XCTAssertEqual(DemoFlow.meeting.screens, [.meetingDetail, .meetingWidget])
-        XCTAssertEqual(DemoFlow.meeting.screenCountLabel, "화면 2")
-        XCTAssertEqual(DemoFlow.meeting.screenCountTitle, "화면 2개")
+    func test_모임_흐름은_모임_만들기_모임_상세_위젯_세_화면() {
+        XCTAssertEqual(DemoFlow.meeting.screens, [.createMeeting, .meetingDetail, .meetingWidget])
+        XCTAssertEqual(DemoFlow.meeting.screenCountLabel, "화면 3")
+        XCTAssertEqual(DemoFlow.meeting.screenCountTitle, "화면 3개")
     }
 
     func test_탭_안_이동_화면_줄은_상태_셋의_개수와_이름을_보인다() {
@@ -48,7 +48,7 @@ final class DemoCatalogTests: XCTestCase {
         XCTAssertEqual(TabNavigationDemoState.allCases.map(\.shortTitle), ["처음", "1장", "2장"])
     }
 
-    func test_로그인을_뺀_여섯_화면은_전체_화면으로_덮어_띄운다() {
+    func test_로그인을_뺀_일곱_화면은_전체_화면으로_덮어_띄운다() {
         XCTAssertFalse(DemoScreen.login.presentsFullScreen)
         XCTAssertTrue(DemoScreen.tabNavigation.presentsFullScreen)
         XCTAssertTrue(DemoScreen.profileSetting.presentsFullScreen)
@@ -56,6 +56,7 @@ final class DemoCatalogTests: XCTestCase {
         XCTAssertTrue(DemoScreen.onboardingFlow.presentsFullScreen)
         XCTAssertTrue(DemoScreen.meetingDetail.presentsFullScreen)
         XCTAssertTrue(DemoScreen.meetingWidget.presentsFullScreen)
+        XCTAssertTrue(DemoScreen.createMeeting.presentsFullScreen)
     }
 
     func test_온보딩_흐름은_프로필_카테고리_흐름_전체_세_화면() {
@@ -93,5 +94,21 @@ final class DemoCatalogTests: XCTestCase {
     func test_위젯_화면_줄은_상태_둘의_개수와_이름을_보인다() {
         XCTAssertEqual(DemoScreen.meetingWidget.title, "위젯 / 스냅포인트")
         XCTAssertEqual(DemoScreen.meetingWidget.stateSummary, "상태 2개 · 알림 전, 진행 중")
+    }
+
+    func test_모임_만들기_화면_줄은_상태_여덟의_개수와_이름을_보인다() {
+        XCTAssertEqual(DemoScreen.createMeeting.title, "모임 만들기")
+        XCTAssertEqual(
+            DemoScreen.createMeeting.stateSummary,
+            "상태 8개 · 빈 화면에서 처음 만들기, 입력 다 채운 모임 만들기, 지난 모임 불러오기, 지난 포스터 이어 쓰기, "
+                + "포스터에서 → 누르면 만들기 실패, 시리즈 정보에서 → 누르면 연결만 실패, 장소 검색 결과 없음, 만든 뒤"
+        )
+    }
+
+    func test_모임_만들기_데모_버튼에는_짧은_상태_이름을_적는다() {
+        XCTAssertEqual(
+            CreateMeetingDemoState.allCases.map(\.shortTitle),
+            ["처음", "채움", "불러오기", "포스터", "실패", "연결 실패", "0건", "만든 뒤"]
+        )
     }
 }

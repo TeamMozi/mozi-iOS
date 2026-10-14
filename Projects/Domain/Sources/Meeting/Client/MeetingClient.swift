@@ -32,6 +32,8 @@ public struct MeetingClient: Sendable {
     /// 첫 요청은 `MeetingClient.hostedMeetingsFirstPage`, 그다음은 받은 `Page.next` 다.
     /// 페이지 사이에서 겹친 항목은 화면이 id 로 거른다.
     public var hostedMeetings: @Sendable (_ page: PageRequest) async throws -> Page<Meeting>
+    /// 포스터 배경음악 「인기」 목록. 서버에 아직 없다.
+    public var popularBackgroundMusics: @Sendable () async throws -> [BackgroundMusic]
 }
 
 extension MeetingClient: TestDependencyKey {
@@ -80,6 +82,9 @@ extension MeetingClient: TestDependencyKey {
         },
         hostedMeetings: { page in
             Page.slicing(MeetingPreviewData.hostedMeetings, by: page)
+        },
+        popularBackgroundMusics: {
+            MeetingPreviewData.backgroundMusics
         }
     )
 }

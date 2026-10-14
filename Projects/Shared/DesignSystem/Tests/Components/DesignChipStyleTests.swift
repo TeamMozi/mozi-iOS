@@ -2,12 +2,12 @@
 import XCTest
 
 final class DesignChipStyleTests: XCTestCase {
-    func test_테두리형은_테두리_40과_글자_secondary다() {
+    func test_테두리형은_테두리_40과_글자_tertiary다() {
         let palette = DesignChipStyleResolver.palette(style: .outlined, isEditing: false)
         XCTAssertNil(palette.background)
         assertTheme(palette.border, dark: 0x202027FF, light: 0xCACACEFF)
-        assertTheme(palette.content, dark: 0xCACACEFF, light: 0x484753FF)
-        assertTheme(palette.icon, dark: 0xCACACEFF, light: 0x484753FF)
+        assertTheme(palette.content, dark: 0xB0AFB5FF, light: 0x7A7887FF)
+        assertTheme(palette.icon, dark: 0xB0AFB5FF, light: 0x7A7887FF)
     }
 
     func test_채움형은_바탕_vivid에_글자_neutral_1200과_검정_닫기다() {
@@ -20,14 +20,14 @@ final class DesignChipStyleTests: XCTestCase {
 
     func test_알약형_편집_중은_글자가_accent_highlight다() {
         let palette = DesignChipStyleResolver.palette(style: .pill, isEditing: true)
-        assertTheme(palette.background, dark: 0x706D8266, light: 0xAFAFAF33)
+        assertTheme(palette.background, dark: 0x706D8233, light: 0xAFAFAF33)
         XCTAssertNil(palette.border)
         assertTheme(palette.content, dark: 0xF5FE76FF, light: 0xF29407FF)
     }
 
     func test_알약형_편집_중_아님은_글자가_tertiary다() {
         let palette = DesignChipStyleResolver.palette(style: .pill, isEditing: false)
-        assertTheme(palette.background, dark: 0x706D8266, light: 0xAFAFAF33)
+        assertTheme(palette.background, dark: 0x706D8233, light: 0xAFAFAF33)
         assertTheme(palette.content, dark: 0xB0AFB5FF, light: 0x7A7887FF)
     }
 

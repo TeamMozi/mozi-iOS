@@ -1,3 +1,4 @@
+import Domain
 import SharedDesignSystem
 import SwiftUI
 import ThirdParty
@@ -28,9 +29,16 @@ public struct MainTabView: View {
                 .tabItem { tabIcon(.myPage) }
                 .tag(MainTabFeature.Tab.myPage)
 
-            CreateFlowView(store: store.scope(state: \.create, action: \.create))
+            // 「만들기」 탭은 골라지지 않는다. 누르면 탭 묶음이 모임 만들기 시트를 띄운다
+            Color.clear
                 .tabItem { tabIcon(.create) }
                 .tag(MainTabFeature.Tab.create)
+        }
+        .designSheet(item: $store.scope(state: \.createMeeting, action: \.createMeeting)) { createStore in
+            CreateMeetingFlowView(store: createStore)
+        }
+        .screenStatus(store.screen) {
+            store.send(.noticeDismissed)
         }
     }
 
@@ -61,6 +69,9 @@ extension MainTabFeature.Tab {
             MainTabFeature()
         } withDependencies: {
             $0.authClient.logout = {}
+            $0.meetingClient = .previewValue
+            $0.seriesClient = .previewValue
+            $0.placeClient = .previewValue
         }
     )
 }

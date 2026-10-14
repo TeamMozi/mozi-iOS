@@ -46,6 +46,12 @@ enum DesignInputStyleResolver {
         )
     }
 
+    /// 줄 칸(시안 Row text·long text). 테두리·바탕이 없고, 글자·placeholder 색은 상자 칸과 같다.
+    static func row(_ phase: DesignInputPhase) -> DesignInputPalette {
+        let field = field(phase)
+        return DesignInputPalette(border: nil, background: nil, text: field.text, placeholder: field.placeholder)
+    }
+
     /// 캡션 칸. 테두리·바탕이 없고 상태에 따라 바뀌지 않는다.
     static let caption = DesignInputPalette(
         border: nil,
@@ -65,6 +71,10 @@ enum DesignInputMetrics {
     static let horizontalPadding: CGFloat = CGFloat.ds.spacing.md
     static let chevronSize: CGFloat = CGFloat.ds.iconSize._18
     static let cornerRadius: CGFloat = CGFloat.ds.radius._8
+    /// 줄 칸(시안 Row). 한 줄 높이 54, 위아래 10·좌우 16.
+    static let rowHeight: CGFloat = 54
+    static let rowVerticalPadding: CGFloat = 10
+    static let rowHorizontalPadding: CGFloat = CGFloat.ds.spacing.lg
     /// 필수 표시 `*`. Pretendard Medium 16/20, 자간 +2%. 글자 스타일 토큰에 없다.
     static let requiredMarkStyle = TextStyle(
         fontName: DesignSystemFontName.medium,
@@ -72,6 +82,33 @@ enum DesignInputMetrics {
         lineHeight: 20,
         letterSpacingEm: 0.02
     )
+}
+
+/// 한 줄 칸 꼴별 높이·좌우 여백·글자 모양.
+struct DesignTextFieldLayout: Equatable, Sendable {
+    let height: CGFloat
+    let horizontalPadding: CGFloat
+    let textStyle: TextStyle
+    let placeholderStyle: TextStyle
+
+    static func of(_ style: DesignTextFieldStyle) -> DesignTextFieldLayout {
+        switch style.kind {
+        case .standard:
+            DesignTextFieldLayout(
+                height: DesignInputMetrics.fieldHeight,
+                horizontalPadding: DesignInputMetrics.horizontalPadding,
+                textStyle: TextStyle.ds.body.regular,
+                placeholderStyle: TextStyle.ds.body.regular
+            )
+        case .row:
+            DesignTextFieldLayout(
+                height: DesignInputMetrics.rowHeight,
+                horizontalPadding: DesignInputMetrics.rowHorizontalPadding,
+                textStyle: style.rowText.textStyle,
+                placeholderStyle: style.rowText.placeholderStyle
+            )
+        }
+    }
 }
 
 /// 여러 줄·캡션 꼴별 높이·글자 둘레·글자 수 자리.
@@ -83,6 +120,7 @@ struct DesignTextAreaLayout: Equatable, Sendable {
     let placeholderStyle: TextStyle
     let counterTrailing: CGFloat
     let counterBottom: CGFloat
+    let showsCounter: Bool
 
     private static let counterLineHeight: CGFloat = TextStyle.ds.caption2.medium.lineHeight
     private static let counterBottomInset: CGFloat = 14
@@ -102,7 +140,8 @@ struct DesignTextAreaLayout: Equatable, Sendable {
                 textStyle: TextStyle.ds.body.regular,
                 placeholderStyle: TextStyle.ds.body.regular,
                 counterTrailing: 12,
-                counterBottom: counterBottomInset
+                counterBottom: counterBottomInset,
+                showsCounter: true
             )
         case .caption:
             DesignTextAreaLayout(
@@ -116,8 +155,31 @@ struct DesignTextAreaLayout: Equatable, Sendable {
                 textStyle: TextStyle.ds.subtext.regular,
                 placeholderStyle: TextStyle.ds.subtext.regular,
                 counterTrailing: 8,
-                counterBottom: counterBottomInset
+                counterBottom: counterBottomInset,
+                showsCounter: true
             )
+        case let .row(height, showsCounter, text):
+            row(height: height, showsCounter: showsCounter, text: text)
         }
+    }
+
+    /// 줄 칸. 위아래 10·좌우 16. 글자 수를 켜면 오른쪽 16·아래 10에 두고 글자 둘레 아래가 그 줄을 비켜 간다.
+    private static func row(height: CGFloat, showsCounter: Bool, text: DesignRowText) -> DesignTextAreaLayout {
+        let vertical = DesignInputMetrics.rowVerticalPadding
+        let horizontal = DesignInputMetrics.rowHorizontalPadding
+        return DesignTextAreaLayout(
+            height: height,
+            textInsets: UIEdgeInsets(
+                top: vertical,
+                left: horizontal,
+                bottom: vertical + (showsCounter ? counterLineHeight : 0),
+                right: horizontal
+            ),
+            textStyle: text.textStyle,
+            placeholderStyle: text.placeholderStyle,
+            counterTrailing: horizontal,
+            counterBottom: vertical,
+            showsCounter: showsCounter
+        )
     }
 }

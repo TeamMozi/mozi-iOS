@@ -20,6 +20,11 @@ final class DesignToolbarTests: XCTestCase {
         XCTAssertEqual(DesignToolbarIcon.color, SemanticColor.text.neutral.primary)
     }
 
+    func test_강조_확인_버튼은_text_accent_highlight_유리에_검정_아이콘이다() {
+        XCTAssertEqual(DesignToolbarProminent.tint, SemanticColor.text.accent.highlight)
+        XCTAssertEqual(DesignToolbarIcon.prominentColor, ThemedColor.fixed(PrimitiveColor.neutral._1300))
+    }
+
     @MainActor
     func test_툴바_아이콘은_24pt로_그린다() throws {
         XCTAssertEqual(DesignToolbarIcon.size, 24)

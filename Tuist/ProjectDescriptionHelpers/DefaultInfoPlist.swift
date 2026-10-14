@@ -8,6 +8,8 @@ public enum DefaultInfoPlist {
         "CFBundleVersion": "$(CURRENT_PROJECT_VERSION)",
         // 표준 HTTPS 외 암호화를 쓰지 않는다. 업로드마다 수출 규정 질문이 뜨지 않게 한다.
         "ITSAppUsesNonExemptEncryption": false,
+        // 모임 포스터 「내 사진」 탭이 사진 보관함을 읽는다.
+        "NSPhotoLibraryUsageDescription": "모임 포스터에 넣을 사진을 고르려면 사진 보관함 접근이 필요해요.",
 
         "API_BASE_URL": "$(API_BASE_URL)",
         "KAKAO_NATIVE_APP_KEY": "$(KAKAO_NATIVE_APP_KEY)",
@@ -55,6 +57,8 @@ public enum DefaultInfoPlist {
         // TestFlight 업로드 때 fastlane 이 CURRENT_PROJECT_VERSION 을 아카이브 인자로 덮어쓴다.
         "CFBundleVersion": "$(CURRENT_PROJECT_VERSION)",
         "ITSAppUsesNonExemptEncryption": false,
+        // 모임 포스터 「내 사진」 탭이 사진 보관함을 읽는다.
+        "NSPhotoLibraryUsageDescription": "모임 포스터에 넣을 사진을 고르려면 사진 보관함 접근이 필요해요.",
 
         // 업로드 때만 값이 들어온다. 비어 있으면 개발 빌드다.
         "MoziBuildNote": .string("$(\(ProjectEnvironment.UploadBuildSetting.note))"),

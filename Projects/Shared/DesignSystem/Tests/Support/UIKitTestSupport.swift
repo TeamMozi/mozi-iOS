@@ -46,10 +46,10 @@ extension DesignTextInputAppearance {
     /// 시험용 칸 모양. Body/Regular 와 기본 색.
     static let testBody = DesignTextInputAppearance(
         textStyle: TextStyle.ds.body.regular,
-        textColor: SemanticColor.text.neutral.primary,
+        textColor: .themed(SemanticColor.text.neutral.primary),
         placeholder: "시험",
         placeholderStyle: TextStyle.ds.body.regular,
-        placeholderColor: SemanticColor.text.neutral.subtle,
+        placeholderColor: .themed(SemanticColor.text.neutral.subtle),
         tint: SemanticColor.text.accent.default,
         accessibilityLabel: "시험 칸",
         textInsets: .zero

@@ -83,7 +83,7 @@ private let alphaCases: [ColorCase] = [
     ColorCase("overlay/light/100", AlphaColor.overlay.light._100, 0xFAFAFAFF),
     ColorCase("overlay/gray/10", AlphaColor.overlay.gray._10, 0xAFAFAF1A),
     ColorCase("overlay/gray/20", AlphaColor.overlay.gray._20, 0xAFAFAF33),
-    ColorCase("overlay/gray/40", AlphaColor.overlay.gray._40, 0x706D8266),
+    ColorCase("overlay/gray/muted", AlphaColor.overlay.gray.muted, 0x706D8233),
     ColorCase("overlay/gray/70", AlphaColor.overlay.gray._70, 0xAFAFAFB2),
-    ColorCase("overlay/gray/80", AlphaColor.overlay.gray._80, 0x423F55CC),
+    ColorCase("overlay/gray/deep", AlphaColor.overlay.gray.deep, 0x423F5533),
 ]

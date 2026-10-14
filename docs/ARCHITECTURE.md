@@ -100,8 +100,8 @@ Auth 인프라 + 로그인 게이트 + CoreSocialAuth 기반 카카오/애플 �
 App 은 설정을 만들고 Core factory 를 `InfraContainer.make()` 에서 부른다. factory 가 먼저, `SocialAuthBootstrap.run(config:)` 이 뒤다. 복귀 URL 은 `onOpenURL` 에서 `SocialAuthRedirectHandler.handle(url:)` 로 넘긴다.
 Network 만 예외다. App 은 `networkConfig` 만 넘기고, Data 가 `NetworkFactory` 로 클라이언트를 만든다. 인증 클라이언트에 Data 의 토큰 제공자·재발급기가 들어가기 때문이다.
 
-MainTab 이 탭 다섯(`shortform` / `search` / `chat` / `myPage` / `create`)을 쥔다.
-탭과 온보딩의 Flow 는 `@Reducer enum Route` 와 `StackState<Route.State>` 로 화면을 쌓는다. 숏폼 `Route` 에 데모용 견본 화면, 온보딩 `Route` 에 카테고리 설정 한 칸이 있다.
+MainTab 이 탭 다섯(`shortform` / `search` / `chat` / `myPage` / `create`)을 쥔다. 「만들기」(`create`) 탭은 Flow 가 없고, 누르면 MainTab 이 보던 탭을 두고 모임 만들기 시트(`CreateMeetingFlowFeature`)를 띄운다. 만들면 시트가 delegate 로 올리고 MainTab 이 닫는다.
+탭과 온보딩, 모임 만들기의 Flow 는 `@Reducer enum Route` 와 `StackState<Route.State>` 로 화면을 쌓는다. 숏폼 `Route` 에 데모용 견본 화면, 온보딩 `Route` 에 카테고리 설정 한 칸, 모임 만들기 `Route` 에 이전 모임 불러오기·장소 선택·포스터·시리즈 정보가 있다.
 로그아웃은 마이 탭과 온보딩 프로필 뒤로에서 나간다. 마이 탭은 MyPageFlow → MainTab → RootFlow, 온보딩은 OnboardingFlow → RootFlow 를 거쳐 login 으로 되돌린다.
 메인의 딥링크는 RootFlow 가 MainTab `openDeepLink` 로 넘긴다. 온보딩은 카테고리 설정의 「완료」(`UserClient.completeOnboarding`)로 끝나 main 으로 넘어가고, 보관한 딥링크를 그때 처리한다.
 

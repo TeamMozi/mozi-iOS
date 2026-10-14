@@ -1,8 +1,8 @@
 import SharedDesignSystem
 import SwiftUI
 
-/// 입력 화면. 입력 부품 6종을 시안 상태별로 늘어놓는다.
-/// 글자 입력·글자 수 끊기·체크·토글·칩·메뉴·드롭다운 메뉴가 실제로 동작한다.
+/// 입력 화면. 입력 부품과 고르기 부품(달력·시간 휠·목록 줄), 칸 묶음, 설명 그림을 시안 상태별로 늘어놓는다.
+/// 글자 입력·글자 수 끊기·체크·토글·칩·메뉴·드롭다운 메뉴·날짜·시각·줄 고르기가 실제로 동작한다.
 struct InputGalleryView: View {
     var body: some View {
         GalleryPage(.input) {
@@ -15,6 +15,11 @@ struct InputGalleryView: View {
                 ChipGallerySection()
                 SearchGallerySection()
                 StatusMenuGallerySection()
+                CalendarGallerySection()
+                TimeWheelGallerySection()
+                ListRowGallerySection()
+                FormGroupGallerySection()
+                IllustrationGallerySection()
             }
         }
     }
@@ -65,6 +70,8 @@ private struct DropdownGallerySection: View {
     @State private var month: String?
     @State private var day: String?
     @State private var gender: String? = "여자"
+    @State private var minAge: String?
+    @State private var maxAge: String? = "35세"
 
     var body: some View {
         GallerySection("Input · 드롭다운 줄") {
@@ -80,6 +87,12 @@ private struct DropdownGallerySection: View {
                     gender = $0
                 },
             ])
+            InputGalleryCaption("고르기 칸 · 라벨·채움 없음 · 입력 전 ~ 입력 뒤 · 칸을 누르면 메뉴")
+            HStack(spacing: 10) {
+                DesignPickerCell(value: minAge, placeholder: "최소 나이", options: InputGallerySample.ages) { minAge = $0 }
+                DesignText("~", style: TextStyle.ds.caption1.semiBold, color: Color.ds.text.neutral.primary)
+                DesignPickerCell(value: maxAge, placeholder: "최대 나이", options: InputGallerySample.ages) { maxAge = $0 }
+            }
         }
     }
 }
@@ -162,6 +175,11 @@ private struct ChipGallerySection: View {
                 DesignChip("2026.10.05", style: .pill, isEditing: editing == .date) { editing = .date }
                 DesignChip("9:41 AM", style: .pill, isEditing: editing == .time) { editing = .time }
             }
+            InputGalleryCaption("끝 아이콘 · 테두리형 · 채움형")
+            HStack(spacing: CGFloat.ds.spacing.sm) {
+                DesignChip("직접 입력", style: .outlined, trailingIcon: Image.ds.icon.chevron.down) {}
+                DesignChip("직접 입력", style: .filled, trailingIcon: Image.ds.icon.chevron.down) {}
+            }
             Button("지운 칩 되돌리기") {
                 outlinedTags = InputGallerySample.tags
                 filledTags = InputGallerySample.tags
@@ -223,6 +241,7 @@ private enum InputGallerySample {
     static let longMultiLine = String(repeating: "가나다라마바사아자차카", count: 5)
     static let tags = ["운동", "독서"]
     static let years = (1950...2010).reversed().map { "\($0)년" }
+    static let ages = (14...80).map { "\($0)세" }
     static let months = (1...12).map { "\($0)월" }
     static let days = (1...31).map { "\($0)일" }
     static let genders = ["여자", "남자"]

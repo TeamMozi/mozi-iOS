@@ -13,9 +13,15 @@ enum MeetingPreviewData {
         participatedCount: 30
     )
 
+    /// 「인기」 배경음악. 앨범 그림은 서버 없이 보이지 않아 비워 둔다.
     static let backgroundMusics = [
-        BackgroundMusic(id: "preview-music-1", title: "키즈나 뮤직"),
-        BackgroundMusic(id: "preview-music-2", title: "Hey-day 광소곡"),
+        music(1, "키즈나 뮤직", seconds: 99, uses: 110),
+        music(2, "Hey-day 광소곡", seconds: 184, uses: 87),
+        music(3, "sending three hearts to a stranger at 2am", seconds: 99, uses: 110),
+        music(4, "pony club meets every other thursday", seconds: 125, uses: 64),
+        music(5, "tulip season in a borrowed apartment", seconds: 142, uses: 52),
+        music(6, "kitty on the keyboard, deadline at midnight", seconds: 99, uses: 110),
+        music(7, "breathing exercises for strangers halfway home", seconds: 201, uses: 31),
     ]
 
     static let hostMeeting = Meeting(
@@ -207,7 +213,7 @@ enum MeetingPreviewData {
             title: draft.title,
             intro: draft.intro,
             detail: draft.detail,
-            posterURL: nil,
+            posterURL: reusedPosterURL(from: draft.poster),
             backgroundMusic: backgroundMusics.first { $0.id == draft.backgroundMusicID },
             startAt: draft.startAt,
             place: draft.place,
@@ -255,6 +261,26 @@ enum MeetingPreviewData {
             joinQuestions: [],
             notificationRequestCount: 0,
             isNotificationRequested: false
+        )
+    }
+}
+
+extension MeetingPreviewData {
+    /// 포스터 올리기는 흉내내지 않는다. 지난 사진 이어 쓰기만 그 주소를 그대로 돌려준다.
+    static func reusedPosterURL(from input: ImageInput) -> URL? {
+        if case let .reuse(url) = input {
+            return url
+        }
+        return nil
+    }
+
+    private static func music(_ number: Int, _ title: String, seconds: Int, uses: Int) -> BackgroundMusic {
+        BackgroundMusic(
+            id: "preview-music-\(number)",
+            title: title,
+            albumImageURL: nil,
+            durationSeconds: seconds,
+            useCount: uses
         )
     }
 }

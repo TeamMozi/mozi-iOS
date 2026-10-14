@@ -51,7 +51,7 @@ public struct TextStyle: Sendable, Equatable {
         size * Self.pretendardLineHeightRatio
     }
 
-    // Pretendard `.otf` 실측: ascender 1950, descender -494, unitsPerEm 2048, lineGap 0. 네 굵기가 같다.
+    // Pretendard `.otf` 실측: ascender 1950, descender -494, unitsPerEm 2048, lineGap 0. 다섯 굵기가 같다.
     private static let pretendardLineHeightRatio: CGFloat = (1950 + 494) / 2048
 
     // 글꼴 파일이 프레임워크 리소스라 Info.plist `UIAppFonts` 로는 등록되지 않는다.
@@ -63,6 +63,26 @@ public struct TextStyle: Sendable, Equatable {
 
 public extension TextStyle {
     static let ds = DesignSystemTextStyles()
+}
+
+/// Pretendard 굵기. 글자 스타일 토큰에 없는 글자 모양을 `TextStyle.ds.pretendard(_:size:lineHeight:letterSpacingEm:)` 로 만들 때 쓴다.
+public enum PretendardWeight: Sendable, CaseIterable {
+    case extraLight
+    case regular
+    case medium
+    case semiBold
+    case bold
+
+    /// PostScript 이름. `Resources/Fonts/` 의 파일 이름과 같다.
+    public var fontName: String {
+        switch self {
+        case .extraLight: DesignSystemFontName.extraLight
+        case .regular: DesignSystemFontName.regular
+        case .medium: DesignSystemFontName.medium
+        case .semiBold: DesignSystemFontName.semiBold
+        case .bold: DesignSystemFontName.bold
+        }
+    }
 }
 
 /// Figma 글자 스타일 21개. `Title2/SemiBold` → `TextStyle.ds.title2.semiBold`.
@@ -77,4 +97,15 @@ public struct DesignSystemTextStyles: Sendable {
     public let caption2 = Caption2TextStyles()
 
     public init() {}
+
+    /// 글자 스타일 토큰에 없는 글자 모양. 크기마다 토큰을 늘리지 않고 시안 값을 그대로 넣는다.
+    /// 자간은 Figma 백분율을 100 으로 나눈 값이다(−2% → −0.02). 픽셀 자간은 글자 크기로 나눈다.
+    public func pretendard(
+        _ weight: PretendardWeight,
+        size: CGFloat,
+        lineHeight: CGFloat,
+        letterSpacingEm: CGFloat
+    ) -> TextStyle {
+        TextStyle(fontName: weight.fontName, size: size, lineHeight: lineHeight, letterSpacingEm: letterSpacingEm)
+    }
 }

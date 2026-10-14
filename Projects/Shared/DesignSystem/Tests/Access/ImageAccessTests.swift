@@ -4,10 +4,10 @@ import UIKit
 import XCTest
 
 final class ImageAccessTests: XCTestCase {
-    func test_Image_ds_경로가_아이콘_168개와_기존_이미지_12개와_온보딩_그림_13개와_SF_Symbol_1개() {
+    func test_Image_ds_경로가_아이콘_168개와_기존_이미지_12개와_온보딩_그림_13개와_SF_Symbol_1개와_시리즈_그림_1개() {
         let paths = leafPaths(of: Image.ds)
 
-        XCTAssertEqual(paths.count, 194)
+        XCTAssertEqual(paths.count, 195)
         XCTAssertEqual(paths.filter { $0.hasPrefix("icon.") }.count, 168)
         XCTAssertEqual(Set(paths), Set(ImageAccessPaths.all))
     }
@@ -51,6 +51,37 @@ final class ImageAccessTests: XCTestCase {
         }
     }
 
+    /// 시안 `2238:127709`(라이트)·`2238:127503`(다크). 342×397pt.
+    func test_시리즈_설명_그림이_라이트_다크_둘_다_불러와진다() throws {
+        for style in [UIUserInterfaceStyle.light, .dark] {
+            let traits = UITraitCollection(userInterfaceStyle: style)
+            let image = try XCTUnwrap(
+                UIImage(
+                    named: "illustration_series_info",
+                    in: SharedDesignSystemResources.bundle,
+                    compatibleWith: traits
+                ),
+                "\(style.rawValue)"
+            )
+            XCTAssertEqual(image.size.width, 342, "\(style.rawValue)")
+            XCTAssertEqual(image.size.height, 397, "\(style.rawValue)")
+        }
+    }
+
+    func test_시리즈_설명_그림은_라이트와_다크가_다른_그림이다() throws {
+        let light = try XCTUnwrap(UIImage(
+            named: "illustration_series_info",
+            in: SharedDesignSystemResources.bundle,
+            compatibleWith: UITraitCollection(userInterfaceStyle: .light)
+        )?.pngData())
+        let dark = try XCTUnwrap(UIImage(
+            named: "illustration_series_info",
+            in: SharedDesignSystemResources.bundle,
+            compatibleWith: UITraitCollection(userInterfaceStyle: .dark)
+        )?.pngData())
+        XCTAssertNotEqual(light, dark)
+    }
+
     @MainActor
     func test_iconSize와_foregroundStyle로_크기와_색을_바꿔_그린다() throws {
         let view = Image.ds.icon.search.filled
@@ -70,7 +101,7 @@ final class ImageAccessTests: XCTestCase {
 
     @MainActor
     func test_Image_ds_경로가_같은_이름의_에셋을_그린다() throws {
-        XCTAssertEqual(ImageAccessAssets.all.count, 193)
+        XCTAssertEqual(ImageAccessAssets.all.count, 194)
 
         for entry in ImageAccessAssets.all {
             let viaPath = try rgbaPixels(of: render(entry.image))
@@ -310,6 +341,7 @@ private enum ImageAccessPaths {
         "icon.zoomIn.outlined",
         "icon.zoomOut.filled",
         "icon.zoomOut.outlined",
+        "illustration.seriesInfo",
         "interest.activity",
         "interest.art",
         "interest.dessert",
@@ -509,6 +541,7 @@ private enum ImageAccessAssets {
         (Image.ds.icon.zoomIn.outlined, "icon_zoom_in_outlined"),
         (Image.ds.icon.zoomOut.filled, "icon_zoom_out_filled"),
         (Image.ds.icon.zoomOut.outlined, "icon_zoom_out_outlined"),
+        (Image.ds.illustration.seriesInfo, "illustration_series_info"),
         (Image.ds.interest.activity, "interest_activity"),
         (Image.ds.interest.art, "interest_art"),
         (Image.ds.interest.dessert, "interest_dessert"),

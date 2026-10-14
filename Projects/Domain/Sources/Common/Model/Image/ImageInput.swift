@@ -8,4 +8,7 @@ public enum ImageInput: Equatable, Sendable {
     case new(Data)
     /// 사진을 지운다
     case remove
+    /// 지난 모임·시리즈의 사진을 이어 쓴다. 서버에 아직 없다.
+    /// 앱이 아는 것은 지난 사진 주소뿐이라 주소를 넘기고, 서버에 보내는 방법은 Data 가 정한다.
+    case reuse(URL)
 }
